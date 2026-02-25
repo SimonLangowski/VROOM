@@ -1,0 +1,29 @@
+
+
+# Ignore all
+*
+
+# Unignore all with extensions
+!*.*
+
+# Unignore all dirs
+!*/
+!Makefile
+
+__pycache__/
+.vscode/
+*.zip
+target/
+*.exe
+test_data/input*
+sourceCode.cu
+sourceCode.cubin
+
+sync.sh
+clean_all.sh
+*.lst
+cpu/asm
+
+*.out
+*.o
+*.a
