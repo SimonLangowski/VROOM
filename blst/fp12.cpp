@@ -8,8 +8,12 @@
 extern "C" {
 #include "fields.h"
 }
-#include "flattened_code.hpp"
 #include "fp12.hpp"
+
+// Global offset of type FP with value 0 for flattened_code.hpp (additive identity)
+FP offset;
+
+#include "flattened_code.hpp"
 
 
 // Generate random 384-bit field element in Montgomery form

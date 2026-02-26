@@ -134,6 +134,26 @@ public:
     std::array<FP, 12> batch_reduce_expand12(const FP &poly0, const FP &poly1, const FP &poly2, const FP &poly3, const FP &poly4, const FP &poly5, const FP &poly6, const FP &poly7, const FP &poly8, const FP &poly9, const FP &poly10, const FP &poly11) const {
         return std::array<FP, 12> {poly0, poly1, poly2, poly3, poly4, poly5, poly6, poly7, poly8, poly9, poly10, poly11};
     }
+
+    // batch_reduce_expand overloads for flattened_code.hpp (same semantics, variable arity)
+    std::array<FP, 1> batch_reduce_expand(const FP &poly0) const {
+        return std::array<FP, 1>{poly0};
+    }
+    std::array<FP, 2> batch_reduce_expand(const FP &poly0, const FP &poly1) const {
+        return std::array<FP, 2>{poly0, poly1};
+    }
+    std::array<FP, 6> batch_reduce_expand(const FP &poly0, const FP &poly1, const FP &poly2, const FP &poly3, const FP &poly4, const FP &poly5) const {
+        return std::array<FP, 6>{poly0, poly1, poly2, poly3, poly4, poly5};
+    }
+    std::array<FP, 8> batch_reduce_expand(const FP &poly0, const FP &poly1, const FP &poly2, const FP &poly3, const FP &poly4, const FP &poly5, const FP &poly6, const FP &poly7) const {
+        return std::array<FP, 8>{poly0, poly1, poly2, poly3, poly4, poly5, poly6, poly7};
+    }
+    std::array<FP, 10> batch_reduce_expand(const FP &poly0, const FP &poly1, const FP &poly2, const FP &poly3, const FP &poly4, const FP &poly5, const FP &poly6, const FP &poly7, const FP &poly8, const FP &poly9) const {
+        return std::array<FP, 10>{poly0, poly1, poly2, poly3, poly4, poly5, poly6, poly7, poly8, poly9};
+    }
+    std::array<FP, 12> batch_reduce_expand(const FP &poly0, const FP &poly1, const FP &poly2, const FP &poly3, const FP &poly4, const FP &poly5, const FP &poly6, const FP &poly7, const FP &poly8, const FP &poly9, const FP &poly10, const FP &poly11) const {
+        return std::array<FP, 12>{poly0, poly1, poly2, poly3, poly4, poly5, poly6, poly7, poly8, poly9, poly10, poly11};
+    }
 };
 
 
