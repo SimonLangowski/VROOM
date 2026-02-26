@@ -87,6 +87,10 @@ BM_Pairing_BLST_Inverter               156004 ns       156005 ns         4485 Pa
 BM_Pairing_RNS_BLST_Inverter           151537 ns       151534 ns         4620 Pairing_RNS_BLST_Inverter_50bit
 ```
 
+- **BM_BatchModMul_N** — batch Montgomery multiplication, `a*b mod p`.
+- **RNS_BLST_Inverter** — uses RNS for FP12 inversion and BLST for FP inversion.
+- **BM_Inverse** — uses an addition chain of length 425 to invert in RNS without BLST dependency (compare to **BM_FP12_Inverse_BLST** and  **BM_FP12_Inverse_RNS_BLST**)
+
 ## License
 
 MIT. The **blst/** subtree keeps its original Apache license and copyright (see `blst/LICENSE`).
