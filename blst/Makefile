@@ -55,10 +55,17 @@ SERVER_OBJ = server_small.o
 ASSEMBLY_SRC = assembly_small.S
 ASSEMBLY_OBJ = assembly_small.o
 
-# Benchmark program
+# Benchmark program (optional - only if source exists)
 BENCHMARK_SRC = benchmark.c
-BENCHMARK_OBJ = benchmark.o
-BENCHMARK = benchmark
+ifneq ($(wildcard $(BENCHMARK_SRC)),)
+  BENCHMARK_OBJ = benchmark.o
+  BENCHMARK = benchmark
+  BENCHMARK_TARGETS = $(BENCHMARK)
+else
+  BENCHMARK_OBJ =
+  BENCHMARK =
+  BENCHMARK_TARGETS =
+endif
 
 # Empirical basis program (C++)
 EMPIRICAL_SRC = empirical_basis.cpp
@@ -75,25 +82,40 @@ TEST_INVERSION_PARTS_SRC = test_inversion_parts.cpp
 TEST_INVERSION_PARTS_OBJ = test_inversion_parts.o
 TEST_INVERSION_PARTS = test_inversion_parts
 
-# FP12 test program
+# FP12 test program (optional - only if source exists)
 FP12_SRC = fp12.cpp
-FP12_OBJ = fp12.o
-FP12 = fp12
+ifneq ($(wildcard $(FP12_SRC)),)
+  FP12_OBJ = fp12.o
+  FP12 = fp12
+  FP12_TARGETS = $(FP12)
+else
+  FP12_OBJ =
+  FP12 =
+  FP12_TARGETS =
+endif
 
 # FP12Ring test generator
 TEST_FP12RING_GENERATE_SRC = test_fp12ring_generate.cpp
 TEST_FP12RING_GENERATE_OBJ = test_fp12ring_generate.o
 TEST_FP12RING_GENERATE = test_fp12ring_generate
 
-# Benchmark pairing program (C++)
+# Benchmark pairing program (optional - only if source exists)
 BENCH_PAIRING_BLST_SRC = bench_pairing_blst.cpp
-BENCH_PAIRING_BLST_OBJ = bench_pairing_blst.o
-BENCH_PAIRING_BLST = bench_pairing_blst
+ifneq ($(wildcard $(BENCH_PAIRING_BLST_SRC)),)
+  BENCH_PAIRING_BLST_OBJ = bench_pairing_blst.o
+  BENCH_PAIRING_BLST = bench_pairing_blst
+  BENCH_PAIRING_BLST_TARGETS = $(BENCH_PAIRING_BLST)
+else
+  BENCH_PAIRING_BLST_OBJ =
+  BENCH_PAIRING_BLST =
+  BENCH_PAIRING_BLST_TARGETS =
+endif
 
 # Output library
 LIBRARY = libblst_small.a
 
-all: $(LIBRARY) $(BENCHMARK) $(EMPIRICAL) $(TEST_FINAL_EXP) $(FP12) $(TEST_FP12RING_GENERATE) $(BENCH_PAIRING_BLST) $(TEST_INVERSION_PARTS)
+# All targets: library + only programs whose sources exist
+all: $(LIBRARY) $(EMPIRICAL) $(TEST_FINAL_EXP) $(TEST_FP12RING_GENERATE) $(TEST_INVERSION_PARTS) $(BENCHMARK_TARGETS) $(FP12_TARGETS) $(BENCH_PAIRING_BLST_TARGETS)
 
 $(LIBRARY): $(SERVER_OBJ) $(ASSEMBLY_OBJ)
 	$(AR) rc $(LIBRARY) $(SERVER_OBJ) $(ASSEMBLY_OBJ)
@@ -116,9 +138,8 @@ ASM_CFLAGS = $(filter-out -x c -x c++ -std=gnu99 -Wno-implicit-function-declarat
 $(ASSEMBLY_OBJ): $(ASSEMBLY_SRC)
 	$(CC) -x assembler-with-cpp $(ASM_CFLAGS) -c $(ASSEMBLY_SRC) -o $(ASSEMBLY_OBJ)
 
-# Compile benchmark.c - use same language mode as server
-# For C++ compilers, compile as C++ to match server
-# For C compilers, compile as C
+# Compile benchmark.c - use same language mode as server (only if source exists)
+ifneq ($(BENCHMARK_TARGETS),)
 $(BENCHMARK_OBJ): $(BENCHMARK_SRC)
 ifneq ($(IS_CPP),)
 	$(CC) $(CFLAGS) -x c++ -c $(BENCHMARK_SRC) -o $(BENCHMARK_OBJ)
@@ -128,6 +149,7 @@ endif
 
 $(BENCHMARK): $(BENCHMARK_OBJ) $(LIBRARY)
 	$(CC) $(CFLAGS) -o $(BENCHMARK) $(BENCHMARK_OBJ) -L. -lblst_small
+endif
 
 # Compile empirical_basis.cpp - always compile as C++
 # Filter out C-specific flags and add C++ flags
@@ -151,11 +173,14 @@ $(TEST_INVERSION_PARTS_OBJ): $(TEST_INVERSION_PARTS_SRC)
 $(TEST_INVERSION_PARTS): $(TEST_INVERSION_PARTS_OBJ) $(LIBRARY)
 	g++ $(CXXFLAGS) -o $(TEST_INVERSION_PARTS) $(TEST_INVERSION_PARTS_OBJ) -L. -lblst_small
 
+# FP12 and bench_pairing_blst (only if sources exist)
+ifneq ($(FP12_TARGETS),)
 $(FP12_OBJ): $(FP12_SRC)
 	g++ $(CXXFLAGS) -c $(FP12_SRC) -o $(FP12_OBJ)
 
 $(FP12): $(FP12_OBJ) $(LIBRARY)
 	g++ $(CXXFLAGS) -o $(FP12) $(FP12_OBJ) -L. -lblst_small
+endif
 
 $(TEST_FP12RING_GENERATE_OBJ): $(TEST_FP12RING_GENERATE_SRC)
 	g++ $(CXXFLAGS) -c $(TEST_FP12RING_GENERATE_SRC) -o $(TEST_FP12RING_GENERATE_OBJ)
@@ -163,11 +188,13 @@ $(TEST_FP12RING_GENERATE_OBJ): $(TEST_FP12RING_GENERATE_SRC)
 $(TEST_FP12RING_GENERATE): $(TEST_FP12RING_GENERATE_OBJ) $(LIBRARY)
 	g++ $(CXXFLAGS) -o $(TEST_FP12RING_GENERATE) $(TEST_FP12RING_GENERATE_OBJ) -L. -lblst_small
 
+ifneq ($(BENCH_PAIRING_BLST_TARGETS),)
 $(BENCH_PAIRING_BLST_OBJ): $(BENCH_PAIRING_BLST_SRC)
 	g++ $(CXXFLAGS) -c $(BENCH_PAIRING_BLST_SRC) -o $(BENCH_PAIRING_BLST_OBJ)
 
 $(BENCH_PAIRING_BLST): $(BENCH_PAIRING_BLST_OBJ) $(LIBRARY)
 	g++ $(CXXFLAGS) -o $(BENCH_PAIRING_BLST) $(BENCH_PAIRING_BLST_OBJ) -L. -lblst_small -lbenchmark -lpthread -lgmp -lgmpxx
+endif
 
 clean:
 	rm -f $(SERVER_OBJ) $(ASSEMBLY_OBJ) $(LIBRARY) $(BENCHMARK_OBJ) $(BENCHMARK) $(EMPIRICAL_OBJ) $(EMPIRICAL) $(TEST_FINAL_EXP_OBJ) $(TEST_FINAL_EXP) $(FP12_OBJ) $(FP12) $(TEST_FP12RING_GENERATE_OBJ) $(TEST_FP12RING_GENERATE) $(BENCH_PAIRING_BLST_OBJ) $(BENCH_PAIRING_BLST) $(TEST_INVERSION_PARTS_OBJ) $(TEST_INVERSION_PARTS)

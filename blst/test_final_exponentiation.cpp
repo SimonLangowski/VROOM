@@ -20,9 +20,9 @@ void blst_fp12_mul(vec384fp12 ret, const vec384fp12 a, const vec384fp12 b);
 void blst_fp12_frobenius_map(vec384fp12 ret, const vec384fp12 a, size_t n);
 void blst_fp12_cyclotomic_sqr(vec384fp12 ret, const vec384fp12 a);
 }
-#include "flattened_code.hpp"
+#include "fp12.hpp"
 
-// Only need wrapper for fp12_flat_inverse since it's not in flattened_code.hpp
+// Only need wrapper for fp12_flat_inverse (not used by this test; kept for API consistency)
 template<class Ring>
 inline auto fp12_flat_inverse(const std::array<typename Ring::StandardElement, 12> &x, Ring &ring) {
     // Convert to vec384fp12
@@ -41,9 +41,6 @@ inline auto fp12_flat_inverse(const std::array<typename Ring::StandardElement, 1
     }
     return ret;
 }
-
-#include "fp12.hpp"
-
 
 // Generate random 384-bit field element in Montgomery form
 void random_fp(vec384 out) {
