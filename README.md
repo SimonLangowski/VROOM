@@ -91,6 +91,9 @@ BM_Pairing_RNS_BLST_Inverter           151537 ns       151534 ns         4620 Pa
 - **RNS_BLST_Inverter** — uses RNS for FP12 inversion and BLST for FP inversion.
 - **BM_Inverse** — uses an addition chain of length 425 to invert in RNS without BLST dependency (compare to **BM_FP12_Inverse_BLST** and  **BM_FP12_Inverse_RNS_BLST**)
 
+## GPU
+See README in scripts.
+
 ## License
 
 MIT. The **blst/** subtree keeps its original Apache license and copyright (see `blst/LICENSE`).
