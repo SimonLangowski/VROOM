@@ -17,88 +17,92 @@ extern "C" {
 #include "../blst/consts.h"
 #include "fp12.hpp"
 
+// Pack vec384 (6×64-bit LE) into convert_to digit width (50 on MatrixNoK, 52 otherwise).
+// Fully unrolled — no runtime division.
+template<int word_bits, int ndigits>
+inline void vec384_to_convert_digits(const vec384 v, std::array<uint64_t, ndigits> &digits) {
+    static_assert(word_bits == 50 || word_bits == 52);
+    static_assert(ndigits == 8);
+    if constexpr (word_bits == 52) {
+        constexpr uint64_t MASK = (1ULL << 52) - 1;
+        digits[0] = v[0] & MASK;
+        digits[1] = ((v[0] >> 52) | (v[1] << 12)) & MASK;
+        digits[2] = ((v[1] >> 40) | (v[2] << 24)) & MASK;
+        digits[3] = ((v[2] >> 28) | (v[3] << 36)) & MASK;
+        digits[4] = ((v[3] >> 16) | (v[4] << 48)) & MASK;
+        digits[5] = (v[4] >> 4) & MASK;
+        digits[6] = ((v[4] >> 56) | (v[5] << 8)) & MASK;
+        digits[7] = (v[5] >> 44) & MASK;
+    } else {
+        constexpr uint64_t MASK = (1ULL << 50) - 1;
+        digits[0] = v[0] & MASK;
+        digits[1] = ((v[0] >> 50) | (v[1] << 14)) & MASK;
+        digits[2] = ((v[1] >> 36) | (v[2] << 28)) & MASK;
+        digits[3] = ((v[2] >> 22) | (v[3] << 42)) & MASK;
+        digits[4] = (v[3] >> 8) & MASK;
+        digits[5] = ((v[3] >> 58) | (v[4] << 6)) & MASK;
+        digits[6] = ((v[4] >> 44) | (v[5] << 20)) & MASK;
+        digits[7] = (v[5] >> 30) & MASK;
+    }
+}
+
 template<int limbs>
 AVXVector<limbs> to_vec(uint8_t *le_buf) {
-    // Convert from vec384 format (6×64-bit limbs) to RNS format (8×52-bit limbs)
-    // Input: 384 bits in little-endian 64-bit limbs
-    // Output: 8×52-bit limbs (416 bits, but top bits will be zero)
-    
     static_assert(limbs == 8, "to_vec currently only supports 8 limbs");
-    
-    uint64_t *limbs_64 = (uint64_t *)le_buf;
-    std::array<uint64_t, 8> digits;
-    
-    // Extract 8×52-bit limbs from 6×64-bit limbs
-    // Limb 0: bits [0:52) from limbs_64[0]
-    digits[0] = limbs_64[0] & ((1ULL << 52) - 1);
-    
-    // Limb 1: bits [52:104) = bits [52:64) from limbs_64[0] + bits [0:40) from limbs_64[1]
-    digits[1] = ((limbs_64[0] >> 52) | (limbs_64[1] << 12)) & ((1ULL << 52) - 1);
-    
-    // Limb 2: bits [104:156) = bits [40:64) from limbs_64[1] + bits [0:28) from limbs_64[2]
-    digits[2] = ((limbs_64[1] >> 40) | (limbs_64[2] << 24)) & ((1ULL << 52) - 1);
-    
-    // Limb 3: bits [156:208) = bits [28:64) from limbs_64[2] + bits [0:16) from limbs_64[3]
-    digits[3] = ((limbs_64[2] >> 28) | (limbs_64[3] << 36)) & ((1ULL << 52) - 1);
-    
-    // Limb 4: bits [208:260) = bits [16:64) from limbs_64[3] + bits [0:4) from limbs_64[4]
-    digits[4] = ((limbs_64[3] >> 16) | (limbs_64[4] << 48)) & ((1ULL << 52) - 1);
-    
-    // Limb 5: bits [260:312) = bits [4:56) from limbs_64[4]
-    digits[5] = (limbs_64[4] >> 4) & ((1ULL << 52) - 1);
-    
-    // Limb 6: bits [312:364) = bits [56:64) from limbs_64[4] + bits [0:44) from limbs_64[5]
-    digits[6] = ((limbs_64[4] >> 56) | (limbs_64[5] << 8)) & ((1ULL << 52) - 1);
-    
-    // Limb 7: bits [364:416) = bits [44:64) from limbs_64[5] (only 20 bits, rest is zero)
-    digits[7] = (limbs_64[5] >> 44) & ((1ULL << 52) - 1);
-    
+    std::array<uint64_t, 8> digits{};
+    vec384_to_convert_digits<52, 8>(*(const vec384 *)le_buf, digits);
     return AVXVector<limbs>(digits);
 }
 
-template<bool montgomery=false>
-void from_vec(AVXVector<8> &vec_lo, AVXVector<8> &vec_hi, vec384 ret) {
-    std::array<uint64_t, 8> digits_lo;
-    std::array<uint64_t, 8> digits_hi;
-    vec_hi.store(digits_hi.data());
-    vec_lo.store(digits_lo.data());
-    std::array<uint64_t, 8 + 1> digits;
+// rns_reduce_raw (lo, hi) -> vec768 integer N before blst_prepare.
+// Combine lo/hi as 64-bit lanes, then accumulate at 52-bit offsets LSB-first.
+template<int digit_idx, int bits_per_digit=52>
+inline void accumulate_digit(std::array<uint64_t, 8> &sum_array, uint64_t digit) {
+    constexpr int offset = digit_idx * bits_per_digit;
+    constexpr int sum_word = offset / 64;
+    constexpr int sum_bit = offset % 64;
+    __uint128_t tmp = (__uint128_t)(sum_array[sum_word]) + ((__uint128_t)(digit) << sum_bit);
+    sum_array[sum_word] = (uint64_t)tmp;
+    uint64_t c = (uint64_t)(tmp >> 64);
+    static_assert(sum_word + 1 < 8, "Accumulated digit overflow");
+    sum_array[sum_word + 1] = c;
+}
+
+inline void lo_hi_to_vec768(const std::array<uint64_t, 8> &digits_lo,
+    const std::array<uint64_t, 8> &digits_hi, vec768 &sum) {
+    std::array<uint64_t, 9> digits{};
     digits[0] = digits_lo[0];
     for (int i = 1; i < 8; i++) {
         digits[i] = digits_hi[i - 1] + digits_lo[i];
     }
     digits[8] = digits_hi[7];
-    vec768 n_data_even_64;
-    vec768 n_data_odd_64;
-    uint8_t *n_data_even = (uint8_t *) n_data_even_64;
-    uint8_t *n_data_odd = (uint8_t *) n_data_odd_64;
-    memset(n_data_even, 0, sizeof(vec768));
-    memset(n_data_odd, 0, sizeof(vec768));
-    for (int i = 0; i < 9; i += 2) {
-        *(uint64_t *)(n_data_even + (i / 2) * 13) = digits[i];
+    std::array<uint64_t, 8> sum_array{};
+    sum_array[0] = digits[0];
+    accumulate_digit<1>(sum_array, digits[1]);
+    accumulate_digit<2>(sum_array, digits[2]);
+    accumulate_digit<3>(sum_array, digits[3]);
+    accumulate_digit<4>(sum_array, digits[4]);
+    accumulate_digit<5>(sum_array, digits[5]);
+    accumulate_digit<6>(sum_array, digits[6]);
+    accumulate_digit<7>(sum_array, digits[7]);
+    accumulate_digit<8>(sum_array, digits[8]);
+    for (int i = 0; i < 8; i++) {
+        sum[i] = sum_array[i];
     }
-    for (int i = 1; i < 8; i += 2) {
-        *(uint64_t *)(n_data_odd + (i / 2) * 13 + 6) = digits[i] << 4;
+    for (int i = 8; i < 12; i++) {
+        sum[i] = 0;
     }
-    
-    // Add n_data_even and n_data_odd together with carry propagation
-    vec768 sum;
-    memset(sum, 0, sizeof(vec768));
-    uint64_t carry = 0;
-    for (int i = 0; i < 9; i++) {
-        uint64_t a = n_data_even_64[i];
-        uint64_t b = n_data_odd_64[i];
-        uint64_t s = a + b + carry;
-        sum[i] = s;
-        carry = (s < a) || (carry && s == a) ? 1 : 0;
-    }
+}
+
+template<bool montgomery=false>
+void blst_prepare(vec768 &sum, vec384 ret) {
     // Always: redc_fp -> multiply by RR -> redc_fp (gives normal form)
     vec384 temp;
     redc_fp(temp, sum);  // temp = sum * R^-1 mod p
     vec768 prod;
     mul_384(prod, temp, BLS12_381_RR);  // prod = sum * R
     redc_fp(ret, prod);  // ret = sum (normal form)
-    
+
     if (montgomery) {
         // For Montgomery form: multiply by RR again
         vec768 prod2;
@@ -107,6 +111,16 @@ void from_vec(AVXVector<8> &vec_lo, AVXVector<8> &vec_hi, vec384 ret) {
     }
 }
 
+template<bool montgomery=false>
+void from_vec(AVXVector<8> &vec_lo, AVXVector<8> &vec_hi, vec384 ret) {
+    std::array<uint64_t, 8> digits_lo;
+    std::array<uint64_t, 8> digits_hi;
+    vec_hi.store(digits_hi.data());
+    vec_lo.store(digits_lo.data());
+    vec768 sum;
+    lo_hi_to_vec768(digits_lo, digits_hi, sum);
+    blst_prepare<montgomery>(sum, ret);
+}
 
 template<class Ring, bool montgomery=false>
 void convert_to_int(const Ring & ring, typename Ring::StandardElement & a, vec384 ret) {
@@ -124,8 +138,14 @@ auto convert_to_rns(const Ring & ring, const vec384 ret) {
     } else {
         vec_copy(temp_ret, ret, sizeof(vec384));
     }
-    AVXVector<8> l = to_vec<8>((uint8_t *) temp_ret);
-    return ring.template convert_to_rns_batch<1>(std::array<AVXVector<8>, 1>{l})[0];
+    // MatrixNoK convert_to uses 50-bit digits (CONVERT_TO_WORD_BITS); to_vec is 52-bit.
+    constexpr int wb = Ring::CONVERT_TO_WORD_BITS;
+    constexpr int ndigits = 8;
+    std::array<uint64_t, ndigits> digits{};
+    vec384_to_convert_digits<wb, ndigits>(temp_ret, digits);
+    AVXVector<Ring::LIMBS> l;
+    l.load(digits.data());
+    return ring.template convert_to_rns_batch<1>(std::array<AVXVector<Ring::LIMBS>, 1>{l})[0];
 }
 
 template<class Ring>
@@ -178,6 +198,21 @@ std::array<typename Ring::StandardElement, 12> invert_fp12_via_blst(
 // --- BigInt-based FP12 inversion via BLST ---
 // This path converts ring -> BigInt (normal form) -> vec384 Montgomery (BLST),
 // calls blst_fp12_inverse, then converts back to BigInt (normal form) -> ring.
+static inline BigInt vec384_normal_to_bigint(const vec384 a) {
+    BigInt result(0);
+    BigInt two_to_64 = BigInt(1) << 64;
+    for (int i = 5; i >= 0; i--) {
+        result = result * two_to_64 + BigInt(static_cast<unsigned long>(a[i]));
+    }
+    return result;
+}
+
+static inline BigInt vec384_montgomery_to_bigint(const vec384 a) {
+    vec384 normal;
+    from_fp(normal, a);
+    return vec384_normal_to_bigint(normal);
+}
+
 static inline void bigint_to_vec384_normal(vec384 out, const BigInt& a) {
     // Assumes `a` is already in normal form and non-negative (e.g. output of ring.to_bigint()).
     std::string hex_str = a.to_string(16);
@@ -192,15 +227,6 @@ static inline void bigint_to_vec384_normal(vec384 out, const BigInt& a) {
     }
 }
 
-static inline BigInt vec384_normal_to_bigint(const vec384 a) {
-    BigInt result(0);
-    BigInt two_to_64 = BigInt(1) << 64;
-    for (int i = 5; i >= 0; i--) {
-        result = result * two_to_64 + BigInt(static_cast<unsigned long>(a[i]));
-    }
-    return result;
-}
-
 static inline void bigint_to_vec384_montgomery(vec384 out, const BigInt& a) {
     vec384 normal;
     bigint_to_vec384_normal(normal, a);
@@ -209,12 +235,6 @@ static inline void bigint_to_vec384_montgomery(vec384 out, const BigInt& a) {
     vec768 prod;
     mul_384(prod, normal, BLS12_381_RR);
     redc_fp(out, prod);
-}
-
-static inline BigInt vec384_montgomery_to_bigint(const vec384 a) {
-    vec384 normal;
-    from_fp(normal, a);
-    return vec384_normal_to_bigint(normal);
 }
 
 template<class Ring>

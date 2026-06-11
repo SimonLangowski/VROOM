@@ -9,6 +9,21 @@
 #include <array>
 #include "preprocess.hpp"
 
+enum class ChangeBaseVariation {
+    Matrix,
+    FixedPerm,
+    MatrixNoK
+};
+
+/** Logical RNS limb count when storage is AVX-padded (bn254: 8 stored, 6 active). */
+template<class ReducedM1>
+constexpr int change_base_true_limbs() {
+    if constexpr (ReducedM1::LIMBS == 8 && ReducedM1::ELEMENT_BITS == 46) {
+        return 6;
+    }
+    return ReducedM1::LIMBS;
+}
+
 /*
 template<int limbs>
 class RNSMatrix2 {
@@ -98,8 +113,6 @@ INLINE auto batch_change_base(const std::array<ReadyToReduce<WideM2, ReducedM1>,
     constexpr int limbs = ReducedM1::LIMBS;
     constexpr int element_bits = ReducedM1::ELEMENT_BITS;
     ReducedM1::check_mult_bounds();
-    // Note: RNSMatrix doesn't expose template parameters as static members, so we can't static_assert here
-    // The template parameters are checked at the call site
     std::array<AVXVector<limbs>, batch> out_hi;
     std::array<AVXVector<limbs>, batch> out_lo;
     std::array<AVXVector<limbs>, batch> residues1;
@@ -109,9 +122,7 @@ INLINE auto batch_change_base(const std::array<ReadyToReduce<WideM2, ReducedM1>,
         out_lo[i] = inputs[i].acc.low.data;
     }
     rns_matrix.template rns_reduce_raw_batch<batch, 2>(&residues1, out_hi, out_lo);
-    // Adds m1_bound limbs time in accumulate loop
-    // correction is bounded by m1_bound * limbs, and add_correction adds another m1_bound * limbs
-    auto change_base_bounds = Bounds<0, 2*limbs*ReducedM1::bounds.upper>{};
+    auto change_base_bounds = Bounds<0, 2*change_base_true_limbs<ReducedM1>()*ReducedM1::bounds.upper>{};
     auto total_bounds = inputs[0].acc.bounds + change_base_bounds;
     std::array<WideElement<decltype(total_bounds), limbs, element_bits>, batch> result;
     for (size_t i = 0; i < batch; i++) {
@@ -119,4 +130,92 @@ INLINE auto batch_change_base(const std::array<ReadyToReduce<WideM2, ReducedM1>,
         result[i].high.data = out_hi[i];
     }
     return result;
+}
+
+template<class PermReducer>
+constexpr bool perm_reducer_skips_k() {
+    if constexpr (requires { PermReducer::SKIP_K_CORRECTION; }) {
+        return PermReducer::SKIP_K_CORRECTION;
+    }
+    return false;
+}
+
+/** Same as batch_change_base but reducer supplies rns_reduce_raw_batch (e.g. bn254 dot-first perm). */
+template<std::size_t batch, int QuoEstError = 0, class PermReducer, class WideM2, class ReducedM1>
+INLINE auto batch_change_base_perm(
+    const std::array<ReadyToReduce<WideM2, ReducedM1>, batch> &inputs,
+    const PermReducer &reducer) {
+    constexpr int limbs = ReducedM1::LIMBS;
+    constexpr int true_limbs = change_base_true_limbs<ReducedM1>();
+    constexpr int element_bits = ReducedM1::ELEMENT_BITS;
+    ReducedM1::check_mult_bounds();
+    if constexpr (perm_reducer_skips_k<PermReducer>()) {
+        static_assert(QuoEstError > 0, "skip-k perm reducer requires QuoEstError template argument");
+        static_assert(
+            ReducedM1::bounds.upper * true_limbs <= QuoEstError,
+            "skip-k: m1 upper * true_limbs must be <= QUO_EST_ERROR; increase QUO_EST_ERROR or reduce m1 to STANDARD_BOUND (2)");
+    }
+    std::array<AVXVector<limbs>, batch> out_hi;
+    std::array<AVXVector<limbs>, batch> out_lo;
+    std::array<AVXVector<limbs>, batch> residues1;
+    for (size_t i = 0; i < batch; i++) {
+        residues1[i] = inputs[i].input.data;
+        out_hi[i] = inputs[i].acc.high.data;
+        out_lo[i] = inputs[i].acc.low.data;
+    }
+    reducer.template rns_reduce_raw_batch<batch>(&residues1, out_hi, out_lo);
+    auto change_base_bounds = [&]() {
+        if constexpr (perm_reducer_skips_k<PermReducer>()) {
+            return Bounds<0, true_limbs * ReducedM1::bounds.upper>{};
+        } else {
+            return Bounds<0, 2 * true_limbs * ReducedM1::bounds.upper>{};
+        }
+    }();
+    auto total_bounds = inputs[0].acc.bounds + change_base_bounds;
+    std::array<WideElement<decltype(total_bounds), limbs, element_bits>, batch> result;
+    for (size_t i = 0; i < batch; i++) {
+        result[i].low.data = out_lo[i];
+        result[i].high.data = out_hi[i];
+    }
+    return result;
+}
+
+template<std::size_t batch, int QuoEstError, class PermReducer, class WideM2, class ReducedM1>
+INLINE auto batch_change_base_perm_qr(
+    const std::array<ReadyToReduce<WideM2, ReducedM1>, batch> &inputs,
+    const PermReducer &reducer) {
+    constexpr int limbs = ReducedM1::LIMBS;
+    constexpr int true_limbs = change_base_true_limbs<ReducedM1>();
+    constexpr int element_bits = ReducedM1::ELEMENT_BITS;
+    ReducedM1::check_mult_bounds();
+    static_assert(perm_reducer_skips_k<PermReducer>(), "batch_change_base_perm_qr requires a skip-k perm reducer");
+    static_assert(
+        ReducedM1::bounds.upper * true_limbs <= QuoEstError,
+        "skip-k: m1 upper * true_limbs must be <= QUO_EST_ERROR; increase QUO_EST_ERROR or reduce m1 to STANDARD_BOUND (2)");
+    std::array<AVXVector<limbs>, batch> out_hi;
+    std::array<AVXVector<limbs>, batch> out_lo;
+    std::array<AVXVector<limbs>, batch> residues1;
+    for (size_t i = 0; i < batch; i++) {
+        residues1[i] = inputs[i].input.data;
+        out_hi[i] = inputs[i].acc.high.data;
+        out_lo[i] = inputs[i].acc.low.data;
+    }
+    reducer.template rns_reduce_raw_batch<batch>(&residues1, out_hi, out_lo);
+    // No k correction applied, so no increase in bounds
+    // Possible Montgomery reduction could fully reduce to bound 2?
+    auto change_base_bounds = Bounds<0, true_limbs*ReducedM1::bounds.upper>{};
+    auto total_bounds = inputs[0].acc.bounds + change_base_bounds;
+    std::array<WideElement<decltype(total_bounds), limbs, element_bits>, batch> result;
+    for (size_t i = 0; i < batch; i++) {
+        result[i].low.data = out_lo[i];
+        result[i].high.data = out_hi[i];
+    }
+    // No k correction applied, so RNS bounds are larger
+    // expanded_element with <0, limbs*ReducedM1::bounds.upper> bounds
+    // better be less than N/2
+    std::array<ExpandedElement<WideElement<decltype(total_bounds), limbs, element_bits>, Bounds<0, true_limbs*ReducedM1::bounds.upper>>, batch> result_expanded;
+    for (size_t i = 0; i < batch; i++) {
+        result_expanded[i] = ExpandedElement<WideElement<decltype(total_bounds), limbs, element_bits>, Bounds<0, true_limbs*ReducedM1::bounds.upper>>(result[i], result[i]);
+    }
+    return result_expanded;
 }

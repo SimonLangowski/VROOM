@@ -170,10 +170,10 @@ BigInt rns_reconstruct_full(const std::array<int64_t, num_moduli> &residues, con
     return result_mod;
 }
 
-template<int bits, int limbs, template <int> class Reduction=MontgomeryReduce>
+template<int bits, int limbs, template <int> class Reduction=MontgomeryReduce, int convert_to_word_bits=52>
 struct IntRNS2System {
     IntRNS2<Reduction, limbs, limbs> intrns2;
-    ConvertToRNS<bits, limbs> convert_to;
+    ConvertToRNS<bits, limbs, convert_to_word_bits> convert_to;
     ConvertFromRNS<bits, limbs> convert_from;
     std::array<uint64_t, limbs> moduli1;
     std::array<uint64_t, limbs> moduli2;
@@ -187,7 +187,7 @@ struct IntRNS2System {
 
     inline IntRNS2System(
         IntRNS2<Reduction, limbs, limbs> intrns2,
-        ConvertToRNS<bits, limbs> convert_to,
+        ConvertToRNS<bits, limbs, convert_to_word_bits> convert_to,
         ConvertFromRNS<bits, limbs> convert_from,
         const std::array<uint64_t, limbs> &moduli1,
         const std::array<uint64_t, limbs> &moduli2,

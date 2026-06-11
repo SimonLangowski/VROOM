@@ -88,7 +88,7 @@ inline void to_radix_rns(
     }
 }
 
-// Full precompute to match test_data/precompute_matrix.py: gen_precompute_wide
+// Full precompute to match scripts/precompute_matrix.py: gen_precompute_wide
 // This closely mirrors the Python implementation for debugging
 template<size_t LIMBS_IN, size_t LIMBS_OUT, size_t INDIGITS, int INBITS, size_t OUTDIGITS, int OUTBITS, int PRECISION>
 inline void gen_precompute_wide(
@@ -235,7 +235,7 @@ inline void gen_precompute_wide(
     }
 }
 
-// Minimal precompute to match test_data/precompute_matrix.py: gen_precompute_wide_min
+// Minimal precompute to match scripts/precompute_matrix.py: gen_precompute_wide_min
 template<size_t LIMBS_IN, size_t LIMBS_OUT, size_t INDIGITS, int INBITS, size_t OUTDIGITS, int OUTBITS, int PRECISION>
 inline void gen_precompute_wide_min(
     const std::array<BigInt, LIMBS_IN> &moduli_in,

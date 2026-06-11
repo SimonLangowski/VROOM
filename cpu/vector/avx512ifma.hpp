@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <cstdio>
 #include <array>
+#include <type_traits>
 
 // Class abstracting vector of length greater than 1 AVX vector.
 // Perhaps if a vector only uses one limb, you can abstract accodingly
@@ -69,18 +70,25 @@ class AVXVector {
         }
     }
 
-    inline AVXVector permute(const AVXVector &perm) const {
-        AVXVector out;
-        for (int i = 0; i < VEC_LIMBS; i++) {
-            out[i] = _mm512_permutexvar_epi64(data[i], perm[i]);
-        }
-        return out;
-    }
-
     inline __m512i getm512() const {
         return data[0];
     }
 
+    /** Widen to W lanes in one zmm; lanes limbs..W-1 must be 0 (maskz). */
+    template <int W, typename = std::enable_if_t<(W > limbs) && (W <= 8) && (VEC_LIMBS == 1) && (AVXVector<W>::VEC_LIMBS == 1)>>
+    AVXVector<W> widening_cast() const {
+        AVXVector<W> out;
+        out.data[0] = data[0];
+        return out;
+    }
+
+    /** Narrow to W lanes in one zmm; upper lanes of source are ignored. */
+    template <int W, typename = std::enable_if_t<(W < limbs) && (W > 0) && (VEC_LIMBS == 1) && (AVXVector<W>::VEC_LIMBS == 1)>>
+    AVXVector<W> narrowing_cast() const {
+        AVXVector<W> out;
+        out.data[0] = data[0];
+        return out;
+    }
 
     inline AVXVector mulhi(const AVXVector &a, const AVXVector &b) const {
         AVXVector out;
@@ -110,6 +118,26 @@ class AVXVector {
         AVXVector out;
         for (int i = 0; i < VEC_LIMBS; i++) {
             out[i] = _mm512_madd52lo_epu64(data[i], a[i], s);
+        }
+        return out;
+    }
+
+    /** Fused multiply-add low 52×52 bits; lanes where mask bit is 0 are zeroed (maskz). */
+    inline AVXVector maskz_madd52lo(uint8_t mask, const AVXVector &b, const AVXVector &c) const {
+        AVXVector out;
+        const __mmask8 k = (__mmask8)mask;
+        for (int i = 0; i < VEC_LIMBS; i++) {
+            out[i] = _mm512_maskz_madd52lo_epu64(k, data[i], b[i], c[i]);
+        }
+        return out;
+    }
+
+    /** Fused multiply-add high 52×52 bits; lanes where mask bit is 0 are zeroed (maskz). */
+    inline AVXVector maskz_madd52hi(uint8_t mask, const AVXVector &b, const AVXVector &c) const {
+        AVXVector out;
+        const __mmask8 k = (__mmask8)mask;
+        for (int i = 0; i < VEC_LIMBS; i++) {
+            out[i] = _mm512_maskz_madd52hi_epu64(k, data[i], b[i], c[i]);
         }
         return out;
     }
@@ -155,44 +183,6 @@ class AVXVector {
         return out;
     }
 
-    inline AVXVector add_min(const AVXVector &other) const {
-        AVXVector out;
-        for (int i = 0; i < VEC_LIMBS; i++) {
-            __m512i diff = _mm512_add_epi64(data[i], other[i]);
-            out[i] = _mm512_min_epu64(data[i], diff);
-        }
-        return out;
-    }
-
-    inline AVXVector cmp_sub(const AVXVector &value) const {
-        // HEXL: subtract, min
-        AVXVector out;
-        for (int i = 0; i < VEC_LIMBS; i++) {
-            __mmask8 mask = _mm512_cmpge_epi64_mask(data[i], value[i]);
-            out[i] = _mm512_mask_sub_epi64(data[i], mask, data[i], value[i]);
-        }
-        return out;
-    }
-
-    inline AVXVector cmp_add(const AVXVector &v1, const AVXVector &v2, const AVXVector &val) {
-        AVXVector out;
-        for (int i = 0; i < VEC_LIMBS; i++) {
-            __mmask8 mask = _mm512_cmpgt_epi64_mask(v1[i], v2[i]);
-            out[i] = _mm512_mask_add_epi64(data[i], mask, data[i], val[i]);
-        }
-        return out;
-    }
-
-    // Conditional add without modulo: if v1 > v2, add val to this
-    inline AVXVector mask_add_cond(const AVXVector &v1, const AVXVector &v2, const AVXVector &val) const {
-        AVXVector out;
-        for (int i = 0; i < VEC_LIMBS; i++) {
-            __mmask8 mask = _mm512_cmpgt_epi64_mask(v1[i], v2[i]);
-            out[i] = _mm512_mask_add_epi64(data[i], mask, data[i], val[i]);
-        }
-        return out;
-    }
-
     inline AVXVector and_scalar(const AVXScalar &other) const {
         AVXVector out;
         for (int i = 0; i < VEC_LIMBS; i++) {
@@ -229,9 +219,21 @@ class AVXVector {
         return out;
     }
 
+    inline AVXVector permute(AVXVector<8> perm) const {
+        AVXVector out;
+        for (int i = 0; i < VEC_LIMBS; i++) {
+            out[i] = _mm512_permutexvar_epi64(perm[i], data[i]);
+        }
+        return out;
+    }
+
     inline uint64_t extract0() const {
-        // apparently fast?
-        return *(uint64_t*)(data);
+        return _mm_extract_epi64(_mm512_castsi512_si128(data[0]), 0);
+    }
+
+    /** Return the first lane register as AVXScalar (use when all lanes are equal, e.g. after horizontal sum). */
+    inline AVXScalar as_scalar() const {
+        return data[0];
     }
 
     inline void store(uint64_t* dst) const {
@@ -275,4 +277,36 @@ class AVXVector {
         std::copy(values.data(), values.data() + limbs, result.data());
         return result;
     }
+};
+
+/** Low 128 bits of the first ZMM lane group (__m128i), for horizontal reductions / broadcast. */
+class ShortVector {
+    __m128i v_;
+
+public:
+    ShortVector() = default;
+    explicit ShortVector(__m128i x) : v_(x) {}
+
+    template <int limbs>
+    static ShortVector from_avx_lo(const AVXVector<limbs> &a) {
+        return ShortVector(_mm512_castsi512_si128(a[0]));
+    }
+
+    ShortVector add(const ShortVector &o) const {
+        return ShortVector(_mm_add_epi64(v_, o.v_));
+    }
+
+    ShortVector srli(int bits) const { return ShortVector(_mm_srli_epi64(v_, bits)); }
+
+    template <int limbs>
+    AVXVector<limbs> broadcast_to_avx() const {
+        const __m512i b = _mm512_broadcastq_epi64(v_);
+        AVXVector<limbs> out;
+        for (int i = 0; i < AVXVector<limbs>::VEC_LIMBS; i++) {
+            out[i] = b;
+        }
+        return out;
+    }
+
+    __m128i raw() const { return v_; }
 };

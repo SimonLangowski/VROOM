@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <immintrin.h>
 #include <cassert>
+#include <type_traits>
 
 // Fallback implementation of AVXVector using standard operations
 // This provides the same interface as the AVX512 implementation but uses
@@ -44,10 +45,8 @@ public:
     static constexpr int LIMBS_PER_VEC = 8;  // Keep for compatibility
     static constexpr int VEC_LIMBS = (limbs + LIMBS_PER_VEC - 1) / LIMBS_PER_VEC;
 
-private:
     std::array<uint64_t, LIMBS_PER_VEC * VEC_LIMBS> data;
 
-public:
     AVXVector() = default;
     
     inline AVXVector(uint64_t v) {
@@ -62,6 +61,34 @@ public:
         }
     }
 
+    /** Widen to W lanes; lanes limbs..W-1 must be 0 (maskz). */
+    template <int W, typename = std::enable_if_t<(W > limbs) && (W <= 8) && (VEC_LIMBS == 1) && (AVXVector<W>::VEC_LIMBS == 1)>>
+    AVXVector<W> widening_cast() const {
+        AVXVector<W> out;
+        __builtin_memcpy(out.data.data(), data.data(), 8 * sizeof(uint64_t));
+        return out;
+    }
+
+    /** Narrow to W lanes; upper lanes of source are ignored. */
+    template <int W, typename = std::enable_if_t<(W < limbs) && (W > 0) && (VEC_LIMBS == 1) && (AVXVector<W>::VEC_LIMBS == 1)>>
+    AVXVector<W> narrowing_cast() const {
+        AVXVector<W> out;
+        for (int i = 0; i < W; ++i) {
+            out.data[i] = data[i];
+        }
+        return out;
+    }
+
+    /** Lanes 0..N-1 from array; lanes N..7 zero (maskz). AVXVector<8> only. */
+    template <int N, typename = std::enable_if_t<(limbs == 8) && (N > 0) && (N < 8)>>
+    static AVXVector<8> widening_cast(const std::array<uint64_t, N> &narrow) {
+        AVXVector<8> out;
+        for (int i = 0; i < N; ++i) {
+            out.data[i] = narrow[i];
+        }
+        return out;
+    }
+
     inline constexpr AVXVector(const std::array<__m512i, VEC_LIMBS> &array) {
         union {
             __m512i m;
@@ -73,18 +100,6 @@ public:
                 data[i * 8 + j] = u.u[j];
             }
         }
-    }
-
-    inline AVXVector permute(const AVXVector &perm) const {
-        AVXVector out;
-        for (int i = 0; i < limbs; i++) {
-            for (int j = 0; j < 8; j++) {
-                uint64_t to = perm.data[8 * i + j];
-                assert(to < 8);
-                out.data[8 * i + j] = data[8 * i + to];
-            }
-        }
-        return out;
     }
 
     inline __m512i getm512() const {
@@ -155,6 +170,50 @@ public:
         return out;
     }
 
+    inline AVXVector maskz_madd52lo(uint8_t mask, const AVXVector &b, const AVXVector &c) const {
+        AVXVector out;
+        for (int vi = 0; vi < VEC_LIMBS; vi++) {
+            for (int j = 0; j < LIMBS_PER_VEC; j++) {
+                const int idx = vi * LIMBS_PER_VEC + j;
+                if (((mask >> j) & 1) == 0) {
+                    out.data[idx] = 0;
+                    continue;
+                }
+                const uint64_t z = idx < limbs ? data[idx] : 0;
+                const uint64_t bv = idx < limbs ? b.data[idx] : 0;
+                const uint64_t cv = idx < limbs ? c.data[idx] : 0;
+                const uint64_t b_m = bv & MASK_52_BITS;
+                const uint64_t c_m = cv & MASK_52_BITS;
+                const __uint128_t product = (__uint128_t)b_m * (__uint128_t)c_m;
+                const uint64_t lo_part = (uint64_t)(product & MASK_52_BITS);
+                out.data[idx] = z + lo_part;
+            }
+        }
+        return out;
+    }
+
+    inline AVXVector maskz_madd52hi(uint8_t mask, const AVXVector &b, const AVXVector &c) const {
+        AVXVector out;
+        for (int vi = 0; vi < VEC_LIMBS; vi++) {
+            for (int j = 0; j < LIMBS_PER_VEC; j++) {
+                const int idx = vi * LIMBS_PER_VEC + j;
+                if (((mask >> j) & 1) == 0) {
+                    out.data[idx] = 0;
+                    continue;
+                }
+                const uint64_t z = idx < limbs ? data[idx] : 0;
+                const uint64_t bv = idx < limbs ? b.data[idx] : 0;
+                const uint64_t cv = idx < limbs ? c.data[idx] : 0;
+                const uint64_t b_m = bv & MASK_52_BITS;
+                const uint64_t c_m = cv & MASK_52_BITS;
+                const __uint128_t product = (__uint128_t)b_m * (__uint128_t)c_m;
+                const uint64_t hi_part = (uint64_t)(product >> 52);
+                out.data[idx] = z + hi_part;
+            }
+        }
+        return out;
+    }
+
     // Shift operations
     inline AVXVector srli(const int bits) const {
         AVXVector out;
@@ -213,50 +272,6 @@ public:
         return out;
     }
 
-    // Conditional operations
-    inline AVXVector cmp_sub(const AVXVector &value) const {
-        AVXVector out;
-        for (int i = 0; i < limbs; i++) {
-            if (data[i] >= value.data[i]) {
-                out.data[i] = data[i] - value.data[i];
-            } else {
-                out.data[i] = data[i];
-            }
-        }
-        return out;
-    }
-
-    inline AVXVector cmp_add(const AVXVector &v1, const AVXVector &v2, const AVXVector &val) {
-        AVXVector out;
-        for (int i = 0; i < limbs; i++) {
-            // Python: uh.mask_add(mask, modulia) where mask = h.mask_cmp_gt(hi)
-            // This adds moduli[i] where h > hi, then takes mod
-            // In C++, when h > hi, data[i] (which is c = hi - h) has wrapped around
-            // We add moduli[i] to fix the wraparound, then take mod
-            if (v1.data[i] > v2.data[i]) {
-                uint64_t sum = data[i] + val.data[i];
-                // Take modulo to handle potential overflow
-                out.data[i] = sum % val.data[i];
-            } else {
-                out.data[i] = data[i] % val.data[i];
-            }
-        }
-        return out;
-    }
-
-    // Conditional add without modulo: if v1 > v2, add val to this
-    inline AVXVector mask_add_cond(const AVXVector &v1, const AVXVector &v2, const AVXVector &val) const {
-        AVXVector out;
-        for (int i = 0; i < limbs; i++) {
-            if (v1.data[i] > v2.data[i]) {
-                out.data[i] = data[i] + val.data[i];
-            } else {
-                out.data[i] = data[i];
-            }
-        }
-        return out;
-    }
-
     // Bitwise operations
     inline AVXVector and_scalar(const AVXScalar &other) const {
         AVXVector out;
@@ -279,8 +294,23 @@ public:
         return selection ? *this : b;
     }
 
+    inline AVXVector permute(AVXVector<8> perm) const {
+        AVXVector out;
+        for (int j = 0; j < limbs; j++) {
+            const uint64_t to = perm.data[j];
+            assert(to < 8);
+            out.data[j] = data[to];
+        }
+        return out;
+    }
+
     // Access operations
     inline uint64_t extract0() const {
+        return data[0];
+    }
+
+    /** Return the first lane as AVXScalar (use when all lanes are equal, e.g. after horizontal sum). */
+    inline AVXScalar as_scalar() const {
         return data[0];
     }
 
@@ -321,6 +351,46 @@ public:
     }
 
     inline std::array<uint64_t, limbs> to_array() const {
-        return data;
+        std::array<uint64_t, limbs> result{};
+        for (int i = 0; i < limbs; i++) {
+            result[i] = data[i];
+        }
+        return result;
     }
+};
+
+/** Scalar pair matching the low 128 bits of the first ZMM group (fallback for ShortVector / __m128i). */
+class ShortVector {
+    uint64_t q0_;
+    uint64_t q1_;
+
+public:
+    ShortVector() : q0_(0), q1_(0) {}
+    ShortVector(uint64_t q0, uint64_t q1) : q0_(q0), q1_(q1) {}
+
+    template <int limbs>
+    static ShortVector from_avx_lo(const AVXVector<limbs> &a) {
+        return ShortVector(a.get_limb(0), a.get_limb(1));
+    }
+
+    ShortVector add(const ShortVector &o) const {
+        return ShortVector(q0_ + o.q0_, q1_ + o.q1_);
+    }
+
+    ShortVector srli(int bits) const {
+        return ShortVector(q0_ >> bits, q1_ >> bits);
+    }
+
+    template <int limbs>
+    AVXVector<limbs> broadcast_to_avx() const {
+        AVXVector<limbs> out;
+        const int span = AVXVector<limbs>::LIMBS_PER_VEC * AVXVector<limbs>::VEC_LIMBS;
+        for (int i = 0; i < span; i++) {
+            out.set_limb(i, q0_);
+        }
+        return out;
+    }
+
+    uint64_t q0() const { return q0_; }
+    uint64_t q1() const { return q1_; }
 };

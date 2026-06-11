@@ -20,6 +20,19 @@ class MontgomeryReduce2 {
     AVXVector<limbs> neg_moduli;
     AVXVector<limbs> mont_convert_factor;
 
+    // Peel upper_bound down to stop: subtract 2^j·p for each set bit j in (upper_bound - stop).
+    template<int64_t upper_bound, int64_t stop, int j>
+    INLINE void min_sub_peel(AVXVector<limbs> &data) const {
+        if constexpr (j >= 0) {
+            if constexpr ((upper_bound - stop) >= (int64_t{1} << j)) {
+                data = data.min(data.sub(moduli_multiples[j]));
+            }
+            if constexpr (j > 0) {
+                min_sub_peel<upper_bound, stop, j - 1>(data);
+            }
+        }
+    }
+
     public:
     INLINE MontgomeryReduce2(const std::array<uint64_t, limbs> &moduli) 
         : hi_mask(get_scalar_mask(hi_bit_shift))
@@ -61,19 +74,14 @@ class MontgomeryReduce2 {
     template<int64_t upper_bound, int stop = 1>
     INLINE auto min_sub_reduce(const BoundedElement<Bounds<0, upper_bound>, limbs, element_bits> &a) const {
         static_assert(stop >= 1, "Stop must be at least 1");
-        static_assert(upper_bound <= (1 << (log_multiples+1)), "Upper bound cannot exceed log multiples");
+        static_assert(upper_bound >= stop, "upper_bound must be >= stop");
+        static_assert(upper_bound <= (1LL << (log_multiples + 1)), "Upper bound exceeds moduli table; increase LOG_MULTIPLES");
+        static_assert(
+            (upper_bound - stop) < (1LL << log_multiples),
+            "min_sub_reduce gap exceeds 2^log_multiples-1; increase LOG_MULTIPLES or use mask_reduce/recursive reduce_auto");
         auto data = a.data;
-        if constexpr ((upper_bound > 8) && (stop < 16)) {
-            data = data.min(data.sub(moduli_multiples[3])); // -= 8p
-        }
-        if constexpr ((upper_bound > 4) && (stop < 8)) {
-            data = data.min(data.sub(moduli_multiples[2])); // -= 4p
-        }
-        if constexpr ((upper_bound > 2) && (stop < 4)) {
-            data = data.min(data.sub(moduli_multiples[1])); // -= 2p
-        }
-        if constexpr ((upper_bound > 1) && (stop < 2)) {
-            data = data.min(data.sub(moduli_multiples[0])); // -= p
+        if constexpr (log_multiples > 0) {
+            min_sub_peel<upper_bound, stop, log_multiples - 1>(data);
         }
         return BoundedElement<Bounds<0, stop>, limbs, element_bits>(data);
     }

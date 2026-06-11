@@ -124,6 +124,22 @@ class BoundedElement {
         return (*this * std::integral_constant<int, 3>()) * std::integral_constant<int, 2>();
     }
 
+    template<uint64_t scalar, class MultBoundsType>
+    INLINE auto madd_scalar(const BoundedElement<MultBoundsType, limbs, element_bits> &mult) const {
+        static_assert(bounds.lower >= 0, "Accumulator lower bound must be non-negative");
+        static_assert(MultBoundsType::lower >= 0, "Multiplicand lower bound must be non-negative");
+        static_assert(MultBoundsType::upper * scalar <= (1ull << (52 - element_bits)),
+            "Upper bound must be <= 2^(52 - element_bits) for 52-bit multiplication");
+        auto result_data = data.mullo_scalar(mult.data, Scalar(scalar));
+        using result_bounds = decltype(bounds + (mult.bounds * Bounds<static_cast<int64_t>(scalar), static_cast<int64_t>(scalar)>{}));
+        return BoundedElement<result_bounds, limbs, element_bits>(result_data);
+    }
+
+    template<uint64_t scalar>
+    INLINE auto mul_scalar() const {
+        return zero().template madd_scalar<scalar>(*this);
+    }
+
     INLINE auto ctime_select(bool selection, const BoundedElement &other) const {
         return BoundedElement(data.ctime_select(selection, other.data));
     }
@@ -168,15 +184,15 @@ class WideElement {
     INLINE explicit WideElement(const ElementType &high, const ElementType &low) : high(high), low(low) {}
     INLINE explicit WideElement(const AVXVector<limbs> &high_data, const AVXVector<limbs> &low_data) : high(high_data), low(low_data) {}
     
-    template<class OtherElementType>
-    INLINE auto operator+(const WideElement<OtherElementType, limbs, element_bits> &other) const {
+    template<class OtherBoundsType>
+    INLINE auto operator+(const WideElement<OtherBoundsType, limbs, element_bits> &other) const {
         auto result_low = low + other.low;
         auto result_high = high + other.high;
         return WideElement<decltype(bounds + other.bounds), limbs, element_bits>(result_high, result_low);
     }
 
-    template<class OtherElementType>
-    INLINE auto operator-(const WideElement<OtherElementType, limbs, element_bits> &other) const {
+    template<class OtherBoundsType>
+    INLINE auto operator-(const WideElement<OtherBoundsType, limbs, element_bits> &other) const {
         auto result_low = low - other.low;
         auto result_high = high - other.high;
         return WideElement<decltype(bounds - other.bounds), limbs, element_bits>(result_high, result_low);

@@ -45,6 +45,14 @@ class FP2 {
         return FP2<decltype(x_resolved), decltype(y_resolved)>(x_resolved, y_resolved);
     }
 
+
+    template<class Ring>
+    INLINE auto prep_expand(const Ring &ring) const {
+        auto x_resolved = ring.prep_expand(x_);
+        auto y_resolved = ring.prep_expand(y_);
+        return FP2<decltype(x_resolved), decltype(y_resolved)>(x_resolved, y_resolved);
+    }
+
     // And only the negated prepared ones can do products?
     // Basically we can reuse the negation result a lot.
     template<class Ring>
@@ -322,6 +330,18 @@ class FP2Ring {
     INLINE auto prep(const FP2<X, Y> &fp2) const {
         return fp2.prep(ring);
     }
+
+    template<class X, class Y>
+    INLINE auto prep_standard(const FP2<X, Y> &fp2) const {
+        return FP2<decltype(ring.prep_standard(fp2.x())), decltype(ring.prep_standard(fp2.y()))>(
+            ring.prep_standard(fp2.x()), ring.prep_standard(fp2.y()));
+    }
+
+    template<class X, class Y>
+    INLINE auto prep_expand(const FP2<X, Y> &fp2) const {
+        return fp2.prep_expand(ring);
+    }
+
 
     template<class X, class Y>
     INLINE auto prep_left(const FP2<X, Y> &fp2) const {

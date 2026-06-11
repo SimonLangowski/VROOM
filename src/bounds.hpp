@@ -83,3 +83,20 @@ class Bounds {
         return Bounds<new_lower, new_upper>{};
     }
 };
+
+// batch_expand / batch_reduce entry: RNS metadata must be non-negative (add k×3p in value first).
+template<class RNSBounds>
+constexpr void require_non_negative_rns() {
+    static_assert(
+        RNSBounds::lower 
+        >= 0,
+        "RNS lower bound must be non-negative at batch_expand/batch_reduce entry");
+}
+
+// Elementwise (limb) bounds must stay non-negative for mul_3b / unsigned mulacc.
+template<class ElementBounds>
+constexpr void require_non_negative_element() {
+    static_assert(
+        ElementBounds::lower >= 0,
+        "Element lower bound must be non-negative before mul_3b or wide mulacc");
+}

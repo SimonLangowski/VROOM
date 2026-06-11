@@ -47,6 +47,30 @@ class SmallElement {
         return (*this * std::integral_constant<int, 3>()).template shift_left<2>();
     }
 
+    INLINE auto operator*(std::integral_constant<int, 21>) const {
+        return this->template shift_left<2>() + this->template shift_left<4>() + *this;
+    }
+
+    INLINE auto operator*(std::integral_constant<int, 9>) const {
+        return this->template shift_left<3>() + *this;
+    }
+
+    template<uint64_t scalar, class MultElement, class MultRNS>
+    INLINE auto madd_scalar(const SmallElement<MultElement, MultRNS> &mult) const {
+        static_assert(scalar <= static_cast<uint64_t>(INT64_MAX), "scalar must fit in int64 for bounds");
+        auto result_element = element.template madd_scalar<scalar>(mult.element);
+        using result_rns = decltype(rns_bounds + (mult.rns_bounds * Bounds<static_cast<int64_t>(scalar), static_cast<int64_t>(scalar)>{}));
+        return SmallElement<decltype(result_element), result_rns>(result_element);
+    }
+
+    template<uint64_t scalar>
+    INLINE auto mul_scalar() const {
+        static_assert(scalar <= static_cast<uint64_t>(INT64_MAX), "scalar must fit in int64 for bounds");
+        auto result_element = element.template mul_scalar<scalar>();
+        using scaled_rns = decltype(rns_bounds * Bounds<static_cast<int64_t>(scalar), static_cast<int64_t>(scalar)>{});
+        return SmallElement<decltype(result_element), scaled_rns>(result_element);
+    }
+
     template<int new_lower, int new_upper>
     INLINE auto recast_rns_bounds() const {
         // Fails to compile if new bounds are invalid.
@@ -139,6 +163,35 @@ class ExpandedElement {
 
     INLINE auto operator*(std::integral_constant<int, 12>) const {
         return (*this * std::integral_constant<int, 3>()).template shift_left<2>();
+    }
+    
+    INLINE auto operator*(std::integral_constant<int, 21>) const {
+        auto x = complete();
+        return x.template shift_left<2>() + x.template shift_left<4>() + x;
+    }
+
+    INLINE auto operator*(std::integral_constant<int, 9>) const {
+        auto x = complete();
+        return x.template shift_left<3>() + x;
+    }
+
+    template<uint64_t scalar, class MultElement, class MultRNS>
+    INLINE auto madd_scalar(const ExpandedElement<MultElement, MultRNS> &mult) const {
+        auto ac = complete();
+        auto mc = mult.complete();
+        auto result_m1 = ac.m1.template madd_scalar<scalar>(mc.m1);
+        auto result_m2 = ac.m2.template madd_scalar<scalar>(mc.m2);
+        using result_rns = decltype(ac.rns_bounds + (mc.rns_bounds * Bounds<static_cast<int64_t>(scalar), static_cast<int64_t>(scalar)>{}));
+        return ExpandedElement<decltype(result_m1), result_rns>(result_m1, result_m2);
+    }
+
+    template<uint64_t scalar>
+    INLINE auto mul_scalar() const {
+        auto x = complete();
+        auto result_m1 = x.m1.template mul_scalar<scalar>();
+        auto result_m2 = x.m2.template mul_scalar<scalar>();
+        using scaled_rns = decltype(rns_bounds * Bounds<static_cast<int64_t>(scalar), static_cast<int64_t>(scalar)>{});
+        return ExpandedElement<decltype(result_m1), scaled_rns>(result_m1, result_m2);
     }
 
     template<int64_t new_lower, int64_t new_upper>

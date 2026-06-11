@@ -4,6 +4,7 @@
 #include <type_traits>
 #include <iostream>
 #include "../cpu/precompute/gmp_wrapper.hpp"
+#include "../cpu/vector/multiplication.hpp"
 #include "fp2.hpp"
 
 /*
