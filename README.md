@@ -10,11 +10,25 @@ make
 cd ../src
 make
 ```
-Note that making the fallback version takes a while. The AVX version is much faster to compile.
 
-- **`make bench_pairing_50bit`** — pairing benchmark with 50-bit parameters (BLS12-381, AVX512 IFMA).
-- **`make test_pairing_avx`** — pairing test (AVX512 IFMA).
-- **`make test_pairing`** — pairing test (integer fallback, for machines without AVX512 IFMA, testing correctness only).
+Requires **AVX-512 IFMA** (`-mavx512ifma`). For integer-simulated vector ops (debugging / machines without IFMA), use `make -f Makefile.fallback` in `src/` — compiles slowly and is not used for performance work.
+
+### Minimal working examples
+
+```bash
+make -C examples
+./examples/01_parameter_setup
+./examples/02_singular_modmul
+./examples/03_sum_of_products
+```
+
+See `examples/README.md` for details. Use `make -C examples FALLBACK=1` without IFMA.
+
+### Tests & benchmarks
+
+- **`make bench-pairing-50bit`** — pairing benchmark with 50-bit parameters (BLS12-381, AVX512 IFMA).
+- **`make test-pairing`** — pairing test (AVX512 IFMA).
+- **`make -f Makefile.fallback test-pairing`** — pairing test with integer fallback (correctness only).
 
 ## Running
 

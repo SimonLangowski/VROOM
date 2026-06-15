@@ -1,17 +1,22 @@
-# Compiler selection: use CXX=g++ or CXX=clang++ (default: g++)
-# Production build: AVX-512 IFMA. For integer fallback (debugging), use Makefile.fallback.
+# Fallback (integer-simulated AVX) builds — debugging / correctness only, not performance.
+# Requires no AVX-512 IFMA. Compiles slowly.
+#
+# Usage:
+#   make -f Makefile.fallback
+#   make -f Makefile.fallback test-pairing
+#   make -f Makefile.fallback bench-pairing-fallback
+
 CXX ?= g++
 INCLUDES = -I..
 
-# Suppress warnings from BLST/vector code: static decls without defs, ignored attributes on __m512i, unknown pragmas (clang-only)
 CXXFLAGS_WARN_SUPPRESS = -Wno-unused-function -Wno-ignored-attributes -Wno-unknown-pragmas
-# Compiler-specific flags
+
 ifneq ($(findstring clang++,$(CXX)),)
-    CXXFLAGS = -std=c++20 -Wall -Wextra -Wno-sign-conversion $(CXXFLAGS_WARN_SUPPRESS) -mavx512ifma
-    CXXFLAGS_BENCH = -std=c++20 -O3 -march=native -Wall -Wextra -Wno-sign-conversion $(CXXFLAGS_WARN_SUPPRESS) -mavx512ifma
+    CXXFLAGS = -std=c++20 -Wall -Wextra -Wno-sign-conversion $(CXXFLAGS_WARN_SUPPRESS) -DUSE_AVX512_FALLBACK
+    CXXFLAGS_BENCH = -std=c++20 -O3 -march=native -Wall -Wextra -Wno-sign-conversion $(CXXFLAGS_WARN_SUPPRESS) -DUSE_AVX512_FALLBACK
 else
-    CXXFLAGS = -std=c++2a -Wall -Wextra -Wno-sign-conversion $(CXXFLAGS_WARN_SUPPRESS) -mavx512ifma
-    CXXFLAGS_BENCH = -std=c++2a -O3 -march=native -Wall -Wextra -Wno-sign-conversion $(CXXFLAGS_WARN_SUPPRESS) -mavx512ifma
+    CXXFLAGS = -std=c++2a -Wall -Wextra -Wno-sign-conversion $(CXXFLAGS_WARN_SUPPRESS) -DUSE_AVX512_FALLBACK
+    CXXFLAGS_BENCH = -std=c++2a -O3 -march=native -Wall -Wextra -Wno-sign-conversion $(CXXFLAGS_WARN_SUPPRESS) -DUSE_AVX512_FALLBACK
 endif
 
 BLST_LIBS = -lgmp -lgmpxx ../blst/libblst_small.a
@@ -33,13 +38,13 @@ TARGET_TEST_EC_BN254 = test_ec_bn254
 SOURCE_TEST_EC_BN254 = test_ec_bn254.cpp
 TARGET_TEST_SCALAR_MULT = test_scalar_mult
 SOURCE_TEST_SCALAR_MULT = test_scalar_mult.cpp
-TARGET_BENCH_EC_BN254 = bench_ec_bn254
+TARGET_BENCH_EC_BN254 = bench_ec_bn254_fallback
 SOURCE_BENCH_EC_BN254 = bench_ec_bn254.cpp
-TARGET_BENCH_BLS12_381 = bench_bls12_381
+TARGET_BENCH_BLS12_381 = bench_bls12_381_fallback
 SOURCE_BENCH_BLS12_381 = bench_bls12_381.cpp
-TARGET_BENCH_PAIRING = bench_pairing
+TARGET_BENCH_PAIRING = bench_pairing_fallback
 SOURCE_BENCH_PAIRING = bench_pairing.cpp
-TARGET_BENCH_PAIRING_50BIT = bench_pairing_50bit
+TARGET_BENCH_PAIRING_50BIT = bench_pairing_50bit_fallback
 SOURCE_BENCH_PAIRING_50BIT = bench_pairing_50bit.cpp
 
 HEADERS = bounds.hpp constexpr_utils.hpp bounded_element.hpp ring_element.hpp \
@@ -49,7 +54,8 @@ HEADERS = bounds.hpp constexpr_utils.hpp bounded_element.hpp ring_element.hpp \
 
 .PHONY: all clean test test-reduce test-inversion test-pairing test-ec \
         test-bls12-381-field-mul test-bls12-381-pairing test-ec-bn254 test-scalar-mult \
-        bench-pairing bench-pairing-50bit bench-ec-bn254 bench-bls12-381 run
+        bench-pairing-fallback bench-pairing-50bit-fallback \
+        bench-ec-bn254-fallback bench-bls12-381-fallback run
 
 all: $(TARGET_REDUCE) $(TARGET_INVERSION) $(TARGET_TEST_EC) $(TARGET_TEST_SCALAR_MULT)
 
@@ -117,16 +123,16 @@ test-ec-bn254: $(TARGET_TEST_EC_BN254)
 test-scalar-mult: $(TARGET_TEST_SCALAR_MULT)
 	./$(TARGET_TEST_SCALAR_MULT)
 
-bench-pairing: $(TARGET_BENCH_PAIRING)
+bench-pairing-fallback: $(TARGET_BENCH_PAIRING)
 	./$(TARGET_BENCH_PAIRING)
 
-bench-pairing-50bit: $(TARGET_BENCH_PAIRING_50BIT)
+bench-pairing-50bit-fallback: $(TARGET_BENCH_PAIRING_50BIT)
 	./$(TARGET_BENCH_PAIRING_50BIT)
 
-bench-ec-bn254: $(TARGET_BENCH_EC_BN254)
+bench-ec-bn254-fallback: $(TARGET_BENCH_EC_BN254)
 	./$(TARGET_BENCH_EC_BN254)
 
-bench-bls12-381: $(TARGET_BENCH_BLS12_381)
+bench-bls12-381-fallback: $(TARGET_BENCH_BLS12_381)
 	./$(TARGET_BENCH_BLS12_381)
 
 run: test
