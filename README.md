@@ -2,7 +2,40 @@
 
 Standalone C++ template/header code. Benchmarks use Google Benchmark. Inversion with BLST requires BLST with extern "C" modification.
 
+**Artifact reviewers:** start with **[ARTIFACT.md](ARTIFACT.md)** (environment, smoke test, parameter generation).
+
+## Repository layout
+
+| Path | Role |
+|------|------|
+| [`src/`](src/) | RNS rings, pairing/EC code, tests, benchmarks |
+| [`cpu/`](cpu/) | AVX vector CRNS, Montgomery reduction, precompute |
+| [`examples/`](examples/) | Minimal working examples |
+| [`scripts/`](scripts/) | Parameter generation (`rns_secp256k1.py`), optional GPU benchmarks |
+| [`test_data/`](test_data/) | Reference test vectors |
+| [`blst/`](blst/) | BLST fork for baselines |
+| [`gpu/`](gpu/) | CUDA kernels (**optional**, not required for CPU artifact) |
+
+## Supported environment
+
+| | |
+|--|--|
+| OS | Linux x86_64 |
+| CPU | AVX-512 **IFMA** for production build (`grep avx512ifma /proc/cpuinfo`) |
+| Compiler | **clang-21** recommended (paper numbers); GCC supported but slower |
+| Packages | `build-essential`, `libgmp-dev`, `libbenchmark-dev`, C++ GMP bindings (`libgmpxx4ldbl` on Ubuntu) |
+
+GPU benchmarks are optional; see [`scripts/README.md`](scripts/README.md).
+
 ## Building & testing
+
+Install dependencies (Ubuntu example):
+
+```bash
+sudo apt install build-essential libgmp-dev libbenchmark-dev
+```
+
+Build:
 
 ```bash
 cd blst
@@ -12,6 +45,15 @@ make
 ```
 
 Requires **AVX-512 IFMA** (`-mavx512ifma`). For integer-simulated vector ops (debugging / machines without IFMA), use `make -f Makefile.fallback` in `src/` — compiles slowly and is not used for performance work.
+
+Quick verification:
+
+```bash
+chmod +x scripts/smoke_test.sh
+./scripts/smoke_test.sh
+```
+
+Use `FALLBACK=1 ./scripts/smoke_test.sh` without IFMA.
 
 ### Minimal working examples
 
@@ -26,9 +68,22 @@ See `examples/README.md` for details. Use `make -C examples FALLBACK=1` without 
 
 ### Tests & benchmarks
 
-- **`make bench-pairing-50bit`** — pairing benchmark with 50-bit parameters (BLS12-381, AVX512 IFMA).
-- **`make test-pairing`** — pairing test (AVX512 IFMA).
-- **`make -f Makefile.fallback test-pairing`** — pairing test with integer fallback (correctness only).
+| Target | Purpose |
+|--------|---------|
+| `make test` | Elementwise reduce + inversion |
+| `make test-bls12-381-field-mul` | BLS12-381 field multiply |
+| `make test-bls12-381-pairing` | BLS12-381 pairing |
+| `make test-pairing` | Pairing (AVX512 IFMA) |
+| `make test-ec` | EC point arithmetic |
+| `make test-ec-bn254` | BN254 EC |
+| `make test-scalar-mult` | Scalar multiplication |
+| `make bench-pairing-50bit` | Paper CPU benchmarks (BLS12-381, 50-bit) |
+| `make bench-pairing` | Pairing microbenchmarks |
+| `make bench-bls12-381` | BLS12-381 component benchmarks |
+| `make bench-ec-bn254` | BN254 EC benchmarks |
+| `make -f Makefile.fallback test-pairing` | Pairing test with integer fallback (correctness only) |
+
+Module map and parameter files: [`src/README.md`](src/README.md). Parameter regeneration: [`ARTIFACT.md`](ARTIFACT.md) § Parameter generation.
 
 ## Running
 
@@ -105,8 +160,9 @@ BM_Pairing_RNS_BLST_Inverter           151537 ns       151534 ns         4620 Pa
 - **RNS_BLST_Inverter** — uses RNS for FP12 inversion and BLST for FP inversion.
 - **BM_Inverse** — uses an addition chain of length 425 to invert in RNS without BLST dependency (compare to **BM_FP12_Inverse_BLST** and  **BM_FP12_Inverse_RNS_BLST**)
 
-## GPU
-See README in scripts.
+## GPU (optional)
+
+CPU artifact evaluation does **not** require GPU setup. For paper GPU figures, see [`scripts/README.md`](scripts/README.md) (CUDA toolkit, CGBN, `latency.py`, `gpugraph.py`).
 
 ## License
 

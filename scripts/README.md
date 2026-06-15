@@ -1,31 +1,83 @@
-## GPU
+# scripts
 
-## Installation requirements
+Python tooling for **RNS parameter generation** and optional **GPU benchmarks**. The CPU artifact does not require Python unless you regenerate parameters or run GPU experiments.
 
-Python dependencies: nvidia-cuda-toolkit
-E.g using conda
-`conda install -c conda-forge cuda-python`
-`conda install -c "nvidia/label/cuda-12.2.1" cuda-toolkit`
+## Parameter generation (CPU artifact)
 
-Ensure CGBN is downloaded:
-`git submodule update --init --recursive`
+| Script | Role |
+|--------|------|
+| **`rns_secp256k1.py`** | Main pipeline: IntRNS2/IntRNS4 matrices, Montgomery factors, convert_to/from. **Prints C++ header files** (e.g. `bls12_381_intrns4_params.hpp`, `bn254_intrns4_params.hpp`) and can refresh `test_data/test_values_*.hpp`. |
+| **`gen_qr.py`** | Helper for **advanced parameter generation**: parallel brute-force search for quadratic-residue (“QR no k”) decomposition used by the MatrixNoK change-base path. |
+| `rns_helpers.py`, `precompute_matrix.py`, `precompute_montgomery.py` | Shared linear-algebra and Montgomery precompute routines. |
 
-Ensure you have GPU drivers, nvcc installed
-`nvidia-smi`
-`nvcc --verison`
+### Precomputed parameters (default)
 
-## Benchmarking
+You do **not** need to run Python to build the shipped artifact. Precomputed IntRNS4 exports for **BLS12-381** and **BN254** are already in `src/`:
 
-To run latency foccussed GPU benchmarks:
-`python latency.py`
+- `bls12_381_ring_params.hpp`, `bls12_381_intrns4_system.hpp`, `bls12_381_perm*.hpp`
+- `bn254_ring_params.hpp`, `bn254_intrns4_system.hpp`, `bn254_perm*.hpp`
 
-The python script performs the following tasks
-1. Calculate various GPU configurations and their required parameters for CGBN and RNS Montgomery multiplication
-2. The file `bench_cgbn.py` contains CGBN specific functions and `gpu.py` contains RNS Montgomery specific functions.  Each is devided into a `gen` func that creates data following the specific parameters, a `result` func that allocates data for results, and a `correct` func that checks the results.
-3. The file `basic_benchmarker.py` calls the `gen` and `result` functions, and moves the corresponding data to the GPU.  It then runs the kernel and retrieves the results.  The results are passed to the `correct` function and data about performance is returned.
+Raw generated constants: `scripts/bls12_381_intrns4_params.hpp`, `scripts/bn254_intrns4_params.hpp`.
+
+### Regenerating headers
+
+```bash
+cd scripts
+python rns_secp256k1.py
+cd ../src && make
+```
+
+### Advanced parameter generation (QR “no k” / MatrixNoK)
+
+The QR **“no k”** method (`ChangeBaseVariation::MatrixNoK`) is labeled **advanced parameter generation** in this artifact:
+
+- Search cost is **exponential in the number of radix words** — feasible only for **small moduli** (the included BLS12-381 and BN254 configs).
+- Higher redundance requires different tuning; MatrixNoK uses **50-bit** (not 52-bit) radix words for the integer↔RNS conversion path.
+
+Workflow: run `gen_qr.py` (parallel brute force) to find QR candidates, then `rns_secp256k1.py` to emit `.hpp` files and wire them through `src/*_intrns4_system.hpp`.
+
+See **ARTIFACT.md** § Parameter generation for the full reviewer workflow.
+
+---
+
+## GPU benchmarks (optional)
+
+GPU code is **not required** for the functional CPU artifact. To reproduce GPU figures from the paper:
+
+### Installation requirements
+
+- **Python:** use a CUDA-capable environment.
+- **CUDA toolkit**, e.g. with conda:
+  ```bash
+  conda install -c conda-forge cuda-python
+  conda install -c "nvidia/label/cuda-12.2.1" cuda-toolkit
+  ```
+- **CGBN:** clone/submodule the CGBN dependency (see your local CGBN install instructions).
+- **Drivers / nvcc:**
+  ```bash
+  nvidia-smi
+  nvcc --version
+  ```
+
+### Benchmarking
+
+Latency-focused GPU benchmarks:
+
+```bash
+python latency.py
+```
+
+Pipeline overview:
+
+1. `latency.py` — sweeps GPU configurations and parameters for CGBN vs RNS Montgomery.
+2. `bench_cgbn.py` — CGBN baseline (`gen`, `result`, `correct` hooks).
+3. `gpu.py` — RNS Montgomery GPU path (same hook pattern).
+4. `basic_benchmarker.py` — runs kernels, checks correctness, records timing.
 
 ### Graph generation
 
-Data can be found in the scripts/data/ folder
+Sample CSVs: `scripts/data/`. Regenerate plots:
 
-`python gpugraph.py` to generate graphs for the paper.
+```bash
+python gpugraph.py
+```

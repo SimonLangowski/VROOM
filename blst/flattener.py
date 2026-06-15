@@ -331,8 +331,10 @@ def print_function(name,poly_str):
         c = f"\tauto two_thirds = ring.wrap(ring.template from_hex(\"{hex(two_thirds)}\"));\n"
         c += f"\tauto neg_two_thirds = ring.wrap(ring.template from_hex(\"{hex(neg_two_thirds)}\"));\n"
         if "0.33" in string:
-            c += f"\tauto one_third = ring.wrap(ring.template from_hex(\"0x0\")); // TODO: fill in value\n"
-            c += f"\tauto neg_one_third = ring.wrap(ring.template from_hex(\"0x0\")); // TODO: fill in value\n"
+            one_third = pow(3, -1, q) % q
+            neg_one_third = (q - one_third) % q
+            c += f"\tauto one_third = ring.wrap(ring.template from_hex(\"{hex(one_third)}\"));\n"
+            c += f"\tauto neg_one_third = ring.wrap(ring.template from_hex(\"{hex(neg_one_third)}\"));\n"
         string = c + string
         string = string
     string = print_negatives(string, 12)
