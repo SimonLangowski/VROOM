@@ -1,0 +1,25 @@
+CPU benchmark reproduction
+date: 2026-06-17T18:31:57+00:00
+host: ip-172-31-24-233.us-east-2.compute.internal
+fallback: 0
+rns_bench: bench_bls12_381
+blst_bench: bench_blst_complete
+
+build_blst_elapsed_s=1.94
+build_blst_max_rss_kb=123520
+build_bench_elapsed_s=15.17
+build_bench_max_rss_kb=663668
+rns_bench_elapsed_s=86.09
+rns_bench_max_rss_kb=6780
+rns_json=/home/ec2-user/VROOM-test/results/bench_bls12_381.json
+blst_bench_elapsed_s=22.37
+blst_bench_max_rss_kb=4484
+blst_json=/home/ec2-user/VROOM-test/results/bench_blst_complete.json
+parse_elapsed_s=0.04
+table_out=/home/ec2-user/VROOM-test/results/bench_bls12_381_table.txt
+compare_out=/home/ec2-user/VROOM-test/results/bench_bls12_381_vs_blst.txt
+
+# Totals (for ARTIFACT.md — one row per paper claim)
+total_elapsed_s=125.7
+peak_rss_kb=663668
+artifact_disk_kb=2968
