@@ -63,6 +63,8 @@ if [[ -n "${BENCHMARK_INC:-}" ]]; then
   MAKE_BENCH_EXTRA+=(BENCHMARK_INC="$BENCHMARK_INC")
 fi
 
+mkdir -p "$RESULTS_DIR"
+
 run_timed() {
   local label="$1"
   shift
