@@ -39,7 +39,8 @@ run_timed() {
   local exit_code=${PIPESTATUS[0]}
   set -e
   t1=$(date +%s.%N)
-  PHASE_RSS_KB=$(cat "$tf")
+  PHASE_RSS_KB=$(grep -E '^[0-9]+$' "$tf" | tail -1)
+  PHASE_RSS_KB=${PHASE_RSS_KB:-0}
   rm -f "$tf"
   PHASE_ELAPSED=$(python3 -c "print(round($t1 - $t0, 2))")
   echo "  [$label] elapsed=${PHASE_ELAPSED}s  max_rss=${PHASE_RSS_KB}KB" | tee -a "$RESOURCES_OUT"

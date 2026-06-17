@@ -12,7 +12,7 @@ Vendored copies live under this directory so reviewers do not need network acces
 | `bls12_381/` | [zkcrypto/bls12_381](https://github.com/zkcrypto/bls12_381) | BLS12-381 pairing |
 | `zksync-crypto/` | [matter-labs/zksync-crypto](https://github.com/matter-labs/zksync-crypto) | BLS12-381 / BN256 pairing + BN256 G1 EC |
 | `gnark-crypto/` | [Consensys/gnark-crypto](https://github.com/Consensys/gnark-crypto) | BLS12-381 / BN254 pairing + G1 EC (Go) |
-| `overlays/` | — | Patched bench files applied by `clone.sh` (BN254 arkworks + zksync G1 benches) |
+| `overlays/` | — | Patched bench files applied by `clone.sh` (BLS12-381 / BN254 pairing-only benches, zksync G1) |
 
 ## Dependencies
 

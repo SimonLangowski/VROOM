@@ -17,5 +17,10 @@ cp overlays/algebra/curves/bn254/benches/bn254_pairing_only.rs \
 cp overlays/algebra/curves/bn254/benches/bn254_g1_ec_only.rs \
    algebra/curves/bn254/benches/bn254_g1_ec_only.rs
 
+cp overlays/algebra/curves/bls12_381/Cargo.toml \
+   algebra/curves/bls12_381/Cargo.toml
+cp overlays/algebra/curves/bls12_381/benches/bls12_381_pairing_only.rs \
+   algebra/curves/bls12_381/benches/bls12_381_pairing_only.rs
+
 cp overlays/zksync-crypto/crates/pairing/benches/bn256/ec.rs \
    zksync-crypto/crates/pairing/benches/bn256/ec.rs
