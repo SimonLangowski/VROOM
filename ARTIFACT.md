@@ -1,0 +1,180 @@
+# Artifact guide
+
+Step-by-step instructions for reviewers reproducing this artifact. The CPU path is the primary deliverable; GPU benchmarks are optional (see `scripts/README.md`).
+
+## 1. Supported environment
+
+| Requirement | Details |
+|-------------|---------|
+| OS | Linux x86_64 (tested on Ubuntu) |
+| CPU | **AVX-512 IFMA** for production build (`grep avx512ifma /proc/cpuinfo`) |
+| Compiler | **clang-21** recommended; GCC works but is slower |
+| RAM | ≥ 8 GiB |
+| Packages | `build-essential`, `libgmp-dev`, `libgmpxx4ldbl`, `libbenchmark-dev` |
+
+Optional (GPU, not required for functional CPU artifact):
+
+- NVIDIA GPU, CUDA toolkit, CGBN — see `scripts/README.md`
+
+## 2. Install dependencies
+
+```bash
+sudo apt install build-essential libgmp-dev libbenchmark-dev
+# C++ GMP bindings (package name varies; on Ubuntu):
+sudo apt install libgmpxx4ldbl 2>/dev/null || true
+```
+
+Check IFMA support:
+
+```bash
+grep -q avx512ifma /proc/cpuinfo && echo "IFMA ok" || echo "Use fallback build (see below)"
+```
+
+## 3. Build
+
+```bash
+cd blst && make && cd ..
+cd src && make
+```
+
+Without AVX-512 IFMA (correctness only, slow compile):
+
+```bash
+cd src && make -f Makefile.fallback
+```
+
+## 4. Minimal working examples
+
+```bash
+make -C examples
+./examples/01_parameter_setup
+./examples/02_singular_modmul
+./examples/03_sum_of_products
+```
+
+Use `make -C examples FALLBACK=1` on machines without IFMA.
+
+## 5. Smoke test (recommended verification)
+
+From the repo root:
+
+```bash
+./scripts/smoke_test.sh
+```
+
+Runs BLST build, core unit tests, examples, and one field-multiply regression.
+
+## 6. Full test and benchmark matrix
+
+From `src/` (AVX-512 IFMA unless using `Makefile.fallback`):
+
+| Command | Purpose |
+|---------|---------|
+| `make test` | Elementwise reduce + inversion |
+| `make test-bls12-381-field-mul` | BLS12-381 `a*b mod p` |
+| `make test-bls12-381-pairing` | BLS12-381 pairing |
+| `make test-pairing` | Pairing (BLST baseline + RNS path) |
+| `make test-ec` | EC point arithmetic |
+| `make test-ec-bn254` | BN254 EC |
+| `make test-scalar-mult` | Scalar multiplication |
+| `make bench-pairing-50bit` | Paper CPU benchmarks (BLS12-381, 50-bit) |
+| `make bench-pairing` | Pairing microbenchmarks |
+| `make bench-bls12-381` | BLS12-381 component benchmarks |
+| `make bench-ec-bn254` | BN254 EC benchmarks |
+
+## 7. Reproduce paper CPU numbers
+
+Machine used for reported numbers: AWS **c7i.metal-24xl**, **clang-21**.
+
+**One command** (build, benchmark JSON, parsed table, resource log):
+
+```bash
+chmod +x scripts/reproduce_cpu_bench.sh
+CXX=clang++ ./scripts/reproduce_cpu_bench.sh
+```
+
+Outputs under `results/`:
+
+| File | Contents |
+|------|----------|
+| `bench_pairing_50bit.json` | Raw Google Benchmark JSON (RNS) |
+| `bench_blst_complete.json` | Raw Google Benchmark JSON (BLST baseline) |
+| `bench_pairing_50bit_table.txt` | Parsed RNS ns; amortized ns/mul for batches |
+| `bench_pairing_50bit_vs_blst.txt` | Aligned pairs + speedup ratio (`blst_ns / rns_ns`; >1 means RNS is faster) |
+| `bench_pairing_50bit_resources.txt` | Wall time and peak RSS per phase + totals |
+
+RNS↔BLST name mapping lives in `scripts/parse_bench_json.py` (`RNS_BLST_MAP`). Unmapped entries are listed at the bottom of the comparison file for manual pairing.
+
+**Resource measurement:** the badge asks for approximate cost **per paper claim** (e.g. “CPU benchmark table: ~3 min, ~200 MB”), not every sub-command. The script records time/RSS for each major phase (build blst, build bench, benchmark run, parse) and prints a **total** line suitable for ARTIFACT.md. Reviewers who already built can run only the benchmark + parse phases manually.
+
+Without IFMA: `FALLBACK=1 ./scripts/reproduce_cpu_bench.sh` (correctness only, not paper timings).
+
+MatrixNoK comparison rows (`bench_bls12_381`) are excluded by default; use `--include-nok` or parse manually:
+
+```bash
+./scripts/reproduce_cpu_bench.sh --bench bench_bls12_381 --include-nok
+```
+
+Manual equivalent:
+
+```bash
+cd src
+CXX=clang++ make bench-pairing-50bit
+./bench_pairing_50bit --benchmark_out=../results/bench_pairing_50bit.json --benchmark_out_format=json
+python3 scripts/parse_bench_json.py results/bench_pairing_50bit.json
+```
+
+Compare table to the sample in the root `README.md` (§ Running). `BM_BatchModMul_N` amortized time = reported cpu_ns ÷ N.
+
+## 8. Parameter generation
+
+### Precomputed (default)
+
+Ready-to-use IntRNS4 exports for the paper curves are already wired in `src/`:
+
+- **BLS12-381:** `bls12_381_ring_params.hpp`, `bls12_381_intrns4_system.hpp`, `bls12_381_perm*.hpp`
+- **BN254:** `bn254_ring_params.hpp`, `bn254_intrns4_system.hpp`, `bn254_perm*.hpp`
+
+Generated constants also live in `scripts/bls12_381_intrns4_params.hpp` and `scripts/bn254_intrns4_params.hpp`.
+
+### Regenerating from Python
+
+`scripts/rns_secp256k1.py` computes RNS/CRNS matrices and **writes C++ header files** (`print_intrns4_params`, `print_bls12_381_intrns4_params`, `print_bn254_intrns4_exports`). Run from `scripts/`:
+
+```bash
+python rns_secp256k1.py
+```
+
+### Advanced parameter generation (QR “no k” / MatrixNoK)
+
+The quadratic-residue **“no k”** branch (`ChangeBaseVariation::MatrixNoK`, r1 cyclic permutation without k-correction) is **advanced parameter generation**:
+
+- Runtime is **exponential in the number of radix words** — practical only for **small moduli** (the shipped BLS12-381 and BN254 configs).
+- Higher redundance requires retuning: the MatrixNoK path uses **50-bit** (not 52-bit) words for the radix part of integer↔RNS conversion (`CONVERT_TO_WORD_BITS` in `bounded_ring.hpp`).
+
+Helper scripts:
+
+- **`scripts/gen_qr.py`** — parallel brute-force search for QR decomposition parameters.
+- **`scripts/rns_secp256k1.py`** — full pipeline; emits `.hpp` parameter files consumed by `src/*_intrns4_system.hpp`.
+
+After regenerating headers, rebuild `src/` and re-run `scripts/smoke_test.sh`.
+
+## 9. Repository layout
+
+| Path | Contents |
+|------|----------|
+| `src/` | `BoundedRing`, pairing/EC stack, tests, benchmarks |
+| `cpu/` | AVX vector CRNS, Montgomery reduction, precompute |
+| `examples/` | Minimal working examples |
+| `scripts/` | Parameter generation, optional GPU benchmarks |
+| `test_data/` | Reference test vectors (`test_data/README.md`) |
+| `blst/` | BLST fork (baselines, FP12 reference) |
+| `gpu/` | CUDA kernels (optional) |
+
+Module map and paper terminology: **`src/README.md`**.
+
+## 10. Known limitations
+
+- Research-grade code; not audited for production cryptography.
+- Integer fallback (`Makefile.fallback`) validates correctness only; not for performance measurement.
+- GPU path requires separate CUDA/CGBN setup (`scripts/README.md`).
