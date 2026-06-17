@@ -9,7 +9,7 @@ Step-by-step instructions for reviewers reproducing this artifact. The CPU path 
 | OS | Linux x86_64 (**Amazon Linux 2023** for paper numbers; Ubuntu also works) |
 | Cloud (paper) | AWS **c7i** family — e.g. `c7i.metal-24xl` (benchmarks), `c7i-flex.large` (development) |
 | CPU | Intel **Xeon Platinum 8488C** (Sapphire Rapids) or equivalent with **AVX-512 IFMA** |
-| Compiler | **clang 21.1.0** (LLVM 21 prebuilt); GCC works but is slower |
+| Compiler | **clang 21.1.0** (LLVM 21 prebuilt); GCC / older clang work for correctness but are much slower on IFMA code |
 | RAM | ≥ 8 GiB |
 | Packages | C++ toolchain, GMP, **Google Benchmark built with clang 21** (see §2) |
 
@@ -42,76 +42,79 @@ export PATH="$HOME/LLVM-21.1.0-Linux-X64/bin:$PATH" 2>/dev/null; $CXX --version 
 
 Without `avx512ifma` in CPU flags, use `Makefile.fallback` / `FALLBACK=1` (correctness only, not paper timings).
 
+### Compiler and AVX-512 IFMA performance
+
+The production build uses `-mavx512ifma` throughout the hot path (`cpu/vector/avx512ifma.hpp`, Montgomery reduction, pairing benches). **Newer clang releases generate substantially better code for these intrinsics** than older compilers or GCC on the same hardware. We observed a large gap between distro **GCC** / older **clang** and **clang 21.x** on Sapphire Rapids (8488C): not only absolute speed, but also how consistently the backend schedules `_mm256_madd52lo_epu64` / `_mm256_madd52hi_epu64` and related IFMA sequences.
+
+For **correctness**, any recent C++ compiler with IFMA support is fine. For **performance numbers comparable to the paper**, use **clang 21.1.0** (or newer clang from the LLVM 21+ line) via `scripts/setup_toolchain.sh` — not the Amazon Linux default clang 15 / GCC.
+
 ## 2. Install dependencies
 
-**Amazon Linux 2023** (reference host for paper numbers):
+Do **not** rely on `google-benchmark-devel` with **clang 21** on the reference host — the distro package is often built with a different compiler/ABI. Use the automated toolchain script (pinned versions below) or the manual steps.
+
+### Pinned toolchain (reference host)
+
+| Component | Source | Pin |
+|-----------|--------|-----|
+| **clang / clang++** | [LLVM 21.1.0](https://github.com/llvm/llvm-project/releases/tag/llvmorg-21.1.0) Linux x86_64 prebuilt | llvm-project @ `3623fe661ae35c6c80ac221f14d85be76aa870f1` |
+| **Google Benchmark** | [google/benchmark](https://github.com/google/benchmark) | `04ccbd86038796c319ea19987457e651a24f6b44` (`v1.9.4-89-g04ccbd8`) |
+
+Install paths on the reference host: `~/LLVM-21.1.0-Linux-X64/`, `~/benchmark/build2/`.
+
+### One command (recommended)
 
 ```bash
-sudo dnf install -y gcc gcc-c++ make gmp-devel cmake git
+chmod +x scripts/setup_toolchain.sh
+./scripts/setup_toolchain.sh
+eval "$(./scripts/setup_toolchain.sh --print)"
 ```
 
-Do **not** rely on `google-benchmark-devel` with **clang 21** on the reference host — the distro package is often built with a different compiler/ABI. Build Google Benchmark from source (below).
+The script installs OS packages (`dnf` on Amazon Linux 2023, `apt` on Ubuntu), fetches the LLVM tarball (with sha256 check), clones Google Benchmark at the pinned commit, builds `libbenchmark.a` with `clang++`, and prints `export` lines for your shell.
 
-### Install clang 21.1.0 (paper timings)
+### Session environment
 
-Amazon Linux 2023 does not ship clang-21 in the default repos. On the reference host we use the **LLVM 21.1.0** Linux x86_64 prebuilt tarball:
+After setup, every `make` and `reproduce_cpu_bench.sh` invocation needs:
 
 ```bash
+eval "$(./scripts/setup_toolchain.sh --print)"
+# or add the printed lines to ~/.bashrc
+```
+
+Expected `clang++ --version` on the reference host:
+
+```
+clang version 21.1.0 (https://github.com/llvm/llvm-project 3623fe661ae35c6c80ac221f14d85be76aa870f1)
+Target: x86_64-unknown-linux-gnu
+```
+
+### Manual install (equivalent)
+
+**Amazon Linux 2023:**
+
+```bash
+sudo dnf install -y gcc gcc-c++ make gmp-devel cmake git curl
+
+# LLVM 21.1.0 prebuilt @ 3623fe661ae35c6c80ac221f14d85be76aa870f1
 curl -LO https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.0/LLVM-21.1.0-Linux-X64.tar.xz
 tar xf LLVM-21.1.0-Linux-X64.tar.xz -C "$HOME"
 export PATH="$HOME/LLVM-21.1.0-Linux-X64/bin:$PATH"
-export CXX=clang++
-$CXX --version
-```
+export CC=clang CXX=clang++
 
-Expected on the reference host:
-
-```
-clang version 21.1.0 (https://github.com/llvm/llvm-project ...)
-Target: x86_64-unknown-linux-gnu
-InstalledDir: /home/ec2-user/LLVM-21.1.0-Linux-X64/bin
-```
-
-Add `PATH` / `CXX` to your shell profile if you build often. All `make` and `reproduce_cpu_bench.sh` invocations below assume `CXX=clang++` from this install (or an equivalent clang-21 on `PATH`).
-
-### Build Google Benchmark from source (clang 21)
-
-On the reference host, link against a **clang++-built** `libbenchmark.a`:
-
-```bash
+# google/benchmark @ 04ccbd86038796c319ea19987457e651a24f6b44
 git clone https://github.com/google/benchmark.git "$HOME/benchmark"
-cd "$HOME/benchmark"
-cmake -B build2 -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_CXX_COMPILER=clang++ \
-  -DBENCHMARK_ENABLE_GTEST_TESTS=OFF
-cmake --build build2
+git -C "$HOME/benchmark" checkout 04ccbd86038796c319ea19987457e651a24f6b44
+cmake -B "$HOME/benchmark/build2" -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_CXX_COMPILER=clang++ -DBENCHMARK_ENABLE_GTEST_TESTS=OFF
+cmake --build "$HOME/benchmark/build2"
 export BENCHMARK_LIBS="$HOME/benchmark/build2/src/libbenchmark.a -lpthread"
 export BENCHMARK_INC="-I$HOME/benchmark/include"
 ```
 
-Pass these to every benchmark build (`src/`, `blst/`, and `reproduce_cpu_bench.sh` pick them up from the environment):
+**Ubuntu** (also supported for builds; paper timings still use clang 21 + source-built benchmark):
 
 ```bash
-make -C blst gbench BENCHMARK_LIBS="$BENCHMARK_LIBS" BENCHMARK_INC="$BENCHMARK_INC"
-make -C src bench-bls12-381 CXX=clang++ BENCHMARK_LIBS="$BENCHMARK_LIBS" BENCHMARK_INC="$BENCHMARK_INC"
-```
-
-Or one shot:
-
-```bash
-export PATH="$HOME/LLVM-21.1.0-Linux-X64/bin:$PATH"
-export CXX=clang++
-export BENCHMARK_LIBS="$HOME/benchmark/build2/src/libbenchmark.a -lpthread"
-export BENCHMARK_INC="-I$HOME/benchmark/include"
-./scripts/reproduce_cpu_bench.sh
-```
-
-**Ubuntu** (also supported):
-
-```bash
-sudo apt install build-essential libgmp-dev libbenchmark-dev
-# C++ GMP bindings (package name varies; on Ubuntu):
-sudo apt install libgmpxx4ldbl 2>/dev/null || true
+sudo apt install build-essential libgmp-dev cmake git curl
+./scripts/setup_toolchain.sh
 ```
 
 Check IFMA support:
@@ -125,10 +128,7 @@ grep -q avx512ifma /proc/cpuinfo && echo "IFMA ok" || echo "Use fallback build (
 With clang 21 and a source-built Google Benchmark (see §2):
 
 ```bash
-export PATH="$HOME/LLVM-21.1.0-Linux-X64/bin:$PATH"
-export CXX=clang++
-export BENCHMARK_LIBS="$HOME/benchmark/build2/src/libbenchmark.a -lpthread"
-export BENCHMARK_INC="-I$HOME/benchmark/include"
+eval "$(./scripts/setup_toolchain.sh --print)"
 
 cd blst && make gbench && cd ..
 cd src && make bench-bls12-381
@@ -198,11 +198,8 @@ Development / smaller instances: **c7i-flex.large** on the same AMI family is su
 **One command** (build, benchmark JSON, parsed table, resource log):
 
 ```bash
-chmod +x scripts/reproduce_cpu_bench.sh
-export PATH="$HOME/LLVM-21.1.0-Linux-X64/bin:$PATH"
-export CXX=clang++
-export BENCHMARK_LIBS="$HOME/benchmark/build2/src/libbenchmark.a -lpthread"
-export BENCHMARK_INC="-I$HOME/benchmark/include"
+chmod +x scripts/setup_toolchain.sh scripts/reproduce_cpu_bench.sh
+eval "$(./scripts/setup_toolchain.sh --print)"
 ./scripts/reproduce_cpu_bench.sh
 ```
 

@@ -1,0 +1,745 @@
+    Updating git repository `https://github.com/arkworks-rs/r1cs-std`
+    Updating git repository `https://github.com/arkworks-rs/snark`
+    Updating git repository `https://github.com/arkworks-rs/std/`
+    Updating crates.io index
+     Locking 150 packages to latest compatible versions
+      Adding generic-array v0.14.7 (available: v0.14.9)
+      Adding itertools v0.10.5 (available: v0.15.0)
+      Adding serde_with v3.21.0 (requires Rust 1.88)
+      Adding sha2 v0.10.9 (available: v0.11.0)
+      Adding time v0.3.49 (requires Rust 1.88.0)
+      Adding time-core v0.1.9 (requires Rust 1.88.0)
+      Adding time-macros v0.2.29 (requires Rust 1.88.0)
+   Compiling proc-macro2 v1.0.106
+   Compiling unicode-ident v1.0.24
+   Compiling quote v1.0.45
+   Compiling autocfg v1.5.1
+   Compiling zerocopy v0.8.52
+   Compiling version_check v0.9.5
+   Compiling typenum v1.20.1
+   Compiling cfg-if v1.0.4
+   Compiling rand_core v0.6.4
+   Compiling serde_core v1.0.228
+   Compiling either v1.16.0
+   Compiling crossbeam-utils v0.8.21
+   Compiling zmij v1.0.21
+   Compiling serde v1.0.228
+   Compiling allocator-api2 v0.2.21
+   Compiling serde_json v1.0.150
+   Compiling once_cell v1.21.4
+   Compiling zeroize v1.9.0
+   Compiling memchr v2.8.2
+   Compiling itoa v1.0.18
+   Compiling rayon-core v1.13.0
+   Compiling anstyle v1.0.14
+   Compiling ciborium-io v0.2.2
+   Compiling regex-syntax v0.8.11
+   Compiling plotters-backend v0.3.7
+   Compiling clap_lex v1.1.0
+   Compiling cast v0.3.0
+   Compiling paste v1.0.15
+   Compiling same-file v1.0.6
+   Compiling anes v0.1.6
+   Compiling cpufeatures v0.2.17
+   Compiling oorandom v11.1.5
+   Compiling hex v0.4.3
+   Compiling walkdir v2.5.0
+   Compiling plotters-svg v0.3.7
+   Compiling clap_builder v4.6.0
+   Compiling itertools v0.14.0
+   Compiling itertools v0.13.0
+   Compiling generic-array v0.14.7
+   Compiling ahash v0.8.12
+   Compiling num-traits v0.2.19
+   Compiling hashbrown v0.16.1
+   Compiling crossbeam-epoch v0.9.18
+   Compiling syn v2.0.118
+   Compiling crossbeam-deque v0.8.6
+   Compiling num-integer v0.1.46
+   Compiling crypto-common v0.1.7
+   Compiling block-buffer v0.10.4
+   Compiling plotters v0.3.7
+   Compiling digest v0.10.7
+   Compiling num-bigint v0.4.6
+   Compiling sha2 v0.10.9
+   Compiling rayon v1.12.0
+   Compiling regex-automata v0.4.14
+   Compiling criterion-plot v0.6.0
+   Compiling clap v4.6.1
+   Compiling regex v1.12.4
+   Compiling zerocopy-derive v0.8.52
+   Compiling enum-ordinalize-derive v4.3.2
+   Compiling ark-serialize-derive v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/serialize-derive)
+   Compiling ark-ff-asm v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/ff-asm)
+   Compiling ark-ff-macros v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/ff-macros)
+   Compiling serde_derive v1.0.228
+   Compiling enum-ordinalize v4.3.2
+   Compiling educe v0.6.0
+   Compiling tinytemplate v1.2.1
+   Compiling ppv-lite86 v0.2.21
+   Compiling half v2.7.1
+   Compiling rand_chacha v0.3.1
+   Compiling ciborium-ll v0.2.2
+   Compiling ciborium v0.2.2
+   Compiling rand v0.8.6
+   Compiling ark-std v0.5.0 (https://github.com/arkworks-rs/std/#1693bc56)
+   Compiling criterion v0.7.0
+   Compiling ark-serialize v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/serialize)
+   Compiling ark-ff v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/ff)
+   Compiling ark-poly v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/poly)
+   Compiling ark-ec v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/ec)
+   Compiling ark-bls12-381 v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/curves/bls12_381)
+   Compiling ark-algebra-bench-templates v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/bench-templates)
+   Compiling ark-algebra-test-templates v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/test-templates)
+    Finished `bench` profile [optimized] target(s) in 15.06s
+     Running benches/bls12_381_pairing_only.rs (/home/ec2-user/VROOM-test/baselines/algebra/curves/target/release/deps/bls12_381_pairing_only-9ddce3887330d650)
+Gnuplot not found, using plotters backend
+Benchmarking Pairing for Bls12_381/G1 Preparation for Bls12_381
+Benchmarking Pairing for Bls12_381/G1 Preparation for Bls12_381: Warming up for 3.0000 s
+Benchmarking Pairing for Bls12_381/G1 Preparation for Bls12_381: Collecting 100 samples in estimated 5.0000 s (1.5B iterations)
+Benchmarking Pairing for Bls12_381/G1 Preparation for Bls12_381: Analyzing
+Pairing for Bls12_381/G1 Preparation for Bls12_381
+                        time:   [3.2854 ns 3.2854 ns 3.2855 ns]
+Found 8 outliers among 100 measurements (8.00%)
+  2 (2.00%) low mild
+  2 (2.00%) high mild
+  4 (4.00%) high severe
+Benchmarking Pairing for Bls12_381/G2 Preparation for Bls12_381
+Benchmarking Pairing for Bls12_381/G2 Preparation for Bls12_381: Warming up for 3.0000 s
+Benchmarking Pairing for Bls12_381/G2 Preparation for Bls12_381: Collecting 100 samples in estimated 5.4033 s (50k iterations)
+Benchmarking Pairing for Bls12_381/G2 Preparation for Bls12_381: Analyzing
+Pairing for Bls12_381/G2 Preparation for Bls12_381
+                        time:   [106.82 µs 106.94 µs 107.08 µs]
+Found 6 outliers among 100 measurements (6.00%)
+  2 (2.00%) low mild
+  1 (1.00%) high mild
+  3 (3.00%) high severe
+Benchmarking Pairing for Bls12_381/Miller Loop for Bls12_381
+Benchmarking Pairing for Bls12_381/Miller Loop for Bls12_381: Warming up for 3.0000 s
+Benchmarking Pairing for Bls12_381/Miller Loop for Bls12_381: Collecting 100 samples in estimated 6.5265 s (20k iterations)
+Benchmarking Pairing for Bls12_381/Miller Loop for Bls12_381: Analyzing
+Pairing for Bls12_381/Miller Loop for Bls12_381
+                        time:   [322.45 µs 322.56 µs 322.68 µs]
+Found 2 outliers among 100 measurements (2.00%)
+  2 (2.00%) high mild
+Benchmarking Pairing for Bls12_381/Final Exponentiation for Bls12_381
+Benchmarking Pairing for Bls12_381/Final Exponentiation for Bls12_381: Warming up for 3.0000 s
+Benchmarking Pairing for Bls12_381/Final Exponentiation for Bls12_381: Collecting 100 samples in estimated 5.8863 s (10k iterations)
+Benchmarking Pairing for Bls12_381/Final Exponentiation for Bls12_381: Analyzing
+Pairing for Bls12_381/Final Exponentiation for Bls12_381
+                        time:   [582.76 µs 582.97 µs 583.17 µs]
+Found 5 outliers among 100 measurements (5.00%)
+  5 (5.00%) high mild
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 1 pairs
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 1 pairs: Warming up for 3.0000 s
+
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 5.2s, enable flat sampling, or reduce sample count to 60.
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 1 pairs: Collecting 100 samples in estimated 5.1634 s (5050 iterations)
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 1 pairs: Analyzing
+Pairing for Bls12_381/Multi Pairing for Bls12_381 with 1 pairs
+                        time:   [1.0224 ms 1.0229 ms 1.0235 ms]
+Found 9 outliers among 100 measurements (9.00%)
+  1 (1.00%) low severe
+  3 (3.00%) low mild
+  4 (4.00%) high mild
+  1 (1.00%) high severe
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 2 pairs
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 2 pairs: Warming up for 3.0000 s
+
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 6.6s, enable flat sampling, or reduce sample count to 60.
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 2 pairs: Collecting 100 samples in estimated 6.5597 s (5050 iterations)
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 2 pairs: Analyzing
+Pairing for Bls12_381/Multi Pairing for Bls12_381 with 2 pairs
+                        time:   [1.2990 ms 1.2994 ms 1.2998 ms]
+Found 5 outliers among 100 measurements (5.00%)
+  2 (2.00%) low mild
+  3 (3.00%) high mild
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 3 pairs
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 3 pairs: Warming up for 3.0000 s
+
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 8.0s, enable flat sampling, or reduce sample count to 50.
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 3 pairs: Collecting 100 samples in estimated 7.9549 s (5050 iterations)
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 3 pairs: Analyzing
+Pairing for Bls12_381/Multi Pairing for Bls12_381 with 3 pairs
+                        time:   [1.5741 ms 1.5755 ms 1.5777 ms]
+Found 4 outliers among 100 measurements (4.00%)
+  2 (2.00%) low mild
+  1 (1.00%) high mild
+  1 (1.00%) high severe
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 4 pairs
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 4 pairs: Warming up for 3.0000 s
+
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 9.3s, enable flat sampling, or reduce sample count to 50.
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 4 pairs: Collecting 100 samples in estimated 9.3367 s (5050 iterations)
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 4 pairs: Analyzing
+Pairing for Bls12_381/Multi Pairing for Bls12_381 with 4 pairs
+                        time:   [1.8473 ms 1.8479 ms 1.8484 ms]
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high mild
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 5 pairs
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 5 pairs: Warming up for 3.0000 s
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 5 pairs: Collecting 100 samples in estimated 5.0265 s (2200 iterations)
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 5 pairs: Analyzing
+Pairing for Bls12_381/Multi Pairing for Bls12_381 with 5 pairs
+                        time:   [2.2820 ms 2.2828 ms 2.2835 ms]
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) low mild
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 6 pairs
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 6 pairs: Warming up for 3.0000 s
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 6 pairs: Collecting 100 samples in estimated 5.1139 s (2000 iterations)
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 6 pairs: Analyzing
+Pairing for Bls12_381/Multi Pairing for Bls12_381 with 6 pairs
+                        time:   [2.5559 ms 2.5567 ms 2.5574 ms]
+Found 3 outliers among 100 measurements (3.00%)
+  3 (3.00%) high mild
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 7 pairs
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 7 pairs: Warming up for 3.0000 s
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 7 pairs: Collecting 100 samples in estimated 5.0947 s (1800 iterations)
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 7 pairs: Analyzing
+Pairing for Bls12_381/Multi Pairing for Bls12_381 with 7 pairs
+                        time:   [2.8283 ms 2.8291 ms 2.8298 ms]
+Found 3 outliers among 100 measurements (3.00%)
+  1 (1.00%) low mild
+  2 (2.00%) high mild
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 8 pairs
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 8 pairs: Warming up for 3.0000 s
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 8 pairs: Collecting 100 samples in estimated 5.2738 s (1700 iterations)
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 8 pairs: Analyzing
+Pairing for Bls12_381/Multi Pairing for Bls12_381 with 8 pairs
+                        time:   [3.0996 ms 3.1006 ms 3.1015 ms]
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 9 pairs
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 9 pairs: Warming up for 3.0000 s
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 9 pairs: Collecting 100 samples in estimated 5.3007 s (1500 iterations)
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 9 pairs: Analyzing
+Pairing for Bls12_381/Multi Pairing for Bls12_381 with 9 pairs
+                        time:   [3.5313 ms 3.5323 ms 3.5333 ms]
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high mild
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 10 pairs
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 10 pairs: Warming up for 3.0000 s
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 10 pairs: Collecting 100 samples in estimated 5.3316 s (1400 iterations)
+Benchmarking Pairing for Bls12_381/Multi Pairing for Bls12_381 with 10 pairs: Analyzing
+Pairing for Bls12_381/Multi Pairing for Bls12_381 with 10 pairs
+                        time:   [3.8034 ms 3.8045 ms 3.8055 ms]
+
+   Compiling serde v1.0.219
+   Compiling typenum v1.18.0
+   Compiling version_check v0.9.5
+   Compiling crossbeam-utils v0.8.21
+   Compiling radium v0.7.0
+   Compiling memchr v2.7.4
+   Compiling tap v1.0.1
+   Compiling proc-macro2 v1.0.95
+   Compiling rand_core v0.6.4
+   Compiling autocfg v1.4.0
+   Compiling funty v2.0.0
+   Compiling unicode-ident v1.0.18
+   Compiling either v1.15.0
+   Compiling libc v0.2.172
+   Compiling serde_json v1.0.140
+   Compiling ryu v1.0.20
+   Compiling subtle v2.6.1
+   Compiling rayon-core v1.12.1
+   Compiling lazy_static v1.5.0
+   Compiling unicode-width v0.1.13
+   Compiling plotters-backend v0.3.7
+   Compiling regex-automata v0.1.10
+   Compiling itoa v1.0.15
+   Compiling regex-syntax v0.7.5
+   Compiling cast v0.3.0
+   Compiling same-file v1.0.6
+   Compiling itoa v0.4.8
+   Compiling bitflags v1.3.2
+   Compiling half v1.8.3
+   Compiling cfg-if v1.0.0
+   Compiling keccak v0.1.5
+   Compiling oorandom v11.1.5
+   Compiling cpufeatures v0.2.17
+   Compiling hex-literal v0.3.4
+   Compiling wyz v0.5.1
+   Compiling generic-array v0.14.7
+   Compiling walkdir v2.5.0
+   Compiling textwrap v0.11.0
+   Compiling rand_xorshift v0.3.0
+   Compiling csv-core v0.1.12
+   Compiling num-traits v0.2.19
+   Compiling itertools v0.10.5
+   Compiling plotters-svg v0.3.7
+   Compiling clap v2.34.0
+   Compiling bitvec v1.0.1
+   Compiling crossbeam-epoch v0.9.18
+   Compiling quote v1.0.40
+   Compiling crossbeam-deque v0.8.6
+   Compiling syn v2.0.100
+   Compiling regex-automata v0.3.9
+   Compiling atty v0.2.14
+   Compiling plotters v0.3.7
+   Compiling block-buffer v0.10.4
+   Compiling crypto-common v0.1.6
+   Compiling rayon v1.10.0
+   Compiling digest v0.10.7
+   Compiling criterion-plot v0.4.5
+   Compiling sha2 v0.10.8
+   Compiling sha3 v0.10.8
+   Compiling ff v0.13.1
+   Compiling group v0.13.0
+   Compiling regex v1.9.6
+   Compiling pairing v0.23.0
+   Compiling bls12_381 v0.8.0 (/home/ec2-user/VROOM-test/baselines/bls12_381)
+   Compiling bstr v0.2.17
+   Compiling serde_cbor v0.11.2
+   Compiling serde_derive v1.0.219
+   Compiling csv v1.1.6
+   Compiling tinytemplate v1.2.1
+   Compiling criterion v0.3.6
+    Finished bench [optimized] target(s) in 10.57s
+     Running benches/groups.rs (target/release/deps/groups-66f24cefda8af677)
+WARNING: HTML report generation will become a non-default optional feature in Criterion.rs 0.4.0.
+This feature is being moved to cargo-criterion (https://github.com/bheisler/cargo-criterion) and will be optional in a future version of Criterion.rs. To silence this warning, either switch to cargo-criterion or enable the 'html_reports' feature in your Cargo.toml.
+
+Gnuplot not found, using plotters backend
+Benchmarking full pairing
+Benchmarking full pairing: Warming up for 3.0000 s
+
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 5.4s, enable flat sampling, or reduce sample count to 60.
+Benchmarking full pairing: Collecting 100 samples in estimated 5.4284 s (5050 iterations)
+Benchmarking full pairing: Analyzing
+full pairing            time:   [1.0741 ms 1.0743 ms 1.0745 ms]
+Found 2 outliers among 100 measurements (2.00%)
+  1 (1.00%) low mild
+  1 (1.00%) high mild
+
+Benchmarking G2 preparation for pairing
+Benchmarking G2 preparation for pairing: Warming up for 3.0000 s
+Benchmarking G2 preparation for pairing: Collecting 100 samples in estimated 5.1103 s (45k iterations)
+Benchmarking G2 preparation for pairing: Analyzing
+G2 preparation for pairing
+                        time:   [112.42 µs 112.44 µs 112.46 µs]
+Found 6 outliers among 100 measurements (6.00%)
+  3 (3.00%) low mild
+  3 (3.00%) high mild
+
+Benchmarking miller loop for pairing
+Benchmarking miller loop for pairing: Warming up for 3.0000 s
+Benchmarking miller loop for pairing: Collecting 100 samples in estimated 5.9289 s (20k iterations)
+Benchmarking miller loop for pairing: Analyzing
+miller loop for pairing time:   [293.88 µs 295.87 µs 298.80 µs]
+Found 5 outliers among 100 measurements (5.00%)
+  1 (1.00%) low mild
+  1 (1.00%) high mild
+  3 (3.00%) high severe
+
+Benchmarking final exponentiation for pairing
+Benchmarking final exponentiation for pairing: Warming up for 3.0000 s
+Benchmarking final exponentiation for pairing: Collecting 100 samples in estimated 6.6627 s (10k iterations)
+Benchmarking final exponentiation for pairing: Analyzing
+final exponentiation for pairing
+                        time:   [659.72 µs 659.86 µs 660.00 µs]
+Found 3 outliers among 100 measurements (3.00%)
+  1 (1.00%) low severe
+  1 (1.00%) low mild
+  1 (1.00%) high mild
+
+   Compiling proc-macro2 v1.0.95
+   Compiling unicode-ident v1.0.18
+   Compiling autocfg v1.4.0
+   Compiling serde v1.0.219
+   Compiling syn v1.0.109
+   Compiling libc v0.2.172
+   Compiling hex v0.4.3
+   Compiling byteorder v1.5.0
+   Compiling cfg-if v1.0.0
+   Compiling num-traits v0.2.19
+   Compiling quote v1.0.40
+   Compiling syn v2.0.100
+   Compiling rand v0.4.6
+   Compiling num-integer v0.1.46
+   Compiling num-bigint v0.4.6
+   Compiling serde_derive v1.0.219
+   Compiling zksync_ff_derive v0.32.7 (/home/ec2-user/VROOM-test/baselines/zksync-crypto/crates/ff_derive)
+   Compiling zksync_ff v0.32.7 (/home/ec2-user/VROOM-test/baselines/zksync-crypto/crates/ff)
+   Compiling zksync_pairing v0.32.7 (/home/ec2-user/VROOM-test/baselines/zksync-crypto/crates/pairing)
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:10
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |          ^^^^^
+   |
+note: the name `Field` in the type namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:10
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |          ^^^^^
+   = note: `#[warn(hidden_glob_reexports)]` on by default
+
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:17
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                 ^^^^^^^^^^
+   |
+note: the name `PrimeField` in the type namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:17
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                 ^^^^^^^^^^
+
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:17
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                 ^^^^^^^^^^
+   |
+note: the name `PrimeField` in the macro namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:17
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                 ^^^^^^^^^^
+
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:29
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                             ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+note: the name `PrimeFieldDecodingError` in the type namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:29
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                             ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:54
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                                                      ^^^^^^^^^^^^^^
+   |
+note: the name `PrimeFieldRepr` in the type namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:54
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                                                      ^^^^^^^^^^^^^^
+
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:70
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                                                                      ^^^^^^^^^^^^
+   |
+note: the name `ScalarEngine` in the type namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:70
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                                                                      ^^^^^^^^^^^^
+
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:84
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                                                                                    ^^^^^^^^^
+   |
+note: the name `SqrtField` in the type namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:84
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                                                                                    ^^^^^^^^^
+
+warning: unused variable: `y2`
+    --> crates/pairing/src/bn256/ec.rs:1417:17
+     |
+1417 |             let y2 = other.y;
+     |                 ^^ help: if this is intentional, prefix it with an underscore: `_y2`
+     |
+     = note: `#[warn(unused_variables)]` on by default
+
+warning: method `scale_by_cofactor` is never used
+   --> crates/pairing/src/bls12_381/ec.rs:970:12
+    |
+969 |     impl G1Affine {
+    |     ------------- method in this implementation
+970 |         fn scale_by_cofactor(&self) -> G1 {
+    |            ^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` on by default
+
+warning: `zksync_pairing` (lib) generated 9 warnings
+    Finished `bench` profile [optimized] target(s) in 21.97s
+     Running benches/pairing_benches.rs (/home/ec2-user/VROOM-test/baselines/zksync-crypto/target/release/deps/pairing_benches-571c8553f41009b9)
+
+running 55 tests
+test bls12_381::bench_pairing_final_exponentiation ... bench:   1,011,384.10 ns/iter (+/- 5,319.11)
+test bls12_381::bench_pairing_full                 ... bench:   1,515,150.00 ns/iter (+/- 8,682.62)
+test bls12_381::bench_pairing_g1_preparation       ... bench:          10.33 ns/iter (+/- 0.01)
+test bls12_381::bench_pairing_g2_preparation       ... bench:     132,011.90 ns/iter (+/- 1,010.16)
+test bls12_381::bench_pairing_miller_loop          ... bench:     363,219.55 ns/iter (+/- 2,581.14)
+test bls12_381::ec::g1::bench_g1_add_assign        ... bench:         637.14 ns/iter (+/- 7.46)
+test bls12_381::ec::g1::bench_g1_add_assign_mixed  ... bench:         479.99 ns/iter (+/- 16.06)
+test bls12_381::ec::g1::bench_g1_mul_assign        ... bench:     170,345.83 ns/iter (+/- 1,747.57)
+test bls12_381::ec::g2::bench_g2_add_assign        ... bench:       2,457.00 ns/iter (+/- 24.60)
+test bls12_381::ec::g2::bench_g2_add_assign_mixed  ... bench:       1,704.60 ns/iter (+/- 20.07)
+test bls12_381::ec::g2::bench_g2_mul_assign        ... bench:     580,001.98 ns/iter (+/- 6,969.97)
+test bls12_381::fq12::bench_fq12_add_assign        ... bench:          58.06 ns/iter (+/- 7.86)
+test bls12_381::fq12::bench_fq12_inverse           ... bench:      15,966.52 ns/iter (+/- 251.64)
+test bls12_381::fq12::bench_fq12_mul_assign        ... bench:       3,827.01 ns/iter (+/- 27.72)
+test bls12_381::fq12::bench_fq12_squaring          ... bench:       2,657.32 ns/iter (+/- 20.08)
+test bls12_381::fq12::bench_fq12_sub_assign        ... bench:          55.27 ns/iter (+/- 5.99)
+test bls12_381::fq2::bench_fq2_add_assign          ... bench:           7.09 ns/iter (+/- 0.13)
+test bls12_381::fq2::bench_fq2_inverse             ... bench:       9,774.37 ns/iter (+/- 286.73)
+test bls12_381::fq2::bench_fq2_mul_assign          ... bench:         128.82 ns/iter (+/- 0.75)
+test bls12_381::fq2::bench_fq2_sqrt                ... bench:     121,179.43 ns/iter (+/- 4,314.47)
+test bls12_381::fq2::bench_fq2_squaring            ... bench:         101.87 ns/iter (+/- 3.80)
+test bls12_381::fq2::bench_fq2_sub_assign          ... bench:           8.60 ns/iter (+/- 0.01)
+test bls12_381::fq::bench_fq_add_assign            ... bench:           4.09 ns/iter (+/- 0.00)
+test bls12_381::fq::bench_fq_from_repr             ... bench:          41.93 ns/iter (+/- 0.25)
+test bls12_381::fq::bench_fq_into_repr             ... bench:          22.85 ns/iter (+/- 0.12)
+test bls12_381::fq::bench_fq_inverse               ... bench:       9,555.58 ns/iter (+/- 161.47)
+test bls12_381::fq::bench_fq_mul_assign            ... bench:          38.49 ns/iter (+/- 0.36)
+test bls12_381::fq::bench_fq_negate                ... bench:           4.30 ns/iter (+/- 0.01)
+test bls12_381::fq::bench_fq_repr_add_nocarry      ... bench:           1.72 ns/iter (+/- 0.01)
+test bls12_381::fq::bench_fq_repr_div2             ... bench:           4.13 ns/iter (+/- 0.07)
+test bls12_381::fq::bench_fq_repr_mul2             ... bench:           4.39 ns/iter (+/- 0.78)
+test bls12_381::fq::bench_fq_repr_num_bits         ... bench:           3.35 ns/iter (+/- 0.06)
+test bls12_381::fq::bench_fq_repr_sub_noborrow     ... bench:           2.89 ns/iter (+/- 0.02)
+test bls12_381::fq::bench_fq_sqrt                  ... bench:      19,573.71 ns/iter (+/- 1,573.72)
+test bls12_381::fq::bench_fq_square                ... bench:          33.92 ns/iter (+/- 0.56)
+test bls12_381::fq::bench_fq_sub_assign            ... bench:           5.12 ns/iter (+/- 0.73)
+test bls12_381::fr::bench_fr_add_assign            ... bench:           3.96 ns/iter (+/- 0.01)
+test bls12_381::fr::bench_fr_from_repr             ... bench:          22.01 ns/iter (+/- 0.09)
+test bls12_381::fr::bench_fr_into_repr             ... bench:           9.30 ns/iter (+/- 0.01)
+test bls12_381::fr::bench_fr_inverse               ... bench:       4,777.21 ns/iter (+/- 169.98)
+test bls12_381::fr::bench_fr_mul_assign            ... bench:          16.78 ns/iter (+/- 0.44)
+test bls12_381::fr::bench_fr_negate                ... bench:           3.91 ns/iter (+/- 0.00)
+test bls12_381::fr::bench_fr_repr_add_nocarry      ... bench:           1.38 ns/iter (+/- 0.01)
+test bls12_381::fr::bench_fr_repr_div2             ... bench:           4.23 ns/iter (+/- 0.00)
+test bls12_381::fr::bench_fr_repr_mul2             ... bench:           3.94 ns/iter (+/- 0.18)
+test bls12_381::fr::bench_fr_repr_num_bits         ... bench:           3.26 ns/iter (+/- 0.00)
+test bls12_381::fr::bench_fr_repr_sub_noborrow     ... bench:           2.01 ns/iter (+/- 0.00)
+test bls12_381::fr::bench_fr_sqrt                  ... bench:      28,479.91 ns/iter (+/- 629.71)
+test bls12_381::fr::bench_fr_square                ... bench:          18.83 ns/iter (+/- 0.89)
+test bls12_381::fr::bench_fr_sub_assign            ... bench:           4.24 ns/iter (+/- 0.01)
+test bn256::bench_pairing_final_exponentiation     ... bench:     609,973.40 ns/iter (+/- 6,336.67)
+test bn256::bench_pairing_full                     ... bench:   1,049,069.80 ns/iter (+/- 15,911.37)
+test bn256::bench_pairing_g1_preparation           ... bench:           3.79 ns/iter (+/- 0.00)
+test bn256::bench_pairing_g2_preparation           ... bench:     110,838.35 ns/iter (+/- 1,263.95)
+test bn256::bench_pairing_miller_loop              ... bench:     321,856.93 ns/iter (+/- 4,490.33)
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 55 measured; 46 filtered out; finished in 63.97s
+
++ [BLS12-381] BatchScalarMultiplication should be consistent with
+   individual scalar multiplications: OK, passed 10 tests.
++ [BLS12-381] BatchScalarMultiplication should be consistent with
+   individual scalar multiplications: OK, passed 10 tests.
++ [G1] Multi exponentiation (cmax) should be consistent with splitted
+   multiexp: OK, passed 20 tests.
++ [G1] Multi exponentiation (c in [3 4 5 6 7 8 9 10 11 12 13 14 15 16])
+   should be consistent with sum of square: OK, passed 20 tests.
++ [G1] Multi exponentiation (c in [3 4 5 6 7 8 9 10 11 12 13 14 15 16]) of
+   points at infinity should output a point at infinity: OK, passed 20 tests.
++ [G1] Multi exponentiation (c in [3 4 5 6 7 8 9 10 11 12 13 14 15 16])
+   with a vector of 0s as input should output a point at infinity: OK,
+   passed 20 tests.
++ [G1] Multi exponentiation (<50points) should be consistent with sum of
+   square: OK, passed 20 tests.
++ [G2] Multi exponentiation (cmax) should be consistent with splitted
+   multiexp: OK, passed 20 tests.
++ [G2] Multi exponentiation (c in [5 14]) should be consistent with sum of
+   square: OK, passed 20 tests.
++ [G2] Multi exponentiation (c in [5 14]) of points at infinity should
+   output a point at infinity: OK, passed 20 tests.
++ [G2] Multi exponentiation (c in [5 14]) with a vector of 0s as input
+   should output a point at infinity: OK, passed 20 tests.
++ [G2] Multi exponentiation (<50points) should be consistent with sum of
+   square: OK, passed 20 tests.
++ [BLS12-381] Add(P,-P) should return the point at infinity: OK, passed 10
+   tests.
++ [BLS12-381] g2Gen (affine) should be on the curve: OK, passed 100 tests.
++ [BLS12-381] Affine representation should be independent of the Jacobian
+   representative: OK, passed 100 tests.
++ [BLS12-381] g1Gen (affine) should be on the curve: OK, passed 100 tests.
++ [BLS12-381] g1Gen (Jacobian) should be on the curve: OK, passed 100
+   tests.
++ [BLS12-381] g2Gen (Jacobian) should be on the curve: OK, passed 100
+   tests.
++ [BLS12-381] Add(P,0) and Add(0,P) should return P: OK, passed 10 tests.
++ [BLS12-381] Affine representation should be independent of a Extended
+   Jacobian representative: OK, passed 100 tests.
++ [BLS12-381] Add(P,-P) should return the point at infinity: OK, passed 10
+   tests.
++ [BLS12-381] Affine representation should be independent of the Jacobian
+   representative: OK, passed 100 tests.
++ [BLS12-381] Jacobian representation should be the same as the affine
+   representative: OK, passed 100 tests.
++ [BLS12-381] Converting affine symbol for infinity to Jacobian should
+   output correct infinity in Jacobian: OK, passed 100 tests.
++ [BLS12-381] Converting infinity in extended Jacobian to affine should
+   output infinity symbol in Affine: OK, passed 100 tests.
++ [BLS12-381] Converting infinity in extended Jacobian to Jacobian should
+   output infinity in Jacobian: OK, passed 100 tests.
++ [BLS12-381] [Jacobian] Two representatives of the same class should be
+   equal: OK, passed 100 tests.
++ [BLS12-381] Add should call double when adding the same point: OK,
+   passed 10 tests.
++ [BLS12-381] Add(P,0) and Add(0,P) should return P: OK, passed 10 tests.
++ [BLS12-381] Affine representation should be independent of a Extended
+   Jacobian representative: OK, passed 100 tests.
++ [BLS12-381] [2]G = double(G) + G - G: OK, passed 10 tests.
++ [BLS12-381] Jacobian representation should be the same as the affine
+   representative: OK, passed 100 tests.
++ [BLS12-381] Converting affine symbol for infinity to Jacobian should
+   output correct infinity in Jacobian: OK, passed 100 tests.
++ [BLS12-381] Converting infinity in extended Jacobian to affine should
+   output infinity symbol in Affine: OK, passed 100 tests.
++ [BLS12-381] Converting infinity in extended Jacobian to Jacobian should
+   output infinity in Jacobian: OK, passed 100 tests.
++ [BLS12-381] BatchJacobianToAffineG1 and FromJacobian should output the
+   same result: OK, passed 100 tests.
++ [G1] mapping output must be on curve: OK, passed 100 tests.
++ [BLS12-381] Add should call double when adding the same point: OK,
+   passed 10 tests.
++ [BLS12-381] [Jacobian] Two representatives of the same class should be
+   equal: OK, passed 100 tests.
++ [BLS12-381] [2]G = double(G) + G - G: OK, passed 10 tests.
++ [BLS12-381] [-s]G = -[s]G: OK, passed 10 tests.
++ [BLS12-381] [Jacobian] Add should call double when adding the same
+   point: OK, passed 10 tests.
++ [BLS12-381] [Jacobian] Adding the opposite of a point to itself should
+   output inf: OK, passed 10 tests.
++ [BLS12-381] [Jacobian] Adding the inf to a point should not modify the
+   point: OK, passed 10 tests.
++ [BLS12-381] [Jacobian Extended] addMixed (-G) should equal subMixed(G):
+   OK, passed 10 tests.
++ [BLS12-381] [Jacobian Extended] doubleMixed (-G) should equal
+   doubleNegMixed(G): OK, passed 10 tests.
++ [BLS12-381] [Jacobian] Addmix the negation to itself should output 0:
+   OK, passed 10 tests.
++ [G1] mapping to curve should output point on the curve: OK, passed 100
+   tests.
++ [BLS12-381] Clearing the cofactor of a random point should set it in the
+   r-torsion: OK, passed 100 tests.
++ [G1] Affine SetBytes(RawBytes) should stay the same: OK, passed 100
+   tests.
++ [BLS12-381] [-s]G = -[s]G: OK, passed 10 tests.
++ [BLS12-381] [Jacobian] Add should call double when adding the same
+   point: OK, passed 10 tests.
++ [BLS12-381] [Jacobian] Adding the opposite of a point to itself should
+   output inf: OK, passed 10 tests.
++ [BLS12-381] [Jacobian] Adding the inf to a point should not modify the
+   point: OK, passed 10 tests.
++ [BLS12-381] scalar multiplication (double and add) should depend only on
+   the scalar mod r: OK, passed 10 tests.
++ [BLS12-381] [Jacobian Extended] addMixed (-G) should equal subMixed(G):
+   OK, passed 10 tests.
++ [G2] mapping output must be on curve: OK, passed 100 tests.
++ [BLS12-381] [Jacobian Extended] doubleMixed (-G) should equal
+   doubleNegMixed(G): OK, passed 10 tests.
++ [BLS12-381] [Jacobian] Addmix the negation to itself should output 0:
+   OK, passed 10 tests.
++ [BLS12-381] scalar multiplication (GLV) should depend only on the scalar
+   mod r: OK, passed 10 tests.
++ [BLS12-381] IsInSubGroup and MulBy subgroup order should be the same:
+   OK, passed 100 tests.
++ [BLS12-381] check that phi(P) = lambdaGLV * P: OK, passed 100 tests.
++ [BLS12-381] GLV and Double and Add should output the same result: OK,
+   passed 10 tests.
++ [BLS12-381] Clearing the cofactor of a random point should set it in the
+   r-torsion: OK, passed 100 tests.
++ [G2] Affine SetBytes(RawBytes) should stay the same: OK, passed 100
+   tests.
++ [G1] mapping to curve should be deterministic: OK, passed 100 tests.
++ [BLS12-381] JointScalarMultiplicationBase and ScalarMultiplication
+   should output the same results: OK, passed 10 tests.
++ [BLS12-381] scalar multiplication (double and add) should depend only on
+   the scalar mod r: OK, passed 10 tests.
++ [BLS12-381] psi should map points from E' to itself: OK, passed 10 tests.
++ [BLS12-381] check that phi^2(P) + phi(P) + P = 0: OK, passed 100 tests.
++ [G1] Affine SetBytes(Bytes()) should stay the same: OK, passed 100 tests.
++ [BLS12-381] scalar multiplication (GLV) should depend only on the scalar
+   mod r: OK, passed 10 tests.
++ [BLS12-381] IsInSubGroup should return false for a point on the
+   cofactor-torsion: OK, passed 100 tests.
++ [G2] mapping to curve should output point on the curve: OK, passed 100
+   tests.
++ [BLS12-381] [3]P == [2]P+P: OK, passed 100 tests.
++ [BLS12-381] GLV and Double and Add should output the same result: OK,
+   passed 10 tests.
++ [BLS12-381] IsInSubGroup and MulBy subgroup order should be the same:
+   OK, passed 100 tests.
++ [BLS12-381] doubleAndAddStep: optimized (Eisenträger-Lauter-Montgomery)
+   matches reference implementation: OK, passed 100 tests.
++ [BLS12-381] check that phi(P) = lambdaGLV * P: OK, passed 100 tests.
++ [G2] Affine SetBytes(Bytes()) should stay the same: OK, passed 100 tests.
++ [BLS12-381] IsInSubGroup should return false for a point on the
+   cofactor-torsion: OK, passed 100 tests.
++ [BLS12-381] check that phi^2(P) + phi(P) + P = 0: OK, passed 100 tests.
++ [BLS12-381] Having the receiver as operand (final expo) should output
+   the same result: OK, passed 100 tests.
++ [G2] mapping to curve should be deterministic: OK, passed 100 tests.
++ [BLS12-381] [3]P == [2]P+P: OK, passed 100 tests.
++ [BLS12-381] IsInSubGroupBatchG1 test should pass with high probability:
+   OK, passed 100 tests.
++ [BLS12-381] Exponentiating FinalExpo(a) to r should output 1: OK, passed
+   100 tests.
++ [BLS12-381] check that psi^2(P) = -phi(P): OK, passed 100 tests.
++ [BLS12-381] IsInSubGroupBatchG2 test should pass with high probability:
+   OK, passed 100 tests.
++ [BLS12-381] IsInSubGroupBatch test should not pass with high
+   probability: OK, passed 100 tests.
++ [BLS12-381] IsInSubGroupBatch test should not pass with high
+   probability: OK, passed 100 tests.
++ [BLS12-381] MillerLoop of pairs should be equal to the product of
+   MillerLoops: OK, passed 100 tests.
++ [BLS12-381] MillerLoop and MillerLoopFixedQ should skip pairs with a
+   point at infinity: OK, passed 100 tests.
++ [BLS12-381] compressed pairing: OK, passed 100 tests.
++ [BLS12-381] Exp, CyclotomicExp and ExpGLV results must be the same in GT
+   (small and big exponents): OK, passed 100 tests.
++ [BLS12-381] Expt(Expt) and Exp(t^2) should output the same result in the
+   cyclotomic subgroup: OK, passed 100 tests.
++ [BLS12-381] bilinearity: OK, passed 100 tests.
++ [BLS12-381] PairingCheck: OK, passed 100 tests.
++ [BLS12-381] Pair should output the same result with MillerLoop or
+   MillerLoopFixedQ: OK, passed 100 tests.
+goos: linux
+goarch: amd64
+pkg: github.com/consensys/gnark-crypto/ecc/bls12-381
+cpu: Intel(R) Xeon(R) Platinum 8488C
+BenchmarkPairing-96                	    2158	    529187 ns/op	    4436 B/op	      33 allocs/op
+BenchmarkMillerLoop-96             	    4664	    255183 ns/op	     576 B/op	       3 allocs/op
+BenchmarkFinalExponentiation-96    	    4362	    273435 ns/op	    3860 B/op	      30 allocs/op
+PASS
+ok  	github.com/consensys/gnark-crypto/ecc/bls12-381	8.323s

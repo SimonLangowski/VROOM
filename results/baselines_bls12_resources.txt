@@ -1,0 +1,26 @@
+Baselines benchmark (bls12)
+date: 2026-06-17T19:13:22+00:00
+host: ip-172-31-24-233.us-east-2.compute.internal
+rustc: rustc 1.86.0 (05f9846f8 2025-03-31)
+cargo: cargo 1.86.0 (adf9b6ad1 2025-02-28)
+go: go version go1.24.1 linux/amd64
+bench_log=/home/ec2-user/VROOM-test/results/baselines_bls12_bench.log
+
+  [arkworks bls12_381 pairing] elapsed=161.02s  max_rss=874212KB
+arkworks_bls12_381_pairing_elapsed_s=161.02
+arkworks_bls12_381_pairing_max_rss_kb=874212
+  [zkcrypto bls12_381 pairing] elapsed=52.59s  max_rss=570692KB
+zkcrypto_bls12_381_pairing_elapsed_s=52.59
+zkcrypto_bls12_381_pairing_max_rss_kb=570692
+  [zksync bls12_381 pairing] elapsed=86.07s  max_rss=393756KB
+zksync_bls12_381_pairing_elapsed_s=86.07
+zksync_bls12_381_pairing_max_rss_kb=393756
+  [gnark bls12_381 pairing] elapsed=12.82s  max_rss=320904KB
+gnark_bls12_381_pairing_elapsed_s=12.82
+gnark_bls12_381_pairing_max_rss_kb=320904
+
+# Totals (for ARTIFACT.md — optional baseline reproduction claim)
+total_elapsed_s=312.63
+peak_rss_kb=874212
+baselines_disk_kb=732716
+bench_log=/home/ec2-user/VROOM-test/results/baselines_bls12_bench.log

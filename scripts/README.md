@@ -2,6 +2,23 @@
 
 Python tooling for **RNS parameter generation** and optional **GPU benchmarks**. The CPU artifact does not require Python unless you regenerate parameters or run GPU experiments.
 
+## CPU toolchain (clang 21 + Google Benchmark)
+
+Paper CPU timings use **clang 21.1.0** and a **clang-built** `libbenchmark.a`. Automated setup (pinned commits, same as the reference host):
+
+```bash
+chmod +x scripts/setup_toolchain.sh scripts/smoke_test.sh scripts/reproduce_cpu_bench.sh
+./scripts/setup_toolchain.sh
+eval "$(./scripts/setup_toolchain.sh --print)"
+```
+
+| Component | Pin |
+|-----------|-----|
+| LLVM 21.1.0 prebuilt | llvm-project @ `3623fe661ae35c6c80ac221f14d85be76aa870f1` |
+| google/benchmark | `04ccbd86038796c319ea19987457e651a24f6b44` |
+
+See **ARTIFACT.md** §2 for manual steps and verification.
+
 ## Parameter generation (CPU artifact)
 
 | Script | Role |

@@ -1,0 +1,32 @@
+Baselines benchmark (bn254)
+date: 2026-06-17T19:19:49+00:00
+host: ip-172-31-24-233.us-east-2.compute.internal
+rustc: rustc 1.86.0 (05f9846f8 2025-03-31)
+cargo: cargo 1.86.0 (adf9b6ad1 2025-02-28)
+go: go version go1.24.1 linux/amd64
+bench_log=/home/ec2-user/VROOM-test/results/baselines_bn254_bench.log
+
+  [arkworks bn254 pairing] elapsed=178.84s  max_rss=877064KB
+arkworks_bn254_pairing_elapsed_s=178.84
+arkworks_bn254_pairing_max_rss_kb=877064
+  [arkworks bn254 g1 ec] elapsed=33.03s  max_rss=869468KB
+arkworks_bn254_g1_ec_elapsed_s=33.03
+arkworks_bn254_g1_ec_max_rss_kb=869468
+  [zksync bn254 pairing] elapsed=68.17s  max_rss=45892KB
+zksync_bn254_pairing_elapsed_s=68.17
+zksync_bn254_pairing_max_rss_kb=45892
+  [zksync bn254 g1 ec] elapsed=3.91s  max_rss=45672KB
+zksync_bn254_g1_ec_elapsed_s=3.91
+zksync_bn254_g1_ec_max_rss_kb=45672
+  [gnark bn254 pairing] elapsed=7.29s  max_rss=251216KB
+gnark_bn254_pairing_elapsed_s=7.29
+gnark_bn254_pairing_max_rss_kb=251216
+  [gnark bn254 g1 ec] elapsed=7.42s  max_rss=228360KB
+gnark_bn254_g1_ec_elapsed_s=7.42
+gnark_bn254_g1_ec_max_rss_kb=228360
+
+# Totals (for ARTIFACT.md — optional baseline reproduction claim)
+total_elapsed_s=298.83
+peak_rss_kb=877064
+baselines_disk_kb=1019576
+bench_log=/home/ec2-user/VROOM-test/results/baselines_bn254_bench.log

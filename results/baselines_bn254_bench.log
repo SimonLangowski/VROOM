@@ -1,0 +1,904 @@
+   Compiling syn v2.0.118
+   Compiling tracing-core v0.1.36
+   Compiling itertools v0.14.0
+   Compiling hashbrown v0.17.1
+   Compiling equivalent v1.0.2
+   Compiling pin-project-lite v0.2.17
+   Compiling foldhash v0.1.5
+   Compiling indexmap v2.14.0
+   Compiling zerocopy-derive v0.8.52
+   Compiling enum-ordinalize-derive v4.3.2
+   Compiling ark-serialize-derive v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/serialize-derive)
+   Compiling ark-ff-asm v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/ff-asm)
+   Compiling ark-ff-macros v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/ff-macros)
+   Compiling serde_derive v1.0.228
+   Compiling tracing-attributes v0.1.31
+   Compiling enum-ordinalize v4.3.2
+   Compiling educe v0.6.0
+   Compiling tracing v0.1.44
+   Compiling zerocopy v0.8.52
+   Compiling serde v1.0.228
+   Compiling tinytemplate v1.2.1
+   Compiling ppv-lite86 v0.2.21
+   Compiling ahash v0.8.12
+   Compiling half v2.7.1
+   Compiling rand_chacha v0.3.1
+   Compiling ciborium-ll v0.2.2
+   Compiling ciborium v0.2.2
+   Compiling rand v0.8.6
+   Compiling ark-std v0.5.0 (https://github.com/arkworks-rs/std/#1693bc56)
+   Compiling criterion v0.7.0
+   Compiling ark-serialize v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/serialize)
+   Compiling ark-ff v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/ff)
+   Compiling ark-poly v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/poly)
+   Compiling ark-ec v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/ec)
+   Compiling ark-relations v0.5.1 (https://github.com/arkworks-rs/snark#845ce9d5)
+   Compiling ark-r1cs-std v0.5.0 (https://github.com/arkworks-rs/r1cs-std#45e4e269)
+   Compiling ark-bn254 v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/curves/bn254)
+   Compiling ark-algebra-bench-templates v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/bench-templates)
+   Compiling ark-algebra-test-templates v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/test-templates)
+   Compiling ark-curve-constraint-tests v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/curves/curve-constraint-tests)
+    Finished `bench` profile [optimized] target(s) in 21.81s
+     Running benches/bn254_pairing_only.rs (/home/ec2-user/VROOM-test/baselines/algebra/curves/target/release/deps/bn254_pairing_only-189a686da63a195e)
+Gnuplot not found, using plotters backend
+Benchmarking Pairing for Bn254/G1 Preparation for Bn254
+Benchmarking Pairing for Bn254/G1 Preparation for Bn254: Warming up for 3.0000 s
+Benchmarking Pairing for Bn254/G1 Preparation for Bn254: Collecting 100 samples in estimated 5.0000 s (1.5B iterations)
+Benchmarking Pairing for Bn254/G1 Preparation for Bn254: Analyzing
+Pairing for Bn254/G1 Preparation for Bn254
+                        time:   [3.3929 ns 3.3968 ns 3.4006 ns]
+Found 5 outliers among 100 measurements (5.00%)
+  5 (5.00%) low mild
+Benchmarking Pairing for Bn254/G2 Preparation for Bn254
+Benchmarking Pairing for Bn254/G2 Preparation for Bn254: Warming up for 3.0000 s
+Benchmarking Pairing for Bn254/G2 Preparation for Bn254: Collecting 100 samples in estimated 5.1886 s (66k iterations)
+Benchmarking Pairing for Bn254/G2 Preparation for Bn254: Analyzing
+Pairing for Bn254/G2 Preparation for Bn254
+                        time:   [78.973 µs 78.987 µs 79.002 µs]
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high mild
+Benchmarking Pairing for Bn254/Miller Loop for Bn254
+Benchmarking Pairing for Bn254/Miller Loop for Bn254: Warming up for 3.0000 s
+Benchmarking Pairing for Bn254/Miller Loop for Bn254: Collecting 100 samples in estimated 6.1670 s (25k iterations)
+Benchmarking Pairing for Bn254/Miller Loop for Bn254: Analyzing
+Pairing for Bn254/Miller Loop for Bn254
+                        time:   [243.86 µs 244.02 µs 244.22 µs]
+Found 3 outliers among 100 measurements (3.00%)
+  2 (2.00%) high mild
+  1 (1.00%) high severe
+Benchmarking Pairing for Bn254/Final Exponentiation for Bn254
+Benchmarking Pairing for Bn254/Final Exponentiation for Bn254: Warming up for 3.0000 s
+Benchmarking Pairing for Bn254/Final Exponentiation for Bn254: Collecting 100 samples in estimated 6.4348 s (15k iterations)
+Benchmarking Pairing for Bn254/Final Exponentiation for Bn254: Analyzing
+Pairing for Bn254/Final Exponentiation for Bn254
+                        time:   [424.36 µs 424.56 µs 424.76 µs]
+Found 3 outliers among 100 measurements (3.00%)
+  3 (3.00%) high mild
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 1 pairs
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 1 pairs: Warming up for 3.0000 s
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 1 pairs: Collecting 100 samples in estimated 7.6981 s (10k iterations)
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 1 pairs: Analyzing
+Pairing for Bn254/Multi Pairing for Bn254 with 1 pairs
+                        time:   [761.52 µs 761.79 µs 762.08 µs]
+Found 5 outliers among 100 measurements (5.00%)
+  1 (1.00%) low mild
+  4 (4.00%) high mild
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 2 pairs
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 2 pairs: Warming up for 3.0000 s
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 2 pairs: Collecting 100 samples in estimated 9.8703 s (10k iterations)
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 2 pairs: Analyzing
+Pairing for Bn254/Multi Pairing for Bn254 with 2 pairs
+                        time:   [976.53 µs 976.73 µs 976.93 µs]
+Found 11 outliers among 100 measurements (11.00%)
+  5 (5.00%) low mild
+  4 (4.00%) high mild
+  2 (2.00%) high severe
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 3 pairs
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 3 pairs: Warming up for 3.0000 s
+
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 6.0s, enable flat sampling, or reduce sample count to 60.
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 3 pairs: Collecting 100 samples in estimated 6.0055 s (5050 iterations)
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 3 pairs: Analyzing
+Pairing for Bn254/Multi Pairing for Bn254 with 3 pairs
+                        time:   [1.1874 ms 1.1878 ms 1.1883 ms]
+Found 5 outliers among 100 measurements (5.00%)
+  1 (1.00%) low severe
+  2 (2.00%) high mild
+  2 (2.00%) high severe
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 4 pairs
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 4 pairs: Warming up for 3.0000 s
+
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 7.1s, enable flat sampling, or reduce sample count to 50.
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 4 pairs: Collecting 100 samples in estimated 7.0685 s (5050 iterations)
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 4 pairs: Analyzing
+Pairing for Bn254/Multi Pairing for Bn254 with 4 pairs
+                        time:   [1.3983 ms 1.3989 ms 1.3994 ms]
+Found 3 outliers among 100 measurements (3.00%)
+  3 (3.00%) high mild
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 5 pairs
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 5 pairs: Warming up for 3.0000 s
+
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 8.7s, enable flat sampling, or reduce sample count to 50.
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 5 pairs: Collecting 100 samples in estimated 8.7434 s (5050 iterations)
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 5 pairs: Analyzing
+Pairing for Bn254/Multi Pairing for Bn254 with 5 pairs
+                        time:   [1.7291 ms 1.7297 ms 1.7303 ms]
+Found 5 outliers among 100 measurements (5.00%)
+  3 (3.00%) low mild
+  2 (2.00%) high mild
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 6 pairs
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 6 pairs: Warming up for 3.0000 s
+
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 9.8s, enable flat sampling, or reduce sample count to 50.
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 6 pairs: Collecting 100 samples in estimated 9.8203 s (5050 iterations)
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 6 pairs: Analyzing
+Pairing for Bn254/Multi Pairing for Bn254 with 6 pairs
+                        time:   [1.9418 ms 1.9424 ms 1.9430 ms]
+Found 4 outliers among 100 measurements (4.00%)
+  3 (3.00%) low mild
+  1 (1.00%) high mild
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 7 pairs
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 7 pairs: Warming up for 3.0000 s
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 7 pairs: Collecting 100 samples in estimated 5.1705 s (2400 iterations)
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 7 pairs: Analyzing
+Pairing for Bn254/Multi Pairing for Bn254 with 7 pairs
+                        time:   [2.1524 ms 2.1534 ms 2.1544 ms]
+Found 2 outliers among 100 measurements (2.00%)
+  2 (2.00%) high mild
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 8 pairs
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 8 pairs: Warming up for 3.0000 s
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 8 pairs: Collecting 100 samples in estimated 5.2047 s (2200 iterations)
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 8 pairs: Analyzing
+Pairing for Bn254/Multi Pairing for Bn254 with 8 pairs
+                        time:   [2.3618 ms 2.3630 ms 2.3642 ms]
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high mild
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 9 pairs
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 9 pairs: Warming up for 3.0000 s
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 9 pairs: Collecting 100 samples in estimated 5.1171 s (1900 iterations)
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 9 pairs: Analyzing
+Pairing for Bn254/Multi Pairing for Bn254 with 9 pairs
+                        time:   [2.6906 ms 2.6919 ms 2.6931 ms]
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 10 pairs
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 10 pairs: Warming up for 3.0000 s
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 10 pairs: Collecting 100 samples in estimated 5.2251 s (1800 iterations)
+Benchmarking Pairing for Bn254/Multi Pairing for Bn254 with 10 pairs: Analyzing
+Pairing for Bn254/Multi Pairing for Bn254 with 10 pairs
+                        time:   [2.9013 ms 2.9025 ms 2.9036 ms]
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high mild
+
+   Compiling ark-bn254 v0.5.0 (/home/ec2-user/VROOM-test/baselines/algebra/curves/bn254)
+    Finished `bench` profile [optimized] target(s) in 3.85s
+     Running benches/bn254_g1_ec_only.rs (/home/ec2-user/VROOM-test/baselines/algebra/curves/target/release/deps/bn254_g1_ec_only-671a789aa1b9695e)
+Gnuplot not found, using plotters backend
+Benchmarking Arithmetic for BN254::G1Projective/Addition
+Benchmarking Arithmetic for BN254::G1Projective/Addition: Warming up for 3.0000 s
+Benchmarking Arithmetic for BN254::G1Projective/Addition: Collecting 100 samples in estimated 5.0011 s (17M iterations)
+Benchmarking Arithmetic for BN254::G1Projective/Addition: Analyzing
+Arithmetic for BN254::G1Projective/Addition
+                        time:   [297.23 ns 297.46 ns 297.71 ns]
+Found 2 outliers among 100 measurements (2.00%)
+  2 (2.00%) high mild
+Benchmarking Arithmetic for BN254::G1Projective/Mixed Addition
+Benchmarking Arithmetic for BN254::G1Projective/Mixed Addition: Warming up for 3.0000 s
+Benchmarking Arithmetic for BN254::G1Projective/Mixed Addition: Collecting 100 samples in estimated 5.0010 s (23M iterations)
+Benchmarking Arithmetic for BN254::G1Projective/Mixed Addition: Analyzing
+Arithmetic for BN254::G1Projective/Mixed Addition
+                        time:   [216.27 ns 216.50 ns 216.75 ns]
+Found 9 outliers among 100 measurements (9.00%)
+  8 (8.00%) high mild
+  1 (1.00%) high severe
+Benchmarking Arithmetic for BN254::G1Projective/Double
+Benchmarking Arithmetic for BN254::G1Projective/Double: Warming up for 3.0000 s
+Benchmarking Arithmetic for BN254::G1Projective/Double: Collecting 100 samples in estimated 5.0005 s (33M iterations)
+Benchmarking Arithmetic for BN254::G1Projective/Double: Analyzing
+Arithmetic for BN254::G1Projective/Double
+                        time:   [151.82 ns 151.99 ns 152.17 ns]
+Found 7 outliers among 100 measurements (7.00%)
+  6 (6.00%) high mild
+  1 (1.00%) high severe
+
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:10
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |          ^^^^^
+   |
+note: the name `Field` in the type namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:10
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |          ^^^^^
+   = note: `#[warn(hidden_glob_reexports)]` on by default
+
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:17
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                 ^^^^^^^^^^
+   |
+note: the name `PrimeField` in the type namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:17
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                 ^^^^^^^^^^
+
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:17
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                 ^^^^^^^^^^
+   |
+note: the name `PrimeField` in the macro namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:17
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                 ^^^^^^^^^^
+
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:29
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                             ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+note: the name `PrimeFieldDecodingError` in the type namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:29
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                             ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:54
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                                                      ^^^^^^^^^^^^^^
+   |
+note: the name `PrimeFieldRepr` in the type namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:54
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                                                      ^^^^^^^^^^^^^^
+
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:70
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                                                                      ^^^^^^^^^^^^
+   |
+note: the name `ScalarEngine` in the type namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:70
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                                                                      ^^^^^^^^^^^^
+
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:84
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                                                                                    ^^^^^^^^^
+   |
+note: the name `SqrtField` in the type namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:84
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                                                                                    ^^^^^^^^^
+
+warning: unused variable: `y2`
+    --> crates/pairing/src/bn256/ec.rs:1417:17
+     |
+1417 |             let y2 = other.y;
+     |                 ^^ help: if this is intentional, prefix it with an underscore: `_y2`
+     |
+     = note: `#[warn(unused_variables)]` on by default
+
+warning: method `scale_by_cofactor` is never used
+   --> crates/pairing/src/bls12_381/ec.rs:970:12
+    |
+969 |     impl G1Affine {
+    |     ------------- method in this implementation
+970 |         fn scale_by_cofactor(&self) -> G1 {
+    |            ^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` on by default
+
+warning: `zksync_pairing` (lib) generated 9 warnings
+    Finished `bench` profile [optimized] target(s) in 0.05s
+     Running benches/pairing_benches.rs (/home/ec2-user/VROOM-test/baselines/zksync-crypto/target/release/deps/pairing_benches-571c8553f41009b9)
+
+running 56 tests
+test bls12_381::bench_pairing_final_exponentiation ... bench:   1,016,123.20 ns/iter (+/- 5,734.94)
+test bls12_381::bench_pairing_full                 ... bench:   1,513,660.80 ns/iter (+/- 10,555.72)
+test bls12_381::bench_pairing_g1_preparation       ... bench:          10.34 ns/iter (+/- 0.01)
+test bls12_381::bench_pairing_g2_preparation       ... bench:     131,989.79 ns/iter (+/- 1,080.85)
+test bls12_381::bench_pairing_miller_loop          ... bench:     363,954.50 ns/iter (+/- 2,663.83)
+test bn256::bench_pairing_final_exponentiation     ... bench:     611,470.30 ns/iter (+/- 8,058.68)
+test bn256::bench_pairing_full                     ... bench:   1,050,073.90 ns/iter (+/- 14,903.32)
+test bn256::bench_pairing_g1_preparation           ... bench:           3.80 ns/iter (+/- 0.00)
+test bn256::bench_pairing_g2_preparation           ... bench:     110,845.79 ns/iter (+/- 1,418.66)
+test bn256::bench_pairing_miller_loop              ... bench:     322,108.45 ns/iter (+/- 5,329.53)
+test bn256::ec::g1::bench_g1_add_assign            ... bench:         305.04 ns/iter (+/- 5.43)
+test bn256::ec::g1::bench_g1_add_assign_mixed      ... bench:         229.12 ns/iter (+/- 9.63)
+test bn256::ec::g1::bench_g1_double                ... bench:         145.40 ns/iter (+/- 4.24)
+test bn256::ec::g1::bench_g1_mul_assign            ... bench:      92,090.95 ns/iter (+/- 1,427.97)
+test bn256::ec::g2::bench_g2_add_assign            ... bench:       2,452.22 ns/iter (+/- 26.82)
+test bn256::ec::g2::bench_g2_add_assign_mixed      ... bench:       1,703.54 ns/iter (+/- 25.56)
+test bn256::ec::g2::bench_g2_mul_assign            ... bench:     580,510.59 ns/iter (+/- 8,190.68)
+test bn256::fq12::bench_fq12_add_assign            ... bench:          38.60 ns/iter (+/- 0.71)
+test bn256::fq12::bench_fq12_inverse               ... bench:       8,980.02 ns/iter (+/- 175.42)
+test bn256::fq12::bench_fq12_mul_assign            ... bench:       2,520.21 ns/iter (+/- 35.61)
+test bn256::fq12::bench_fq12_squaring              ... bench:       1,810.05 ns/iter (+/- 29.11)
+test bn256::fq12::bench_fq12_sub_assign            ... bench:          34.94 ns/iter (+/- 7.05)
+test bn256::fq2::bench_fq2_add_assign              ... bench:           4.86 ns/iter (+/- 0.00)
+test bn256::fq2::bench_fq2_inverse                 ... bench:       4,820.56 ns/iter (+/- 147.77)
+test bn256::fq2::bench_fq2_mul_assign              ... bench:          67.46 ns/iter (+/- 2.46)
+test bn256::fq2::bench_fq2_sqrt                    ... bench:      40,832.61 ns/iter (+/- 638.53)
+test bn256::fq2::bench_fq2_squaring                ... bench:          51.91 ns/iter (+/- 1.00)
+test bn256::fq2::bench_fq2_sub_assign              ... bench:           5.41 ns/iter (+/- 0.01)
+test bn256::fq::bench_fq_add_assign                ... bench:           3.93 ns/iter (+/- 0.00)
+test bn256::fq::bench_fq_from_repr                 ... bench:          21.63 ns/iter (+/- 0.04)
+test bn256::fq::bench_fq_into_repr                 ... bench:           9.70 ns/iter (+/- 0.00)
+test bn256::fq::bench_fq_inverse                   ... bench:       4,747.68 ns/iter (+/- 147.20)
+test bn256::fq::bench_fq_mul_assign                ... bench:          16.88 ns/iter (+/- 1.36)
+test bn256::fq::bench_fq_negate                    ... bench:           3.92 ns/iter (+/- 0.00)
+test bn256::fq::bench_fq_repr_add_nocarry          ... bench:           1.39 ns/iter (+/- 0.00)
+test bn256::fq::bench_fq_repr_div2                 ... bench:           4.23 ns/iter (+/- 0.00)
+test bn256::fq::bench_fq_repr_mul2                 ... bench:           4.13 ns/iter (+/- 0.19)
+test bn256::fq::bench_fq_repr_num_bits             ... bench:           3.26 ns/iter (+/- 0.00)
+test bn256::fq::bench_fq_repr_sub_noborrow         ... bench:           2.01 ns/iter (+/- 0.00)
+test bn256::fq::bench_fq_sqrt                      ... bench:       6,216.84 ns/iter (+/- 405.15)
+test bn256::fq::bench_fq_square                    ... bench:          17.17 ns/iter (+/- 0.42)
+test bn256::fq::bench_fq_sub_assign                ... bench:           4.25 ns/iter (+/- 0.00)
+test bn256::fr::bench_fr_add_assign                ... bench:           3.93 ns/iter (+/- 0.01)
+test bn256::fr::bench_fr_from_repr                 ... bench:          21.62 ns/iter (+/- 0.10)
+test bn256::fr::bench_fr_into_repr                 ... bench:           9.90 ns/iter (+/- 0.01)
+test bn256::fr::bench_fr_inverse                   ... bench:       4,730.08 ns/iter (+/- 197.00)
+test bn256::fr::bench_fr_mul_assign                ... bench:          16.70 ns/iter (+/- 0.75)
+test bn256::fr::bench_fr_negate                    ... bench:           3.91 ns/iter (+/- 0.00)
+test bn256::fr::bench_fr_repr_add_nocarry          ... bench:           1.38 ns/iter (+/- 0.01)
+test bn256::fr::bench_fr_repr_div2                 ... bench:           4.23 ns/iter (+/- 0.00)
+test bn256::fr::bench_fr_repr_mul2                 ... bench:           4.12 ns/iter (+/- 0.25)
+test bn256::fr::bench_fr_repr_num_bits             ... bench:           3.26 ns/iter (+/- 0.00)
+test bn256::fr::bench_fr_repr_sub_noborrow         ... bench:           2.01 ns/iter (+/- 0.00)
+test bn256::fr::bench_fr_sqrt                      ... bench:      22,730.92 ns/iter (+/- 591.49)
+test bn256::fr::bench_fr_square                    ... bench:          17.02 ns/iter (+/- 1.36)
+test bn256::fr::bench_fr_sub_assign                ... bench:           4.25 ns/iter (+/- 0.01)
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 56 measured; 45 filtered out; finished in 68.07s
+
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:10
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |          ^^^^^
+   |
+note: the name `Field` in the type namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:10
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |          ^^^^^
+   = note: `#[warn(hidden_glob_reexports)]` on by default
+
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:17
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                 ^^^^^^^^^^
+   |
+note: the name `PrimeField` in the type namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:17
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                 ^^^^^^^^^^
+
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:17
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                 ^^^^^^^^^^
+   |
+note: the name `PrimeField` in the macro namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:17
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                 ^^^^^^^^^^
+
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:29
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                             ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+note: the name `PrimeFieldDecodingError` in the type namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:29
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                             ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:54
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                                                      ^^^^^^^^^^^^^^
+   |
+note: the name `PrimeFieldRepr` in the type namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:54
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                                                      ^^^^^^^^^^^^^^
+
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:70
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                                                                      ^^^^^^^^^^^^
+   |
+note: the name `ScalarEngine` in the type namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:70
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                                                                      ^^^^^^^^^^^^
+
+warning: private item shadows public glob re-export
+  --> crates/pairing/src/lib.rs:27:84
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                                                                                    ^^^^^^^^^
+   |
+note: the name `SqrtField` in the type namespace is supposed to be publicly re-exported here
+  --> crates/pairing/src/lib.rs:15:9
+   |
+15 | pub use ff::*;
+   |         ^^^^^
+note: but the private item here shadows it
+  --> crates/pairing/src/lib.rs:27:84
+   |
+27 | use ff::{Field, PrimeField, PrimeFieldDecodingError, PrimeFieldRepr, ScalarEngine, SqrtField};
+   |                                                                                    ^^^^^^^^^
+
+warning: unused variable: `y2`
+    --> crates/pairing/src/bn256/ec.rs:1417:17
+     |
+1417 |             let y2 = other.y;
+     |                 ^^ help: if this is intentional, prefix it with an underscore: `_y2`
+     |
+     = note: `#[warn(unused_variables)]` on by default
+
+warning: method `scale_by_cofactor` is never used
+   --> crates/pairing/src/bls12_381/ec.rs:970:12
+    |
+969 |     impl G1Affine {
+    |     ------------- method in this implementation
+970 |         fn scale_by_cofactor(&self) -> G1 {
+    |            ^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` on by default
+
+warning: `zksync_pairing` (lib) generated 9 warnings
+    Finished `bench` profile [optimized] target(s) in 0.04s
+     Running benches/pairing_benches.rs (/home/ec2-user/VROOM-test/baselines/zksync-crypto/target/release/deps/pairing_benches-571c8553f41009b9)
+
+running 3 tests
+test bn256::ec::g1::bench_g1_add_assign            ... bench:         300.84 ns/iter (+/- 3.60)
+test bn256::ec::g1::bench_g1_add_assign_mixed      ... bench:         230.91 ns/iter (+/- 5.42)
+test bn256::ec::g1::bench_g1_double                ... bench:         145.26 ns/iter (+/- 5.11)
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 3 measured; 98 filtered out; finished in 3.83s
+
++ [BN254] BatchScalarMultiplication should be consistent with individual
+   scalar multiplications: OK, passed 10 tests.
++ [BN254] BatchScalarMultiplication should be consistent with individual
+   scalar multiplications: OK, passed 10 tests.
++ [G1] Multi exponentiation (cmax) should be consistent with splitted
+   multiexp: OK, passed 20 tests.
++ [G1] Multi exponentiation (c in [2 3 4 5 6 7 8 9 10 11 12 13 14 15 16])
+   should be consistent with sum of square: OK, passed 20 tests.
++ [G1] Multi exponentiation (c in [2 3 4 5 6 7 8 9 10 11 12 13 14 15 16])
+   of points at infinity should output a point at infinity: OK, passed 20
+   tests.
++ [G1] Multi exponentiation (c in [2 3 4 5 6 7 8 9 10 11 12 13 14 15 16])
+   with a vector of 0s as input should output a point at infinity: OK,
+   passed 20 tests.
++ [G1] Multi exponentiation (<50points) should be consistent with sum of
+   square: OK, passed 20 tests.
++ [G2] Multi exponentiation (cmax) should be consistent with splitted
+   multiexp: OK, passed 20 tests.
++ [G2] Multi exponentiation (c in [5 14]) should be consistent with sum of
+   square: OK, passed 20 tests.
++ [G2] Multi exponentiation (c in [5 14]) of points at infinity should
+   output a point at infinity: OK, passed 20 tests.
++ [G2] Multi exponentiation (c in [5 14]) with a vector of 0s as input
+   should output a point at infinity: OK, passed 20 tests.
++ [G2] Multi exponentiation (<50points) should be consistent with sum of
+   square: OK, passed 20 tests.
++ [BN254] g2Gen (affine) should be on the curve: OK, passed 100 tests.
++ [BN254] Affine representation should be independent of the Jacobian
+   representative: OK, passed 100 tests.
++ [BN254] Affine representation should be independent of the Jacobian
+   representative: OK, passed 100 tests.
++ [BN254] g1Gen (affine) should be on the curve: OK, passed 100 tests.
++ [BN254] g2Gen (Jacobian) should be on the curve: OK, passed 100 tests.
++ [BN254] Add(P,-P) should return the point at infinity: OK, passed 10
+   tests.
++ [BN254] g1Gen (Jacobian) should be on the curve: OK, passed 100 tests.
++ [BN254] Add(P,-P) should return the point at infinity: OK, passed 10
+   tests.
++ [BN254] Affine representation should be independent of a Extended
+   Jacobian representative: OK, passed 100 tests.
++ [BN254] Jacobian representation should be the same as the affine
+   representative: OK, passed 100 tests.
++ [BN254] Converting affine symbol for infinity to Jacobian should output
+   correct infinity in Jacobian: OK, passed 100 tests.
++ [BN254] Converting infinity in extended Jacobian to affine should output
+   infinity symbol in Affine: OK, passed 100 tests.
++ [BN254] Converting infinity in extended Jacobian to Jacobian should
+   output infinity in Jacobian: OK, passed 100 tests.
++ [G1] mapping to curve should output point on the curve: OK, passed 100
+   tests.
++ [BN254] Affine representation should be independent of a Extended
+   Jacobian representative: OK, passed 100 tests.
++ [BN254] Add(P,0) and Add(0,P) should return P: OK, passed 10 tests.
++ [BN254] [Jacobian] Two representatives of the same class should be
+   equal: OK, passed 100 tests.
++ [BN254] Jacobian representation should be the same as the affine
+   representative: OK, passed 100 tests.
++ [BN254] Add(P,0) and Add(0,P) should return P: OK, passed 10 tests.
++ [BN254] Converting affine symbol for infinity to Jacobian should output
+   correct infinity in Jacobian: OK, passed 100 tests.
++ [BN254] Converting infinity in extended Jacobian to affine should output
+   infinity symbol in Affine: OK, passed 100 tests.
++ [BN254] Converting infinity in extended Jacobian to Jacobian should
+   output infinity in Jacobian: OK, passed 100 tests.
++ [G2] mapping output must be on curve: OK, passed 100 tests.
++ [BN254] Add should call double when adding the same point: OK, passed 10
+   tests.
++ [BN254] [Jacobian] Two representatives of the same class should be
+   equal: OK, passed 100 tests.
++ [BN254] [2]G = double(G) + G - G: OK, passed 10 tests.
++ [BN254] Add should call double when adding the same point: OK, passed 10
+   tests.
++ [G1] mapping output must be on curve: OK, passed 100 tests.
++ [BN254] BatchJacobianToAffineG1 and FromJacobian should output the same
+   result: OK, passed 100 tests.
++ [BN254] [2]G = double(G) + G - G: OK, passed 10 tests.
++ [G1] mapping to curve should be deterministic: OK, passed 100 tests.
++ [BN254] [-s]G = -[s]G: OK, passed 10 tests.
++ [BN254] [Jacobian] Add should call double when adding the same point:
+   OK, passed 10 tests.
++ [BN254] [Jacobian] Adding the opposite of a point to itself should
+   output inf: OK, passed 10 tests.
++ [BN254] [Jacobian] Adding the inf to a point should not modify the
+   point: OK, passed 10 tests.
++ [BN254] [Jacobian Extended] addMixed (-G) should equal subMixed(G): OK,
+   passed 10 tests.
++ [BN254] [Jacobian Extended] doubleMixed (-G) should equal
+   doubleNegMixed(G): OK, passed 10 tests.
++ [BN254] [Jacobian] Addmix the negation to itself should output 0: OK,
+   passed 10 tests.
++ [G1] Affine SetBytes(RawBytes) should stay the same: OK, passed 100
+   tests.
++ [BN254] scalar multiplication (double and add) should depend only on the
+   scalar mod r: OK, passed 10 tests.
++ [BN254] IsInSubGroup and MulBy subgroup order should be the same: OK,
+   passed 100 tests.
++ [BN254] check that phi(P) = lambdaGLV * P: OK, passed 100 tests.
++ [BN254] [-s]G = -[s]G: OK, passed 10 tests.
++ [BN254] [Jacobian] Add should call double when adding the same point:
+   OK, passed 10 tests.
++ [BN254] [Jacobian] Adding the opposite of a point to itself should
+   output inf: OK, passed 10 tests.
++ [BN254] [Jacobian] Adding the inf to a point should not modify the
+   point: OK, passed 10 tests.
++ [BN254] [Jacobian Extended] addMixed (-G) should equal subMixed(G): OK,
+   passed 10 tests.
++ [BN254] [Jacobian Extended] doubleMixed (-G) should equal
+   doubleNegMixed(G): OK, passed 10 tests.
++ [BN254] [Jacobian] Addmix the negation to itself should output 0: OK,
+   passed 10 tests.
++ [BN254] scalar multiplication (GLV) should depend only on the scalar mod
+   r: OK, passed 10 tests.
++ [BN254] Clearing the cofactor of a random point should set it in the
+   r-torsion: OK, passed 100 tests.
++ [G2] mapping to curve should output point on the curve: OK, passed 100
+   tests.
++ [BN254] GLV and Double and Add should output the same result: OK, passed
+   10 tests.
++ [BN254] check that phi^2(P) + phi(P) + P = 0: OK, passed 100 tests.
++ [G1] Affine SetBytes(Bytes()) should stay the same: OK, passed 100 tests.
++ [BN254] [3]P == [2]P+P: OK, passed 100 tests.
++ [BN254] JointScalarMultiplicationBase and ScalarMultiplication should
+   output the same results: OK, passed 10 tests.
++ [BN254] scalar multiplication (double and add) should depend only on the
+   scalar mod r: OK, passed 10 tests.
++ [BN254] psi should map points from E' to itself: OK, passed 10 tests.
++ [G2] Affine SetBytes(RawBytes) should stay the same: OK, passed 100
+   tests.
++ [BN254] scalar multiplication (GLV) should depend only on the scalar mod
+   r: OK, passed 10 tests.
++ [BN254] GLV and Double and Add should output the same result: OK, passed
+   10 tests.
++ [BN254] IsInSubGroup and MulBy subgroup order should be the same: OK,
+   passed 100 tests.
++ [BN254] check that phi(P) = lambdaGLV * P: OK, passed 100 tests.
++ [BN254] doubleAndAddStep: optimized (Eisenträger-Lauter-Montgomery)
+   matches reference implementation: OK, passed 100 tests.
++ [G2] mapping to curve should be deterministic: OK, passed 100 tests.
++ [BN254] check that phi^2(P) + phi(P) + P = 0: OK, passed 100 tests.
++ [G2] Affine SetBytes(Bytes()) should stay the same: OK, passed 100 tests.
++ [BN254] IsInSubGroup should return false for a point on the
+   cofactor-torsion: OK, passed 100 tests.
++ [BN254] [3]P == [2]P+P: OK, passed 100 tests.
++ [BN254] Having the receiver as operand (final expo) should output the
+   same result: OK, passed 100 tests.
++ [BN254] check that psi^2(P) = -phi(P): OK, passed 100 tests.
++ [BN254] IsInSubGroupBatchG1 test should pass with high probability: OK,
+   passed 100 tests.
++ [BN254] IsInSubGroupBatchG2 test should pass with high probability: OK,
+   passed 100 tests.
++ [BN254] Exponentiating FinalExpo(a) to r should output 1: OK, passed 100
+   tests.
++ [BN254] IsInSubGroupBatch test should not pass with high probability:
+   OK, passed 100 tests.
++ [BN254] MillerLoop of pairs should be equal to the product of
+   MillerLoops: OK, passed 100 tests.
++ [BN254] MillerLoop and MillerLoopFixedQ should skip pairs with a point
+   at infinity: OK, passed 100 tests.
++ [BN254] compressed pairing: OK, passed 100 tests.
++ [BN254] Exp, CyclotomicExp and ExpGLV results must be the same in GT
+   (small and big exponents): OK, passed 100 tests.
++ [BN254] Expt(Expt) and Exp(t^2) should output the same result in the
+   cyclotomic subgroup: OK, passed 100 tests.
++ [BN254] bilinearity: OK, passed 100 tests.
++ [BN254] PairingCheck: OK, passed 100 tests.
++ [BN254] Pair should output the same result with MillerLoop or
+   MillerLoopFixedQ: OK, passed 100 tests.
+goos: linux
+goarch: amd64
+pkg: github.com/consensys/gnark-crypto/ecc/bn254
+cpu: Intel(R) Xeon(R) Platinum 8488C
+BenchmarkPairing-96                	    3387	    333677 ns/op	     512 B/op	       4 allocs/op
+BenchmarkMillerLoop-96             	    6992	    170144 ns/op	     512 B/op	       4 allocs/op
+BenchmarkFinalExponentiation-96    	    7305	    165271 ns/op	       0 B/op	       0 allocs/op
+PASS
+ok  	github.com/consensys/gnark-crypto/ecc/bn254	6.375s
++ [BN254] BatchScalarMultiplication should be consistent with individual
+   scalar multiplications: OK, passed 10 tests.
++ [BN254] BatchScalarMultiplication should be consistent with individual
+   scalar multiplications: OK, passed 10 tests.
++ [G1] Multi exponentiation (cmax) should be consistent with splitted
+   multiexp: OK, passed 20 tests.
++ [G1] Multi exponentiation (c in [2 3 4 5 6 7 8 9 10 11 12 13 14 15 16])
+   should be consistent with sum of square: OK, passed 20 tests.
++ [G1] Multi exponentiation (c in [2 3 4 5 6 7 8 9 10 11 12 13 14 15 16])
+   of points at infinity should output a point at infinity: OK, passed 20
+   tests.
++ [G1] Multi exponentiation (c in [2 3 4 5 6 7 8 9 10 11 12 13 14 15 16])
+   with a vector of 0s as input should output a point at infinity: OK,
+   passed 20 tests.
++ [G1] Multi exponentiation (<50points) should be consistent with sum of
+   square: OK, passed 20 tests.
++ [G2] Multi exponentiation (cmax) should be consistent with splitted
+   multiexp: OK, passed 20 tests.
++ [G2] Multi exponentiation (c in [5 14]) should be consistent with sum of
+   square: OK, passed 20 tests.
++ [G2] Multi exponentiation (c in [5 14]) of points at infinity should
+   output a point at infinity: OK, passed 20 tests.
++ [G2] Multi exponentiation (c in [5 14]) with a vector of 0s as input
+   should output a point at infinity: OK, passed 20 tests.
++ [G2] Multi exponentiation (<50points) should be consistent with sum of
+   square: OK, passed 20 tests.
++ [BN254] g2Gen (affine) should be on the curve: OK, passed 100 tests.
++ [BN254] g1Gen (affine) should be on the curve: OK, passed 100 tests.
++ [BN254] Add(P,-P) should return the point at infinity: OK, passed 10
+   tests.
++ [BN254] Affine representation should be independent of the Jacobian
+   representative: OK, passed 100 tests.
++ [BN254] g1Gen (Jacobian) should be on the curve: OK, passed 100 tests.
++ [BN254] Affine representation should be independent of the Jacobian
+   representative: OK, passed 100 tests.
++ [BN254] g2Gen (Jacobian) should be on the curve: OK, passed 100 tests.
++ [BN254] Add(P,0) and Add(0,P) should return P: OK, passed 10 tests.
++ [BN254] Add(P,-P) should return the point at infinity: OK, passed 10
+   tests.
++ [BN254] Affine representation should be independent of a Extended
+   Jacobian representative: OK, passed 100 tests.
++ [BN254] Affine representation should be independent of a Extended
+   Jacobian representative: OK, passed 100 tests.
++ [G1] mapping output must be on curve: OK, passed 100 tests.
++ [BN254] Jacobian representation should be the same as the affine
+   representative: OK, passed 100 tests.
++ [BN254] Jacobian representation should be the same as the affine
+   representative: OK, passed 100 tests.
++ [BN254] Converting affine symbol for infinity to Jacobian should output
+   correct infinity in Jacobian: OK, passed 100 tests.
++ [BN254] Converting affine symbol for infinity to Jacobian should output
+   correct infinity in Jacobian: OK, passed 100 tests.
++ [BN254] Converting infinity in extended Jacobian to affine should output
+   infinity symbol in Affine: OK, passed 100 tests.
++ [BN254] Converting infinity in extended Jacobian to affine should output
+   infinity symbol in Affine: OK, passed 100 tests.
++ [BN254] Converting infinity in extended Jacobian to Jacobian should
+   output infinity in Jacobian: OK, passed 100 tests.
++ [BN254] Converting infinity in extended Jacobian to Jacobian should
+   output infinity in Jacobian: OK, passed 100 tests.
++ [BN254] Add should call double when adding the same point: OK, passed 10
+   tests.
++ [BN254] [Jacobian] Two representatives of the same class should be
+   equal: OK, passed 100 tests.
++ [BN254] Add(P,0) and Add(0,P) should return P: OK, passed 10 tests.
++ [BN254] [Jacobian] Two representatives of the same class should be
+   equal: OK, passed 100 tests.
++ [BN254] [2]G = double(G) + G - G: OK, passed 10 tests.
++ [G2] mapping output must be on curve: OK, passed 100 tests.
++ [BN254] Add should call double when adding the same point: OK, passed 10
+   tests.
++ [G1] mapping to curve should output point on the curve: OK, passed 100
+   tests.
++ [BN254] BatchJacobianToAffineG1 and FromJacobian should output the same
+   result: OK, passed 100 tests.
++ [BN254] [2]G = double(G) + G - G: OK, passed 10 tests.
++ [BN254] [-s]G = -[s]G: OK, passed 10 tests.
++ [BN254] [Jacobian] Add should call double when adding the same point:
+   OK, passed 10 tests.
++ [BN254] [Jacobian] Adding the opposite of a point to itself should
+   output inf: OK, passed 10 tests.
++ [BN254] [Jacobian] Adding the inf to a point should not modify the
+   point: OK, passed 10 tests.
++ [BN254] [Jacobian Extended] addMixed (-G) should equal subMixed(G): OK,
+   passed 10 tests.
++ [BN254] [Jacobian Extended] doubleMixed (-G) should equal
+   doubleNegMixed(G): OK, passed 10 tests.
++ [BN254] [Jacobian] Addmix the negation to itself should output 0: OK,
+   passed 10 tests.
++ [G1] Affine SetBytes(RawBytes) should stay the same: OK, passed 100
+   tests.
++ [G1] mapping to curve should be deterministic: OK, passed 100 tests.
++ [BN254] IsInSubGroup and MulBy subgroup order should be the same: OK,
+   passed 100 tests.
++ [BN254] [-s]G = -[s]G: OK, passed 10 tests.
++ [BN254] [Jacobian] Add should call double when adding the same point:
+   OK, passed 10 tests.
++ [BN254] [Jacobian] Adding the opposite of a point to itself should
+   output inf: OK, passed 10 tests.
++ [BN254] [Jacobian] Adding the inf to a point should not modify the
+   point: OK, passed 10 tests.
++ [BN254] [Jacobian Extended] addMixed (-G) should equal subMixed(G): OK,
+   passed 10 tests.
++ [BN254] scalar multiplication (double and add) should depend only on the
+   scalar mod r: OK, passed 10 tests.
++ [BN254] [Jacobian Extended] doubleMixed (-G) should equal
+   doubleNegMixed(G): OK, passed 10 tests.
++ [BN254] [Jacobian] Addmix the negation to itself should output 0: OK,
+   passed 10 tests.
++ [BN254] check that phi(P) = lambdaGLV * P: OK, passed 100 tests.
++ [BN254] Clearing the cofactor of a random point should set it in the
+   r-torsion: OK, passed 100 tests.
++ [BN254] scalar multiplication (GLV) should depend only on the scalar mod
+   r: OK, passed 10 tests.
++ [BN254] check that phi^2(P) + phi(P) + P = 0: OK, passed 100 tests.
++ [BN254] GLV and Double and Add should output the same result: OK, passed
+   10 tests.
++ [G1] Affine SetBytes(Bytes()) should stay the same: OK, passed 100 tests.
++ [BN254] [3]P == [2]P+P: OK, passed 100 tests.
++ [G2] mapping to curve should output point on the curve: OK, passed 100
+   tests.
++ [BN254] scalar multiplication (double and add) should depend only on the
+   scalar mod r: OK, passed 10 tests.
++ [BN254] psi should map points from E' to itself: OK, passed 10 tests.
++ [BN254] JointScalarMultiplicationBase and ScalarMultiplication should
+   output the same results: OK, passed 10 tests.
++ [BN254] doubleAndAddStep: optimized (Eisenträger-Lauter-Montgomery)
+   matches reference implementation: OK, passed 100 tests.
++ [BN254] scalar multiplication (GLV) should depend only on the scalar mod
+   r: OK, passed 10 tests.
++ [G2] Affine SetBytes(RawBytes) should stay the same: OK, passed 100
+   tests.
++ [BN254] GLV and Double and Add should output the same result: OK, passed
+   10 tests.
++ [BN254] IsInSubGroup and MulBy subgroup order should be the same: OK,
+   passed 100 tests.
++ [BN254] check that phi(P) = lambdaGLV * P: OK, passed 100 tests.
++ [G2] mapping to curve should be deterministic: OK, passed 100 tests.
++ [BN254] check that phi^2(P) + phi(P) + P = 0: OK, passed 100 tests.
++ [BN254] IsInSubGroup should return false for a point on the
+   cofactor-torsion: OK, passed 100 tests.
++ [G2] Affine SetBytes(Bytes()) should stay the same: OK, passed 100 tests.
++ [BN254] [3]P == [2]P+P: OK, passed 100 tests.
++ [BN254] Having the receiver as operand (final expo) should output the
+   same result: OK, passed 100 tests.
++ [BN254] check that psi^2(P) = -phi(P): OK, passed 100 tests.
++ [BN254] IsInSubGroupBatchG1 test should pass with high probability: OK,
+   passed 100 tests.
++ [BN254] IsInSubGroupBatchG2 test should pass with high probability: OK,
+   passed 100 tests.
++ [BN254] Exponentiating FinalExpo(a) to r should output 1: OK, passed 100
+   tests.
++ [BN254] IsInSubGroupBatch test should not pass with high probability:
+   OK, passed 100 tests.
++ [BN254] MillerLoop of pairs should be equal to the product of
+   MillerLoops: OK, passed 100 tests.
++ [BN254] MillerLoop and MillerLoopFixedQ should skip pairs with a point
+   at infinity: OK, passed 100 tests.
++ [BN254] compressed pairing: OK, passed 100 tests.
++ [BN254] Exp, CyclotomicExp and ExpGLV results must be the same in GT
+   (small and big exponents): OK, passed 100 tests.
++ [BN254] Expt(Expt) and Exp(t^2) should output the same result in the
+   cyclotomic subgroup: OK, passed 100 tests.
++ [BN254] bilinearity: OK, passed 100 tests.
++ [BN254] PairingCheck: OK, passed 100 tests.
++ [BN254] Pair should output the same result with MillerLoop or
+   MillerLoopFixedQ: OK, passed 100 tests.
+goos: linux
+goarch: amd64
+pkg: github.com/consensys/gnark-crypto/ecc/bn254
+cpu: Intel(R) Xeon(R) Platinum 8488C
+BenchmarkG1JacAdd-96         	 3771692	       315.1 ns/op	       0 B/op	       0 allocs/op
+BenchmarkG1JacAddMixed-96    	 4647195	       258.4 ns/op	       0 B/op	       0 allocs/op
+BenchmarkG1JacDouble-96      	 6752926	       178.1 ns/op	       0 B/op	       0 allocs/op
+PASS
+ok  	github.com/consensys/gnark-crypto/ecc/bn254	7.117s

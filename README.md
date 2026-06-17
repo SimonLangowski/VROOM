@@ -24,7 +24,7 @@ Standalone C++ template/header code. Benchmarks use Google Benchmark. Inversion 
 | OS | Linux x86_64 — **Amazon Linux 2023** on AWS for paper numbers; Ubuntu also works |
 | Cloud | AWS **c7i** (Intel Xeon Platinum **8488C**, Sapphire Rapids) |
 | CPU | AVX-512 **IFMA** required for production build (`grep avx512ifma /proc/cpuinfo`) |
-| Compiler | **clang 21.1.0** (LLVM 21 prebuilt) on reference host — see [ARTIFACT.md](ARTIFACT.md) §2 |
+| Compiler | **clang 21.1.0** (LLVM 21 prebuilt) on reference host — IFMA codegen improves with newer clang; see [ARTIFACT.md](ARTIFACT.md) §1 |
 | Packages | C++ toolchain, GMP, Google Benchmark — **build from source with clang 21 on AL2023** ([ARTIFACT.md](ARTIFACT.md) §2) |
 
 Verify IFMA on a fresh instance:
@@ -35,6 +35,8 @@ lscpu | grep -E 'Model name|Flags' | head -5
 grep -q avx512ifma /proc/cpuinfo && echo "IFMA ok" || echo "Use fallback build"
 ```
 
+**Compiler note:** AVX-512 **IFMA** performance depends strongly on the compiler. Newer **clang** (we used **21.1.0** on the paper host) emits much better IFMA code than distro **GCC** or older **clang** on the same CPU. Use `scripts/setup_toolchain.sh` for paper-comparable timings; older compilers are fine for correctness builds only.
+
 GPU benchmarks are optional; see [`scripts/README.md`](scripts/README.md).
 
 ## Building & testing
@@ -42,11 +44,12 @@ GPU benchmarks are optional; see [`scripts/README.md`](scripts/README.md).
 Install dependencies — **Amazon Linux 2023** (paper host):
 
 ```bash
-sudo dnf install -y gcc gcc-c++ make gmp-devel cmake git
-# Google Benchmark: build from source with clang++ (see ARTIFACT.md §2)
-export BENCHMARK_LIBS="$HOME/benchmark/build2/src/libbenchmark.a -lpthread"
-export BENCHMARK_INC="-I$HOME/benchmark/include"
+chmod +x scripts/setup_toolchain.sh
+./scripts/setup_toolchain.sh
+eval "$(./scripts/setup_toolchain.sh --print)"
 ```
+
+Pins **clang 21.1.0** and **google/benchmark** at paper commits; see [ARTIFACT.md](ARTIFACT.md) §2.
 
 **Ubuntu:**
 
@@ -115,7 +118,7 @@ VROOM vs BLST is automated in `scripts/reproduce_cpu_bench.sh`. For arkworks, gn
 
 **Development:** AWS **c7i-flex.large** on the same AMI family is enough for iteration.
 
-GCC is significantly slower than clang on this codebase; clang **21.x** (we used **21.1.0**) is the reference for paper timings.
+**Compiler:** GCC and older clang versions are significantly slower than **clang 21.x** on this codebase — especially on the AVX-512 IFMA path (`-mavx512ifma`), where LLVM’s backend has improved IFMA instruction selection and scheduling across recent releases. Paper timings use **clang 21.1.0** (`scripts/setup_toolchain.sh`); do not expect to match published ns/op with the Amazon Linux default compiler.
 
 - **`./bench_bls12_381`** — paper CPU suite (`BM_*_Matrix` and `BM_*_MatrixNoK` variants). Parsed tables include both by default; pass `--exclude-nok` to `parse_bench_json.py` for Matrix only.
 
