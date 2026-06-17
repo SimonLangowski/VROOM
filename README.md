@@ -15,7 +15,7 @@ Standalone C++ template/header code. Benchmarks use Google Benchmark. Inversion 
 | [`test_data/`](test_data/) | Reference test vectors |
 | [`blst/`](blst/) | BLST fork (based on [supranational/blst](https://github.com/supranational/blst) @ `8065152`) — primary CPU baseline |
 | [`baselines/`](baselines/) | Optional external CPU baselines (arkworks, gnark, zksync, zkcrypto) |
-| [`gpu/`](gpu/) | CUDA kernels (**optional**, not required for CPU artifact) |
+| [`gpu/`](gpu/) | CUDA kernels (**optional**, separate GPU host — see **[ARTIFACT_GPU.md](ARTIFACT_GPU.md)**) |
 
 ## Supported environment
 
@@ -138,9 +138,13 @@ BM_Pairing_RNS_BLST_Inverter_Matrix  151537 ns       151534 ns        ... Pairin
 - **RNS_BLST_Inverter** — uses RNS for FP12 inversion and BLST for FP inversion.
 - **BM_Inverse** — uses an addition chain of length 425 to invert in RNS without BLST dependency (compare to **BM_FP12_Inverse_BLST** and  **BM_FP12_Inverse_RNS_BLST**)
 
-## GPU (optional)
+## GPU (optional, separate host)
 
-CPU artifact evaluation does **not** require GPU setup. For paper GPU figures, see [`scripts/README.md`](scripts/README.md) (CUDA toolkit, CGBN, `latency.py`, `gpugraph.py`).
+CPU artifact evaluation does **not** require a GPU. For paper GPU latency figures:
+
+1. **[ARTIFACT_GPU.md](ARTIFACT_GPU.md)** — environment (Ubuntu + RTX 3090), setup, reproduction commands, claim mapping
+2. `./scripts/setup_gpu_deps.sh` then `./scripts/reproduce_gpu_latency.sh` (runs `python3 latency.py`)
+3. [`gpu/README.md`](gpu/README.md) — CUDA module map
 
 ## License
 

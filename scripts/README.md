@@ -67,44 +67,30 @@ Writes `results/baselines_*_resources.txt` (per-phase time/RSS) and `results/bas
 
 ---
 
-## GPU benchmarks (optional)
+## GPU benchmarks (optional, separate host)
 
-GPU code is **not required** for the functional CPU artifact. To reproduce GPU figures from the paper:
+GPU evaluation uses a **different machine** than the CPU (AVX) artifact. Full reviewer instructions: **[ARTIFACT_GPU.md](../ARTIFACT_GPU.md)**.
 
-### Installation requirements
+| Script | Role |
+|--------|------|
+| **`setup_gpu_deps.sh`** | Clone NVlabs CGBN + `pip install -r requirements-gpu.txt` |
+| **`smoke_test_gpu.sh`** | Minimal working example (one CGBN + one RNS point) |
+| **`reproduce_gpu_latency.sh`** | Full paper latency sweep → `results/gpu_latency.*` |
+| **`latency.py`** | Sweep 64–4096 bit moduli: CGBN vs **MontRNSReduceVec** |
+| **`bench_cgbn.py`** | CGBN baseline hooks (`gen`, `result`, `correct`) |
+| **`gpu.py`** | RNS Montgomery GPU path (same hook pattern) |
+| **`basic_benchmarker.py`** | JIT `nvcc` compile, run kernels, check correctness, time |
+| **`create_graph.py`** | Parse CSV and plot (`gpu_latency_plot`) |
+| **`gpugraph.py`** | Supplementary paper figures from named CSVs in `data/` |
 
-- **Python:** use a CUDA-capable environment.
-- **CUDA toolkit**, e.g. with conda:
-  ```bash
-  conda install -c conda-forge cuda-python
-  conda install -c "nvidia/label/cuda-12.2.1" cuda-toolkit
-  ```
-- **CGBN:** clone/submodule the CGBN dependency (see your local CGBN install instructions).
-- **Drivers / nvcc:**
-  ```bash
-  nvidia-smi
-  nvcc --version
-  ```
-
-### Benchmarking
-
-Latency-focused GPU benchmarks:
+### Quick start
 
 ```bash
-python latency.py
+./scripts/setup_gpu_deps.sh
+./scripts/smoke_test_gpu.sh
+./scripts/reproduce_gpu_latency.sh   # ~8 min on RTX 3090; runs: cd scripts && python3 latency.py
 ```
 
-Pipeline overview:
+Run from `scripts/` when invoking Python directly (`python3 latency.py`). Requires `nvidia-smi`, `nvcc`, and `cuda-python`.
 
-1. `latency.py` — sweeps GPU configurations and parameters for CGBN vs RNS Montgomery.
-2. `bench_cgbn.py` — CGBN baseline (`gen`, `result`, `correct` hooks).
-3. `gpu.py` — RNS Montgomery GPU path (same hook pattern).
-4. `basic_benchmarker.py` — runs kernels, checks correctness, records timing.
-
-### Graph generation
-
-Sample CSVs: `scripts/data/`. Regenerate plots:
-
-```bash
-python gpugraph.py
-```
+Sample paper-host CSV: `scripts/data/1748900378.1196628.csv`.
