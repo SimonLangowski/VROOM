@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Reproduce CPU benchmark table (paper numbers): build, run bench_pairing_50bit +
+# Reproduce CPU benchmark table (paper numbers): build, run bench_bls12_381 +
 # bench_blst_complete, write JSON, parse with RNS/BLST speedup ratios.
 #
 # Usage:
@@ -15,7 +15,7 @@ cd "$ROOT"
 
 FALLBACK="${FALLBACK:-0}"
 INCLUDE_NOK=0
-BENCH_BASE="${BENCH_BASE:-bench_pairing_50bit}"
+BENCH_BASE="${BENCH_BASE:-bench_bls12_381}"
 BLST_BENCH_BIN="${BLST_BENCH_BIN:-bench_blst_complete}"
 MIN_TIME="${BENCH_MIN_TIME:-0.5s}"
 RESULTS_DIR="${RESULTS_DIR:-$ROOT/results}"

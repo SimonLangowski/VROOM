@@ -40,7 +40,7 @@ using BlsRingMatrixNoK = BoundedRing<
 using BlsRingFixedPerm = BlsRingMatrixNoK;
 using BlsRingProduction = BlsRingMatrixNoK;
 
-// EC point ops need deeper reduction tables (matches bench_pairing_50bit G1/G2).
+// EC point ops need deeper reduction tables (matches bench_bls12_381 G1/G2).
 constexpr int LOG_MULTIPLES_EC = 12;
 
 using BlsRingEC = BoundedRing<

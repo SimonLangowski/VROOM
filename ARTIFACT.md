@@ -93,7 +93,7 @@ Pass these to every benchmark build (`src/`, `blst/`, and `reproduce_cpu_bench.s
 
 ```bash
 make -C blst gbench BENCHMARK_LIBS="$BENCHMARK_LIBS" BENCHMARK_INC="$BENCHMARK_INC"
-make -C src bench-pairing-50bit CXX=clang++ BENCHMARK_LIBS="$BENCHMARK_LIBS" BENCHMARK_INC="$BENCHMARK_INC"
+make -C src bench-bls12-381 CXX=clang++ BENCHMARK_LIBS="$BENCHMARK_LIBS" BENCHMARK_INC="$BENCHMARK_INC"
 ```
 
 Or one shot:
@@ -131,7 +131,7 @@ export BENCHMARK_LIBS="$HOME/benchmark/build2/src/libbenchmark.a -lpthread"
 export BENCHMARK_INC="-I$HOME/benchmark/include"
 
 cd blst && make gbench && cd ..
-cd src && make bench-pairing-50bit
+cd src && make bench-bls12-381
 ```
 
 Default (`-lbenchmark` from the system package) works on Ubuntu when the distro library matches your compiler.
@@ -176,8 +176,7 @@ From `src/` (AVX-512 IFMA unless using `Makefile.fallback`):
 | `make test-ec` | EC point arithmetic |
 | `make test-ec-bn254` | BN254 EC |
 | `make test-scalar-mult` | Scalar multiplication |
-| `make bench-pairing-50bit` | Paper CPU benchmarks (BLS12-381, 50-bit) |
-| `make bench-pairing` | Pairing microbenchmarks |
+| `make bench-bls12-381` | Paper CPU benchmarks (BLS12-381, Matrix + MatrixNoK) |
 | `make bench-bls12-381` | BLS12-381 component benchmarks |
 | `make bench-ec-bn254` | BN254 EC benchmarks |
 
@@ -209,11 +208,11 @@ Outputs under `results/`:
 
 | File | Contents |
 |------|----------|
-| `bench_pairing_50bit.json` | Raw Google Benchmark JSON (RNS) |
+| `bench_bls12_381.json` | Raw Google Benchmark JSON (RNS) |
 | `bench_blst_complete.json` | Raw Google Benchmark JSON (BLST baseline) |
-| `bench_pairing_50bit_table.txt` | Parsed RNS ns; amortized ns/mul for batches |
-| `bench_pairing_50bit_vs_blst.txt` | Aligned pairs + speedup ratio (`blst_ns / rns_ns`; >1 means RNS is faster) |
-| `bench_pairing_50bit_resources.txt` | Wall time and peak RSS per phase + totals |
+| `bench_bls12_381_table.txt` | Parsed RNS ns (Matrix rows); amortized ns/mul for batches |
+| `bench_bls12_381_vs_blst.txt` | Aligned pairs + speedup ratio (`blst_ns / rns_ns`; >1 means RNS is faster) |
+| `bench_bls12_381_resources.txt` | Wall time and peak RSS per phase + totals |
 
 RNS↔BLST name mapping lives in `scripts/parse_bench_json.py` (`RNS_BLST_MAP`). Unmapped entries are listed at the bottom of the comparison file for manual pairing.
 
@@ -221,19 +220,19 @@ RNS↔BLST name mapping lives in `scripts/parse_bench_json.py` (`RNS_BLST_MAP`).
 
 Without IFMA: `FALLBACK=1 ./scripts/reproduce_cpu_bench.sh` (correctness only, not paper timings).
 
-MatrixNoK comparison rows (`bench_bls12_381`) are excluded by default; use `--include-nok` or parse manually:
+MatrixNoK comparison rows are excluded by default; add `--include-nok`:
 
 ```bash
-./scripts/reproduce_cpu_bench.sh --bench bench_bls12_381 --include-nok
+./scripts/reproduce_cpu_bench.sh --include-nok
 ```
 
 Manual equivalent:
 
 ```bash
 cd src
-CXX=clang++ make bench-pairing-50bit
-./bench_pairing_50bit --benchmark_out=../results/bench_pairing_50bit.json --benchmark_out_format=json
-python3 scripts/parse_bench_json.py results/bench_pairing_50bit.json
+CXX=clang++ make bench-bls12-381
+./bench_bls12_381 --benchmark_out=../results/bench_bls12_381.json --benchmark_out_format=json
+python3 scripts/parse_bench_json.py results/bench_bls12_381.json --blst ../results/bench_blst_complete.json
 ```
 
 Compare table to the sample in the root `README.md` (§ Running). `BM_BatchModMul_N` amortized time = reported cpu_ns ÷ N.

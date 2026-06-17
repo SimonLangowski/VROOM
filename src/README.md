@@ -42,7 +42,7 @@ See **ARTIFACT.md** § Full test and benchmark matrix. Quick checks:
 make test                          # reduce + inversion
 make test-bls12-381-field-mul      # single field multiply
 make test-bls12-381-pairing        # full pairing
-make bench-pairing-50bit           # paper CPU benchmarks
+make bench-bls12-381              # paper CPU benchmarks (BLS12-381)
 ```
 
 Examples: `make -C ../examples` (see `examples/README.md`).

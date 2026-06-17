@@ -4,7 +4,7 @@
 # Usage:
 #   make -f Makefile.fallback
 #   make -f Makefile.fallback test-pairing
-#   make -f Makefile.fallback bench-pairing-fallback
+#   make -f Makefile.fallback bench-bls12-381-fallback
 
 CXX ?= g++
 INCLUDES = -I.. $(BENCHMARK_INC)
@@ -42,11 +42,7 @@ SOURCE_TEST_SCALAR_MULT = test_scalar_mult.cpp
 TARGET_BENCH_EC_BN254 = bench_ec_bn254_fallback
 SOURCE_BENCH_EC_BN254 = bench_ec_bn254.cpp
 TARGET_BENCH_BLS12_381 = bench_bls12_381_fallback
-SOURCE_BENCH_BLS12_381 = bench_bls12_381.cpp
-TARGET_BENCH_PAIRING = bench_pairing_fallback
-SOURCE_BENCH_PAIRING = bench_pairing.cpp
-TARGET_BENCH_PAIRING_50BIT = bench_pairing_50bit_fallback
-SOURCE_BENCH_PAIRING_50BIT = bench_pairing_50bit.cpp
+SOURCE_BENCH_BLS12_381 = bench_bls12_381.cpp bench_bls12_381_impl.hpp bench_bls12_381_common.hpp
 
 HEADERS = bounds.hpp constexpr_utils.hpp bounded_element.hpp ring_element.hpp \
           elementwise_reduce.hpp change_base.hpp bounded_ring.hpp \
@@ -55,7 +51,6 @@ HEADERS = bounds.hpp constexpr_utils.hpp bounded_element.hpp ring_element.hpp \
 
 .PHONY: all clean test test-reduce test-inversion test-pairing test-ec \
         test-bls12-381-field-mul test-bls12-381-pairing test-ec-bn254 test-scalar-mult \
-        bench-pairing-fallback bench-pairing-50bit-fallback \
         bench-ec-bn254-fallback bench-bls12-381-fallback run
 
 all: $(TARGET_REDUCE) $(TARGET_INVERSION) $(TARGET_TEST_EC) $(TARGET_TEST_SCALAR_MULT)
@@ -84,17 +79,11 @@ $(TARGET_TEST_EC_BN254): $(SOURCE_TEST_EC_BN254) $(HEADERS)
 $(TARGET_TEST_SCALAR_MULT): $(SOURCE_TEST_SCALAR_MULT) $(HEADERS)
 	$(CXX) $(CXXFLAGS) -D__ADX__ $(INCLUDES) $(SOURCE_TEST_SCALAR_MULT) -o $(TARGET_TEST_SCALAR_MULT) $(BLST_LIBS)
 
-$(TARGET_BENCH_PAIRING): $(SOURCE_BENCH_PAIRING) $(HEADERS)
-	$(CXX) $(CXXFLAGS_BENCH) -D__ADX__ $(INCLUDES) $(SOURCE_BENCH_PAIRING) -o $(TARGET_BENCH_PAIRING) $(BLST_LIBS) $(BENCHMARK_LIBS)
-
-$(TARGET_BENCH_PAIRING_50BIT): $(SOURCE_BENCH_PAIRING_50BIT) $(HEADERS)
-	$(CXX) $(CXXFLAGS_BENCH) -D__ADX__ $(INCLUDES) $(SOURCE_BENCH_PAIRING_50BIT) -o $(TARGET_BENCH_PAIRING_50BIT) $(BLST_LIBS) $(BENCHMARK_LIBS)
+$(TARGET_BENCH_BLS12_381): $(SOURCE_BENCH_BLS12_381) $(HEADERS) bls12_381_ring_params.hpp
+	$(CXX) $(CXXFLAGS_BENCH) -D__ADX__ $(INCLUDES) bench_bls12_381.cpp -o $(TARGET_BENCH_BLS12_381) $(BLST_LIBS) $(BENCHMARK_LIBS)
 
 $(TARGET_BENCH_EC_BN254): $(SOURCE_BENCH_EC_BN254) $(HEADERS)
 	$(CXX) $(CXXFLAGS_BENCH) -D__ADX__ $(INCLUDES) $(SOURCE_BENCH_EC_BN254) -o $(TARGET_BENCH_EC_BN254) -lgmp -lgmpxx $(BENCHMARK_LIBS)
-
-$(TARGET_BENCH_BLS12_381): $(SOURCE_BENCH_BLS12_381) $(HEADERS)
-	$(CXX) $(CXXFLAGS_BENCH) -D__ADX__ $(INCLUDES) $(SOURCE_BENCH_BLS12_381) -o $(TARGET_BENCH_BLS12_381) $(BLST_LIBS) $(BENCHMARK_LIBS)
 
 test: $(TARGET_REDUCE) $(TARGET_INVERSION)
 	./$(TARGET_REDUCE)
@@ -124,17 +113,11 @@ test-ec-bn254: $(TARGET_TEST_EC_BN254)
 test-scalar-mult: $(TARGET_TEST_SCALAR_MULT)
 	./$(TARGET_TEST_SCALAR_MULT)
 
-bench-pairing-fallback: $(TARGET_BENCH_PAIRING)
-	./$(TARGET_BENCH_PAIRING)
-
-bench-pairing-50bit-fallback: $(TARGET_BENCH_PAIRING_50BIT)
-	./$(TARGET_BENCH_PAIRING_50BIT)
+bench-bls12-381-fallback: $(TARGET_BENCH_BLS12_381)
+	./$(TARGET_BENCH_BLS12_381)
 
 bench-ec-bn254-fallback: $(TARGET_BENCH_EC_BN254)
 	./$(TARGET_BENCH_EC_BN254)
-
-bench-bls12-381-fallback: $(TARGET_BENCH_BLS12_381)
-	./$(TARGET_BENCH_BLS12_381)
 
 run: test
 
@@ -143,5 +126,4 @@ clean:
 	      $(TARGET_TEST_PAIRING) $(TARGET_TEST_EC) \
 	      $(TARGET_TEST_BLS12_381_FIELD_MUL) $(TARGET_TEST_BLS12_381_PAIRING) \
 	      $(TARGET_TEST_EC_BN254) $(TARGET_TEST_SCALAR_MULT) \
-	      $(TARGET_BENCH_PAIRING) $(TARGET_BENCH_PAIRING_50BIT) \
 	      $(TARGET_BENCH_EC_BN254) $(TARGET_BENCH_BLS12_381)

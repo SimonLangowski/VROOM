@@ -1,4 +1,4 @@
-// BLS12-381 benchmarks (8×50-bit RNS): full bench_pairing_50bit suite, Matrix vs MatrixNoK.
+// BLS12-381 benchmarks (8×50-bit RNS): Matrix vs MatrixNoK ring variants.
 #include <benchmark/benchmark.h>
 #include "bench_bls12_381_impl.hpp"
 #include "bls12_381_ring_params.hpp"

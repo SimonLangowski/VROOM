@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Parse Google Benchmark JSON from bench_pairing_50bit and bench_blst_complete.
+Parse Google Benchmark JSON from bench_bls12_381 and bench_blst_complete.
 
 - Single file: amortized ns for batch mod-mul / reduce-expand; grouped table.
 - With --blst: align RNS vs BLST via RNS_BLST_MAP and report speedup ratio (blst / rns).
@@ -24,7 +24,8 @@ BATCH_REDUCE_RE = re.compile(r"^BM_BatchReduceExpand_(\d+)$")
 BENCH_BATCH_MODMUL_RE = re.compile(r"^BM_BatchModMul_(?:Matrix|MatrixNoK)_(\d+)$")
 BENCH_BATCH_REDUCE_RE = re.compile(r"^BM_BatchReduceExpand_(?:Matrix|MatrixNoK)_(\d+)$")
 
-# RNS (bench_pairing_50bit) name -> BLST (bench_blst_complete) name
+# RNS (bench_bls12_381 Matrix rows) name -> BLST (bench_blst_complete) name
+# bench_bls12_381 registers BM_<Op>_Matrix; canonical keys omit the suffix.
 RNS_BLST_MAP: dict[str, str] = {
     "BM_ModMul": "BM_Fp_Mul",
     "BM_FP2_Mul": "BM_Fp2_Mul",
@@ -32,17 +33,17 @@ RNS_BLST_MAP: dict[str, str] = {
     "BM_G1_Add": "BM_G1_Add",
     "BM_G1_Double": "BM_G1_Double",
     "BM_G1_MixedAdd": "BM_G1_MixedAdd",
-    "BM_G1_ScalarMult_GLV_50bit": "BM_G1_ScalarMul",
+    "BM_G1_ScalarMult_GLV": "BM_G1_ScalarMul",
     "BM_G2_Add": "BM_G2_Add",
     "BM_G2_Double": "BM_G2_Double",
     "BM_G2_MixedAdd": "BM_G2_MixedAdd",
-    "BM_G2_ScalarMult_GLS_50bit": "BM_G2_ScalarMul",
+    "BM_G2_ScalarMult_GLS": "BM_G2_ScalarMul",
     "BM_FP12_Mul": "BM_Fp12_Mul",
     "BM_FP12_Sqr": "BM_Fp12_Sqr",
     "BM_FP12_CyclotomicSqr": "BM_Fp12_CyclotomicSqr",
     "BM_FP12_Conjugate": "BM_Fp12_Conjugate",
-    "BM_FP12_Inverse_BLST_50bit": "BM_Fp12_Inverse",
-    "BM_FP12_Inverse_RNS_BLST_50bit": "BM_Fp12_Inverse",
+    "BM_FP12_Inverse_BLST": "BM_Fp12_Inverse",
+    "BM_FP12_Inverse_RNS_BLST": "BM_Fp12_Inverse",
     "BM_MillerLoop": "BM_MillerLoop",
     # Computed in enrich_rns_rows: merged RNS step minus fp12 sparse mult
     "BM_MillerLoop_LineDbl": "BM_LineDbl",
@@ -142,6 +143,24 @@ def cpu_time_ns(entry: dict) -> float:
     raise ValueError(f"unsupported time_unit: {unit}")
 
 
+def canonical_rns_name(name: str) -> str:
+    """bench_bls12_381 uses BM_<Op>_Matrix; map keys omit the suffix."""
+    if name.endswith("_Matrix"):
+        return name[: -len("_Matrix")]
+    return name
+
+
+def row_lookup(by_name: dict[str, Row], canonical: str) -> Row | None:
+    if canonical in by_name:
+        return by_name[canonical]
+    matrix = f"{canonical}_Matrix"
+    return by_name.get(matrix)
+
+
+def excluded_name(name: str, excluded: frozenset[str]) -> bool:
+    return name in excluded or canonical_rns_name(name) in excluded
+
+
 def is_matrix_nok(name: str, label: str) -> bool:
     text = f"{name} {label}"
     return "MatrixNoK" in text or "matrix_nok" in text.lower()
@@ -239,14 +258,14 @@ def apply_display_labels(rows: list[Row]) -> list[Row]:
 
 def compute_miller_line_rows(by_name: dict[str, Row]) -> list[Row]:
     """RNS Miller steps include sparse multiply; subtract for BLST line alignment."""
-    sparse = by_name.get("BM_FP12_MulByXy0z00")
+    sparse = row_lookup(by_name, "BM_FP12_MulByXy0z00")
     if sparse is None:
         return []
     sparse_ns = sparse.comparable_ns()
     computed: list[Row] = []
     for computed_name, step_name, sparse_name in MILLER_LINE_COMPUTED:
-        step = by_name.get(step_name)
-        if step is None or sparse_name not in by_name:
+        step = row_lookup(by_name, step_name)
+        if step is None or row_lookup(by_name, sparse_name) is None:
             continue
         line_ns = step.comparable_ns() - sparse_ns
         computed.append(
@@ -275,7 +294,7 @@ def compute_pairing_verify_ns(
 ) -> float | None:
     total_ns = 0.0
     for name, count in terms:
-        row = by_name.get(name)
+        row = row_lookup(by_name, name)
         if row is None:
             return None
         total_ns += count * row.comparable_ns()
@@ -299,7 +318,7 @@ def compute_pairing_verify_row(by_name: dict[str, Row]) -> Row | None:
 
 
 def enrich_rns_rows(rows: list[Row]) -> list[Row]:
-    rows = [r for r in rows if r.name not in EXCLUDE_FROM_OUTPUT]
+    rows = [r for r in rows if not excluded_name(r.name, EXCLUDE_FROM_OUTPUT)]
     rows = apply_display_labels(rows)
     by_name = rows_by_name(rows)
     rows.extend(compute_miller_line_rows(by_name))
@@ -314,8 +333,9 @@ def rows_by_name(rows: list[Row]) -> dict[str, Row]:
 
 
 def blst_target_for_rns(rns_name: str) -> str | None:
-    if rns_name in RNS_BLST_MAP:
-        return RNS_BLST_MAP[rns_name]
+    key = canonical_rns_name(rns_name)
+    if key in RNS_BLST_MAP:
+        return RNS_BLST_MAP[key]
     if is_batch_modmul(rns_name):
         return BATCH_MODMUL_BLST
     return None
@@ -325,7 +345,7 @@ def format_rns_table(rows: list[Row]) -> str:
     order = ("modmul", "reduce_expand", "fp", "fp2", "ec", "fp12_pairing", "miller_step", "pairing", "other")
     by_cat: dict[str, list[Row]] = {c: [] for c in order}
     for r in rows:
-        if r.name in EXCLUDE_FROM_TABLES:
+        if excluded_name(r.name, EXCLUDE_FROM_TABLES):
             continue
         by_cat.setdefault(r.category, []).append(r)
 
@@ -406,7 +426,7 @@ def build_comparisons(rns_rows: list[Row], blst_rows: list[Row]) -> tuple[list[C
     mapped_blst: set[str] = set()
 
     for rns_name in sorted(rns_by):
-        if rns_name in EXCLUDE_FROM_COMPARE:
+        if excluded_name(rns_name, EXCLUDE_FROM_COMPARE):
             continue
         blst_name = blst_target_for_rns(rns_name)
         if blst_name is None:
@@ -437,7 +457,7 @@ def build_comparisons(rns_rows: list[Row], blst_rows: list[Row]) -> tuple[list[C
 
     unmapped_rns = [
         r for r in rns_rows
-        if r.name not in mapped_rns and r.name not in EXCLUDE_FROM_COMPARE
+        if r.name not in mapped_rns and not excluded_name(r.name, EXCLUDE_FROM_COMPARE)
     ]
     unmapped_blst = [r for r in blst_rows if r.name not in mapped_blst]
     return compared, unmapped_rns, unmapped_blst
@@ -470,7 +490,7 @@ def format_comparison(compared: list[CompareRow], unmapped_rns: list[Row], unmap
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("rns_json", type=Path, help="RNS benchmark JSON (bench_pairing_50bit)")
+    ap.add_argument("rns_json", type=Path, help="RNS benchmark JSON (bench_bls12_381)")
     ap.add_argument("--blst", type=Path, help="BLST benchmark JSON (bench_blst_complete)")
     ap.add_argument("-o", "--output", type=Path, help="Write RNS table here")
     ap.add_argument(
