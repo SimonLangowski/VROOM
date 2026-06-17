@@ -13,9 +13,9 @@ Step-by-step instructions for reviewers reproducing this artifact. The CPU path 
 | RAM | ≥ 8 GiB |
 | Packages | C++ toolchain, GMP, **Google Benchmark built with clang 21** (see §2) |
 
-Optional (GPU, not required for functional CPU artifact):
+Optional (GPU — **separate machine** from CPU artifact; see **[ARTIFACT_GPU.md](ARTIFACT_GPU.md)**):
 
-- NVIDIA GPU, CUDA toolkit, CGBN — see `scripts/README.md`
+- NVIDIA GPU (paper: RTX 3090), CUDA toolkit, CGBN — `scripts/setup_gpu_deps.sh`
 
 ### Verify your host
 
@@ -320,7 +320,7 @@ After regenerating headers, rebuild `src/` and re-run `scripts/smoke_test.sh`.
 | `test_data/` | Reference test vectors (`test_data/README.md`) |
 | `blst/` | BLST fork (primary CPU baseline, FP12 reference) |
 | `baselines/` | Optional external CPU baselines (`baselines/README.md`) |
-| `gpu/` | CUDA kernels (optional) |
+| `gpu/` | CUDA kernels (optional; **separate GPU host** — see **ARTIFACT_GPU.md**) |
 
 Module map and paper terminology: **`src/README.md`**.
 
@@ -328,4 +328,4 @@ Module map and paper terminology: **`src/README.md`**.
 
 - Research-grade code; not audited for production cryptography.
 - Integer fallback (`Makefile.fallback`) validates correctness only; not for performance measurement.
-- GPU path requires separate CUDA/CGBN setup (`scripts/README.md`).
+- GPU path requires a separate CUDA/CGBN setup on an NVIDIA host — **[ARTIFACT_GPU.md](ARTIFACT_GPU.md)** (`scripts/setup_gpu_deps.sh`, `latency.py`).

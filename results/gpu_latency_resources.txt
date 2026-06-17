@@ -1,0 +1,18 @@
+GPU latency reproduction (latency.py)
+date: 2026-06-17T19:02:46-04:00
+host: lambda-quad
+gpu_id: 0
+NVIDIA GeForce RTX 3090, 570.207, 8.6
+NVIDIA GeForce RTX 3090, 570.207, 8.6
+
+latency_sweep_elapsed_s=491.68
+latency_sweep_max_rss_kb=1850000
+latency_csv=/home/slangows/vroom-test/results/gpu_latency.csv
+latency_png=/home/slangows/vroom-test/results/gpu_latency.png
+source_csv=/home/slangows/vroom-test/scripts/data/1781722966.0148714.csv
+sweep_rows=262
+
+# Totals (for ARTIFACT_GPU.md — paper GPU latency claim)
+total_elapsed_s=491.68
+peak_rss_kb=1850000
+artifact_disk_kb=512
