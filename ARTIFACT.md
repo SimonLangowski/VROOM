@@ -126,7 +126,32 @@ python3 scripts/parse_bench_json.py results/bench_pairing_50bit.json
 
 Compare table to the sample in the root `README.md` (§ Running). `BM_BatchModMul_N` amortized time = reported cpu_ns ÷ N.
 
-## 8. Parameter generation
+## 8. External CPU baselines (optional)
+
+Third-party libraries for **optional** comparison: arkworks, zkcrypto, zksync-crypto, gnark-crypto, and curve25519-dalek (ed25519 field/EC). Vendored under **`baselines/`**; full details in **`baselines/README.md`**.
+
+The **primary** paper CPU baseline is **BLST** (§7 above). External baselines are not required for the functional badge.
+
+**Dependencies:** Rust/cargo, Go, rustup **nightly** (dalek IFMA benches). AVX-512 IFMA at runtime for `ec_comparison_ifma`.
+
+```bash
+chmod +x baselines/reproduce_baselines.sh
+./baselines/reproduce_baselines.sh          # BLS12-381 + BN254
+./baselines/reproduce_baselines.sh bls12    # pairing libs + dalek/ed25519 only
+```
+
+Outputs under `results/`:
+
+| File | Contents |
+|------|----------|
+| `baselines_bls12_resources.txt` | Per-phase wall time + peak RSS + totals |
+| `baselines_bls12_bench.log` | Raw Criterion / Go bench output |
+| `baselines_bn254_resources.txt` | BN254 phases + totals |
+| `baselines_bn254_bench.log` | Raw BN254 bench output |
+
+**Resource measurement:** same badge pattern as §7 — one totals block per optional claim (first full run is dominated by Rust/Go compile; expect tens of minutes and several GiB peak RSS). There is no JSON parser aligning these to VROOM benchmark names; compare manually from the bench logs.
+
+## 9. Parameter generation
 
 ### Precomputed (default)
 
@@ -159,7 +184,7 @@ Helper scripts:
 
 After regenerating headers, rebuild `src/` and re-run `scripts/smoke_test.sh`.
 
-## 9. Repository layout
+## 10. Repository layout
 
 | Path | Contents |
 |------|----------|
@@ -168,12 +193,13 @@ After regenerating headers, rebuild `src/` and re-run `scripts/smoke_test.sh`.
 | `examples/` | Minimal working examples |
 | `scripts/` | Parameter generation, optional GPU benchmarks |
 | `test_data/` | Reference test vectors (`test_data/README.md`) |
-| `blst/` | BLST fork (baselines, FP12 reference) |
+| `blst/` | BLST fork (primary CPU baseline, FP12 reference) |
+| `baselines/` | Optional external CPU baselines (`baselines/README.md`) |
 | `gpu/` | CUDA kernels (optional) |
 
 Module map and paper terminology: **`src/README.md`**.
 
-## 10. Known limitations
+## 11. Known limitations
 
 - Research-grade code; not audited for production cryptography.
 - Integer fallback (`Makefile.fallback`) validates correctness only; not for performance measurement.
