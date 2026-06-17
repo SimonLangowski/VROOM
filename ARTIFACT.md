@@ -232,6 +232,8 @@ Raw numbers are in `bench_bls12_381_resources.txt` (`total_elapsed_s=125.7`, `pe
 
 RNS↔BLST name mapping lives in `scripts/parse_bench_json.py` (`RNS_BLST_MAP`). Unmapped entries are listed at the bottom of the comparison file for manual pairing.
 
+BLST upstream revision: **supranational/blst @ `8065152`** (modified vendored copy in `blst/`; see §8 commit table).
+
 Without IFMA: `FALLBACK=1 ./scripts/reproduce_cpu_bench.sh` (correctness only, not paper timings).
 
 Parsed tables include **Matrix** and **MatrixNoK** rows by default. Use `--exclude-nok` on `reproduce_cpu_bench.sh` or `parse_bench_json.py` for Matrix only.
@@ -256,6 +258,18 @@ Compare table to the sample in the root `README.md` (§ Running). `BM_BatchModMu
 Third-party libraries for **optional** comparison: arkworks, zkcrypto, zksync-crypto, gnark-crypto. Vendored under **`baselines/`**; full details in **`baselines/README.md`**.
 
 The **primary** paper CPU baseline is **BLST** (§7 above). External baselines are not required for the functional badge.
+
+### Pinned upstream commits (paper bibliography)
+
+| Dependency | Repository | Commit |
+|------------|------------|--------|
+| BLST (primary CPU baseline) | [supranational/blst](https://github.com/supranational/blst) | `8065152` |
+| arkworks | [arkworks-rs/algebra](https://github.com/arkworks-rs/algebra) | `598a5fba` |
+| zkcrypto | [zkcrypto/bls12_381](https://github.com/zkcrypto/bls12_381) | `6bb9695` |
+| zksync | [matter-labs/zksync-crypto](https://github.com/matter-labs/zksync-crypto) | `e770ffd` |
+| gnark | [Consensys/gnark-crypto](https://github.com/Consensys/gnark-crypto) | `d1dece6` |
+
+`blst/` is a **modified vendored fork** based on `8065152` (benchmark wrappers, `extern "C"`, etc.) — use the in-tree copy for reproduction. Optional baselines are refreshed via `baselines/clone.sh`, which checks out the four external repos at the commits above and applies `baselines/overlays/`.
 
 **Dependencies:** Rust/cargo, Go.
 
@@ -318,7 +332,7 @@ After regenerating headers, rebuild `src/` and re-run `scripts/smoke_test.sh`.
 | `examples/` | Minimal working examples |
 | `scripts/` | Parameter generation, optional GPU benchmarks |
 | `test_data/` | Reference test vectors (`test_data/README.md`) |
-| `blst/` | BLST fork (primary CPU baseline, FP12 reference) |
+| `blst/` | BLST fork based on supranational/blst @ `8065152` (primary CPU baseline, FP12 reference) |
 | `baselines/` | Optional external CPU baselines (`baselines/README.md`) |
 | `gpu/` | CUDA kernels (optional; **separate GPU host** — see **ARTIFACT_GPU.md**) |
 
