@@ -82,7 +82,18 @@ Expect rough order of magnitude on a clean build (network for first `cargo` fetc
 
 ## Fresh clone from upstream
 
+Paper-pinned commits (see also **ARTIFACT.md** §8):
+
+| Repository | Commit |
+|------------|--------|
+| [arkworks-rs/algebra](https://github.com/arkworks-rs/algebra) | `598a5fba` |
+| [zkcrypto/bls12_381](https://github.com/zkcrypto/bls12_381) | `6bb9695` |
+| [matter-labs/zksync-crypto](https://github.com/matter-labs/zksync-crypto) | `e770ffd` |
+| [Consensys/gnark-crypto](https://github.com/Consensys/gnark-crypto) | `d1dece6` |
+
 ```bash
 cd baselines
-./clone.sh    # clones algebra, bls12_381, zksync-crypto, gnark-crypto; applies overlays/
+./clone.sh    # clones at the commits above; applies overlays/
 ```
+
+Vendored copies are already in the repo for offline review — run `clone.sh` only to refresh from upstream.

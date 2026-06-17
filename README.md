@@ -13,7 +13,7 @@ Standalone C++ template/header code. Benchmarks use Google Benchmark. Inversion 
 | [`examples/`](examples/) | Minimal working examples |
 | [`scripts/`](scripts/) | Parameter generation (`rns_secp256k1.py`), optional GPU benchmarks |
 | [`test_data/`](test_data/) | Reference test vectors |
-| [`blst/`](blst/) | BLST fork — primary CPU baseline for paper numbers |
+| [`blst/`](blst/) | BLST fork (based on [supranational/blst](https://github.com/supranational/blst) @ `8065152`) — primary CPU baseline |
 | [`baselines/`](baselines/) | Optional external CPU baselines (arkworks, gnark, zksync, zkcrypto) |
 | [`gpu/`](gpu/) | CUDA kernels (**optional**, not required for CPU artifact) |
 
