@@ -40,7 +40,7 @@ See **ARTIFACT.md** § Parameter generation for the full reviewer workflow.
 
 ### External CPU baselines (optional)
 
-Vendored third-party trees under **`../baselines/`** (arkworks, gnark, zksync, zkcrypto, curve25519-dalek). Not required for the primary CPU artifact.
+Vendored third-party trees under **`../baselines/`** (arkworks, gnark, zksync, zkcrypto). Not required for the primary CPU artifact.
 
 ```bash
 ./baselines/reproduce_baselines.sh

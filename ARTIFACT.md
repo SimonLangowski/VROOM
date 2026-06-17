@@ -216,9 +216,21 @@ Outputs under `results/`:
 | `bench_bls12_381_vs_blst.txt` | Aligned pairs + speedup ratio (`blst_ns / rns_ns`; >1 means RNS is faster) |
 | `bench_bls12_381_resources.txt` | Wall time and peak RSS per phase + totals |
 
-RNS↔BLST name mapping lives in `scripts/parse_bench_json.py` (`RNS_BLST_MAP`). Unmapped entries are listed at the bottom of the comparison file for manual pairing.
+**Resource measurement (reference host, `results/bench_bls12_381_resources.txt`):**
 
-**Resource measurement:** the badge asks for approximate cost **per paper claim** (e.g. “CPU benchmark table: ~3 min, ~200 MB”), not every sub-command. The script records time/RSS for each major phase (build blst, build bench, benchmark run, parse) and prints a **total** line suitable for ARTIFACT.md. Reviewers who already built can run only the benchmark + parse phases manually.
+Measured on AWS **c7i** / Amazon Linux 2023 (2026-06-17). Approximate resources **per paper claim**:
+
+| Claim | Command | Wall time | Peak RAM | Disk (outputs + bench binaries) |
+|-------|---------|-----------|----------|----------------------------------|
+| **CPU benchmark table** (main) | `./scripts/reproduce_cpu_bench.sh` | **~2 minutes** (126 s end-to-end) | **~650 MB** (compile peak) | **~8 MB** (`du -sh results/`) |
+| Benchmark run only (already built) | run `bench_bls12_381` + `bench_blst_complete` + parse | **~2 minutes** (RNS 86 s + BLST 22 s) | **~7 MB** | **~8 MB** (`results/`) |
+| Build `bench_bls12_381` only | `make -C src bench_bls12_381` | **~15 seconds** | **~650 MB** | — |
+
+Phase breakdown (full reproduce): build blst 2 s; build RNS bench 15 s; RNS benchmark 86 s; BLST benchmark 22 s; parse under 1 s.
+
+Raw numbers are in `bench_bls12_381_resources.txt` (`total_elapsed_s=125.7`, `peak_rss_kb=663668`). Disk: **`du -sh results/` → 7.8 MB** on the reference host (JSON, parsed tables, resource log; the script’s `artifact_disk_kb` field sums only selected binaries and understates this).
+
+RNS↔BLST name mapping lives in `scripts/parse_bench_json.py` (`RNS_BLST_MAP`). Unmapped entries are listed at the bottom of the comparison file for manual pairing.
 
 Without IFMA: `FALLBACK=1 ./scripts/reproduce_cpu_bench.sh` (correctness only, not paper timings).
 
@@ -241,16 +253,16 @@ Compare table to the sample in the root `README.md` (§ Running). `BM_BatchModMu
 
 ## 8. External CPU baselines (optional)
 
-Third-party libraries for **optional** comparison: arkworks, zkcrypto, zksync-crypto, gnark-crypto, and curve25519-dalek (ed25519 field/EC). Vendored under **`baselines/`**; full details in **`baselines/README.md`**.
+Third-party libraries for **optional** comparison: arkworks, zkcrypto, zksync-crypto, gnark-crypto. Vendored under **`baselines/`**; full details in **`baselines/README.md`**.
 
 The **primary** paper CPU baseline is **BLST** (§7 above). External baselines are not required for the functional badge.
 
-**Dependencies:** Rust/cargo, Go, rustup **nightly** (dalek IFMA benches). AVX-512 IFMA at runtime for `ec_comparison_ifma`.
+**Dependencies:** Rust/cargo, Go.
 
 ```bash
 chmod +x baselines/reproduce_baselines.sh
 ./baselines/reproduce_baselines.sh          # BLS12-381 + BN254
-./baselines/reproduce_baselines.sh bls12    # pairing libs + dalek/ed25519 only
+./baselines/reproduce_baselines.sh bls12    # BLS12-381 pairing libs only
 ```
 
 Outputs under `results/`:

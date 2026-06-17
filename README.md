@@ -14,7 +14,7 @@ Standalone C++ template/header code. Benchmarks use Google Benchmark. Inversion 
 | [`scripts/`](scripts/) | Parameter generation (`rns_secp256k1.py`), optional GPU benchmarks |
 | [`test_data/`](test_data/) | Reference test vectors |
 | [`blst/`](blst/) | BLST fork — primary CPU baseline for paper numbers |
-| [`baselines/`](baselines/) | Optional external CPU baselines (arkworks, gnark, zksync, dalek) |
+| [`baselines/`](baselines/) | Optional external CPU baselines (arkworks, gnark, zksync, zkcrypto) |
 | [`gpu/`](gpu/) | CUDA kernels (**optional**, not required for CPU artifact) |
 
 ## Supported environment
@@ -107,7 +107,7 @@ Module map and parameter files: [`src/README.md`](src/README.md). Parameter rege
 
 ### External CPU baselines (optional)
 
-VROOM vs BLST is automated in `scripts/reproduce_cpu_bench.sh`. For arkworks, gnark, zksync, zkcrypto, and curve25519-dalek comparisons, see [`baselines/README.md`](baselines/README.md) and `./baselines/reproduce_baselines.sh`.
+VROOM vs BLST is automated in `scripts/reproduce_cpu_bench.sh`. For arkworks, gnark, zksync, and zkcrypto comparisons, see [`baselines/README.md`](baselines/README.md) and `./baselines/reproduce_baselines.sh`.
 
 ## Running
 
