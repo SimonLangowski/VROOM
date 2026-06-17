@@ -253,16 +253,16 @@ Compare table to the sample in the root `README.md` (§ Running). `BM_BatchModMu
 
 ## 8. External CPU baselines (optional)
 
-Third-party libraries for **optional** comparison: arkworks, zkcrypto, zksync-crypto, gnark-crypto, and curve25519-dalek (ed25519 field/EC). Vendored under **`baselines/`**; full details in **`baselines/README.md`**.
+Third-party libraries for **optional** comparison: arkworks, zkcrypto, zksync-crypto, gnark-crypto. Vendored under **`baselines/`**; full details in **`baselines/README.md`**.
 
 The **primary** paper CPU baseline is **BLST** (§7 above). External baselines are not required for the functional badge.
 
-**Dependencies:** Rust/cargo, Go, rustup **nightly** (dalek IFMA benches). AVX-512 IFMA at runtime for `ec_comparison_ifma`.
+**Dependencies:** Rust/cargo, Go.
 
 ```bash
 chmod +x baselines/reproduce_baselines.sh
 ./baselines/reproduce_baselines.sh          # BLS12-381 + BN254
-./baselines/reproduce_baselines.sh bls12    # pairing libs + dalek/ed25519 only
+./baselines/reproduce_baselines.sh bls12    # BLS12-381 pairing libs only
 ```
 
 Outputs under `results/`:
