@@ -212,7 +212,7 @@ Outputs under `results/`:
 |------|----------|
 | `bench_bls12_381.json` | Raw Google Benchmark JSON (RNS) |
 | `bench_blst_complete.json` | Raw Google Benchmark JSON (BLST baseline) |
-| `bench_bls12_381_table.txt` | Parsed RNS ns (Matrix rows); amortized ns/mul for batches |
+| `bench_bls12_381_table.txt` | Parsed RNS ns (Matrix + MatrixNoK); amortized ns/mul for batches |
 | `bench_bls12_381_vs_blst.txt` | Aligned pairs + speedup ratio (`blst_ns / rns_ns`; >1 means RNS is faster) |
 | `bench_bls12_381_resources.txt` | Wall time and peak RSS per phase + totals |
 
@@ -222,10 +222,10 @@ RNS↔BLST name mapping lives in `scripts/parse_bench_json.py` (`RNS_BLST_MAP`).
 
 Without IFMA: `FALLBACK=1 ./scripts/reproduce_cpu_bench.sh` (correctness only, not paper timings).
 
-MatrixNoK comparison rows are excluded by default; add `--include-nok`:
+Parsed tables include **Matrix** and **MatrixNoK** rows by default. Use `--exclude-nok` on `reproduce_cpu_bench.sh` or `parse_bench_json.py` for Matrix only.
 
 ```bash
-./scripts/reproduce_cpu_bench.sh --include-nok
+./scripts/reproduce_cpu_bench.sh --exclude-nok
 ```
 
 Manual equivalent:

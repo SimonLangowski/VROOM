@@ -40,7 +40,7 @@ int main() {
     auto c_rns = ring.from_bigint(c_int);
     auto d_rns = ring.from_bigint(d_int);
 
-    // Sums can be wider than 52 bits; prep before multiply (prep_left == prep here).
+    // Sums can be wider than 52 bits; prep before multiply (prep_left == prep here; differs for field extensions).
     auto product_wide = ring.prep_left(a_rns + b_rns) * ring.prep(c_rns + d_rns);
     auto [result_rns] = ring.batch_reduce_expand(product_wide);
 

@@ -499,14 +499,14 @@ def main() -> int:
         help="Write RNS vs BLST comparison here (requires --blst)",
     )
     ap.add_argument(
-        "--include-nok",
+        "--exclude-nok",
         action="store_true",
-        help="Include MatrixNoK RNS rows (excluded by default)",
+        help="Exclude MatrixNoK RNS rows (included by default)",
     )
     args = ap.parse_args()
 
     rns_rows = enrich_rns_rows(
-        parse_entries(load_json(args.rns_json), args.include_nok, source="rns")
+        parse_entries(load_json(args.rns_json), not args.exclude_nok, source="rns")
     )
     if not rns_rows:
         print("No RNS benchmark rows matched.", file=sys.stderr)

@@ -117,7 +117,7 @@ VROOM vs BLST is automated in `scripts/reproduce_cpu_bench.sh`. For arkworks, gn
 
 GCC is significantly slower than clang on this codebase; clang **21.x** (we used **21.1.0**) is the reference for paper timings.
 
-- **`./bench_bls12_381`** — paper CPU suite (`BM_*_Matrix` and `BM_*_MatrixNoK` variants). Parsed tables use **Matrix** rows by default; pass `--include-nok` to `parse_bench_json.py` for MatrixNoK.
+- **`./bench_bls12_381`** — paper CPU suite (`BM_*_Matrix` and `BM_*_MatrixNoK` variants). Parsed tables include both by default; pass `--exclude-nok` to `parse_bench_json.py` for Matrix only.
 
 Sample output on `c7i.metal-24xl` with **clang 21.1.0** (Matrix rows; abbreviated):
 

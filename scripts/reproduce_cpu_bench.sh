@@ -6,7 +6,7 @@
 #   ./scripts/reproduce_cpu_bench.sh              # AVX-512 IFMA (production)
 #   FALLBACK=1 ./scripts/reproduce_cpu_bench.sh   # integer fallback (slow compile)
 #   BENCHMARK_LIBS=/path/to/libbenchmark.a\ -lpthread ./scripts/reproduce_cpu_bench.sh
-#   BENCHMARK_INC=-I/path/to/benchmark/include  (if headers not in default path)
+#   ./scripts/reproduce_cpu_bench.sh --exclude-nok  # Matrix rows only in parsed table
 
 set -euo pipefail
 
@@ -14,7 +14,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 FALLBACK="${FALLBACK:-0}"
-INCLUDE_NOK=0
+EXCLUDE_NOK=0
 BENCH_BASE="${BENCH_BASE:-bench_bls12_381}"
 BLST_BENCH_BIN="${BLST_BENCH_BIN:-bench_blst_complete}"
 MIN_TIME="${BENCH_MIN_TIME:-0.5s}"
@@ -36,7 +36,7 @@ RESOURCES_OUT="$RESULTS_DIR/${BENCH_BIN}_resources.txt"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --include-nok) INCLUDE_NOK=1; shift ;;
+    --exclude-nok) EXCLUDE_NOK=1; shift ;;
     --bench)
       BENCH_BASE="$2"
       BENCH_TARGET="$2"
@@ -145,8 +145,8 @@ PARSE_ARGS=(
   -o "$TABLE_OUT"
   --compare-output "$COMPARE_OUT"
 )
-if [[ "$INCLUDE_NOK" == "1" ]]; then
-  PARSE_ARGS+=(--include-nok)
+if [[ "$EXCLUDE_NOK" == "1" ]]; then
+  PARSE_ARGS+=(--exclude-nok)
 fi
 run_timed "parse" python3 "${PARSE_ARGS[@]}"
 echo "parse_elapsed_s=$PHASE_ELAPSED" >> "$RESOURCES_OUT"
