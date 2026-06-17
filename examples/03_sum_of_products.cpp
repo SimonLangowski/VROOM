@@ -43,8 +43,9 @@ int main() {
     auto ab = a_rns * b_rns;
     auto cd = c_rns * d_rns;
 
-    // Materialise each product, add wide results, single reduction pass
+    // Materialise one product, add wide results, abstracted away
     auto sum_wide = ab + cd;
+    // Materialize full product and Montgomery, elementwise, and RNS modular reduce.
     auto [result_rns] = ring.batch_reduce_expand(sum_wide);
 
     BigInt got = ring.to_bigint(result_rns);
