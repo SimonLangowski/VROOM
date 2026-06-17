@@ -5,7 +5,8 @@
 # Usage:
 #   ./scripts/reproduce_cpu_bench.sh              # AVX-512 IFMA (production)
 #   FALLBACK=1 ./scripts/reproduce_cpu_bench.sh   # integer fallback (slow compile)
-#   ./scripts/reproduce_cpu_bench.sh --include-nok
+#   BENCHMARK_LIBS=/path/to/libbenchmark.a\ -lpthread ./scripts/reproduce_cpu_bench.sh
+#   BENCHMARK_INC=-I/path/to/benchmark/include  (if headers not in default path)
 
 set -euo pipefail
 
@@ -54,7 +55,13 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-mkdir -p "$RESULTS_DIR"
+MAKE_BENCH_EXTRA=()
+if [[ -n "${BENCHMARK_LIBS:-}" ]]; then
+  MAKE_BENCH_EXTRA+=(BENCHMARK_LIBS="$BENCHMARK_LIBS")
+fi
+if [[ -n "${BENCHMARK_INC:-}" ]]; then
+  MAKE_BENCH_EXTRA+=(BENCHMARK_INC="$BENCHMARK_INC")
+fi
 
 run_timed() {
   local label="$1"
@@ -85,16 +92,16 @@ TOTAL_RSS_KB=0
 } | tee "$RESOURCES_OUT"
 
 echo "== Phase: build blst (+ bench_blst_complete) =="
-run_timed "build blst" make -C blst gbench
+run_timed "build blst" make -C blst gbench "${MAKE_BENCH_EXTRA[@]}"
 echo "build_blst_elapsed_s=$PHASE_ELAPSED" >> "$RESOURCES_OUT"
 echo "build_blst_max_rss_kb=$PHASE_RSS_KB" >> "$RESOURCES_OUT"
 TOTAL_RSS_KB=$(( TOTAL_RSS_KB > PHASE_RSS_KB ? TOTAL_RSS_KB : PHASE_RSS_KB ))
 
 echo "== Phase: build RNS benchmark =="
 if [[ "$FALLBACK" == "1" ]]; then
-  run_timed "build bench (fallback)" make -C src -f Makefile.fallback "$BENCH_TARGET"
+  run_timed "build bench (fallback)" make -C src -f Makefile.fallback "${MAKE_BENCH_EXTRA[@]}" "$BENCH_TARGET"
 else
-  run_timed "build bench" make -C src "$BENCH_TARGET"
+  run_timed "build bench" make -C src "${MAKE_BENCH_EXTRA[@]}" "$BENCH_TARGET"
 fi
 echo "build_bench_elapsed_s=$PHASE_ELAPSED" >> "$RESOURCES_OUT"
 echo "build_bench_max_rss_kb=$PHASE_RSS_KB" >> "$RESOURCES_OUT"

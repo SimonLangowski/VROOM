@@ -169,7 +169,10 @@ endif
 # Compile empirical_basis.cpp - always compile as C++
 # Filter out C-specific flags and add C++ flags
 # Suppress unused-function warnings to see actual errors
-CXXFLAGS = $(filter-out -std=gnu99,$(CFLAGS)) -std=c++17 -Wno-unused-function
+BENCHMARK_INC ?=
+BENCHMARK_LIBS ?= -lbenchmark -lpthread
+CXXFLAGS = $(filter-out -std=gnu99,$(CFLAGS)) -std=c++17 -Wno-unused-function $(BENCHMARK_INC)
+
 $(EMPIRICAL_OBJ): $(EMPIRICAL_SRC)
 	g++ $(CXXFLAGS) -c $(EMPIRICAL_SRC) -o $(EMPIRICAL_OBJ)
 
@@ -208,7 +211,7 @@ $(BENCH_PAIRING_BLST_OBJ): $(BENCH_PAIRING_BLST_SRC)
 	g++ $(CXXFLAGS) -c $(BENCH_PAIRING_BLST_SRC) -o $(BENCH_PAIRING_BLST_OBJ)
 
 $(BENCH_PAIRING_BLST): $(BENCH_PAIRING_BLST_OBJ) $(LIBRARY)
-	g++ $(CXXFLAGS) -o $(BENCH_PAIRING_BLST) $(BENCH_PAIRING_BLST_OBJ) -L. -lblst_small -lbenchmark -lpthread -lgmp -lgmpxx
+	g++ $(CXXFLAGS) -o $(BENCH_PAIRING_BLST) $(BENCH_PAIRING_BLST_OBJ) -L. -lblst_small $(BENCHMARK_LIBS) -lgmp -lgmpxx
 endif
 
 ifneq ($(BENCH_BLST_COMPLETE_TARGETS),)
@@ -226,7 +229,7 @@ $(BENCH_BLST_COMPLETE_OBJ): $(BENCH_BLST_COMPLETE_SRC) bindings/blst.h
 	g++ $(CXXFLAGS) -c $(BENCH_BLST_COMPLETE_SRC) -o $(BENCH_BLST_COMPLETE_OBJ)
 
 $(BENCH_BLST_COMPLETE): $(BENCH_BLST_COMPLETE_OBJ) $(BENCH_BLST_GLUE_OBJ) $(LIBRARY)
-	g++ $(CXXFLAGS) -o $(BENCH_BLST_COMPLETE) $(BENCH_BLST_COMPLETE_OBJ) $(BENCH_BLST_GLUE_OBJ) -L. -lblst_small -lbenchmark -lpthread
+	g++ $(CXXFLAGS) -o $(BENCH_BLST_COMPLETE) $(BENCH_BLST_COMPLETE_OBJ) $(BENCH_BLST_GLUE_OBJ) -L. -lblst_small $(BENCHMARK_LIBS)
 
 gbench: $(BENCH_BLST_COMPLETE)
 endif

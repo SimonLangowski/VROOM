@@ -21,16 +21,34 @@ Standalone C++ template/header code. Benchmarks use Google Benchmark. Inversion 
 
 | | |
 |--|--|
-| OS | Linux x86_64 |
-| CPU | AVX-512 **IFMA** for production build (`grep avx512ifma /proc/cpuinfo`) |
-| Compiler | **clang-21** recommended (paper numbers); GCC supported but slower |
-| Packages | `build-essential`, `libgmp-dev`, `libbenchmark-dev`, C++ GMP bindings (`libgmpxx4ldbl` on Ubuntu) |
+| OS | Linux x86_64 — **Amazon Linux 2023** on AWS for paper numbers; Ubuntu also works |
+| Cloud | AWS **c7i** (Intel Xeon Platinum **8488C**, Sapphire Rapids) |
+| CPU | AVX-512 **IFMA** required for production build (`grep avx512ifma /proc/cpuinfo`) |
+| Compiler | **clang 21.1.0** (LLVM 21 prebuilt) on reference host — see [ARTIFACT.md](ARTIFACT.md) §2 |
+| Packages | C++ toolchain, GMP, Google Benchmark — **build from source with clang 21 on AL2023** ([ARTIFACT.md](ARTIFACT.md) §2) |
+
+Verify IFMA on a fresh instance:
+
+```bash
+cat /etc/os-release && uname -r
+lscpu | grep -E 'Model name|Flags' | head -5
+grep -q avx512ifma /proc/cpuinfo && echo "IFMA ok" || echo "Use fallback build"
+```
 
 GPU benchmarks are optional; see [`scripts/README.md`](scripts/README.md).
 
 ## Building & testing
 
-Install dependencies (Ubuntu example):
+Install dependencies — **Amazon Linux 2023** (paper host):
+
+```bash
+sudo dnf install -y gcc gcc-c++ make gmp-devel cmake git
+# Google Benchmark: build from source with clang++ (see ARTIFACT.md §2)
+export BENCHMARK_LIBS="$HOME/benchmark/build2/src/libbenchmark.a -lpthread"
+export BENCHMARK_INC="-I$HOME/benchmark/include"
+```
+
+**Ubuntu:**
 
 ```bash
 sudo apt install build-essential libgmp-dev libbenchmark-dev
@@ -92,13 +110,15 @@ VROOM vs BLST is automated in `scripts/reproduce_cpu_bench.sh`. For arkworks, gn
 
 ## Running
 
-To see speedups and develop, we used the AWS `c7i-flex.large` machine.
-To match the paper numbers, use the AWS `c7i.metal-24xl` machine, and the `clang-21` compiler.
-GCC seems to be significantly slower than clang, and most modern clang versions perform similarly.
+**Paper numbers:** AWS **c7i.metal-24xl**, **Amazon Linux 2023**, Intel **Xeon Platinum 8488C**, **clang 21.1.0** (`~/LLVM-21.1.0-Linux-X64/bin/clang++`).
+
+**Development:** AWS **c7i-flex.large** on the same AMI family is enough for iteration.
+
+GCC is significantly slower than clang on this codebase; clang **21.x** (we used **21.1.0**) is the reference for paper timings.
 
 - **`./bench_pairing_50bit`**
 
-Sample output on `c7i.metal-24xl` with `clang-21`:
+Sample output on `c7i.metal-24xl` with **clang 21.1.0**:
 
 ```
 Running ./bench_pairing_50bit

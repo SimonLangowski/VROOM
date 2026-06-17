@@ -24,10 +24,16 @@ Vendored copies live under this directory so reviewers do not need network acces
 | **Go** | gnark-crypto |
 | **AVX-512 IFMA** (runtime) | `ec_comparison_ifma` (SIGILL without IFMA) |
 
-Install example (Ubuntu):
+Install example (**Amazon Linux 2023** or Ubuntu):
 
 ```bash
-sudo apt install golang-go
+# Amazon Linux 2023
+sudo dnf install -y golang gcc gcc-c++ make
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+rustup toolchain install nightly
+
+# Ubuntu
+sudo apt install golang-go build-essential
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 rustup toolchain install nightly
 ```

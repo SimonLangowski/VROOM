@@ -1,7 +1,7 @@
 # Compiler selection: use CXX=g++ or CXX=clang++ (default: g++)
 # Production build: AVX-512 IFMA. For integer fallback (debugging), use Makefile.fallback.
 CXX ?= g++
-INCLUDES = -I..
+INCLUDES = -I.. $(BENCHMARK_INC)
 
 # Suppress warnings from BLST/vector code: static decls without defs, ignored attributes on __m512i, unknown pragmas (clang-only)
 CXXFLAGS_WARN_SUPPRESS = -Wno-unused-function -Wno-ignored-attributes -Wno-unknown-pragmas
@@ -15,7 +15,8 @@ else
 endif
 
 BLST_LIBS = -lgmp -lgmpxx ../blst/libblst_small.a
-BENCHMARK_LIBS = -lbenchmark -lpthread
+BENCHMARK_INC ?=
+BENCHMARK_LIBS ?= -lbenchmark -lpthread
 
 TARGET_REDUCE = test_elementwise_reduce
 SOURCE_REDUCE = test_elementwise_reduce.cpp
