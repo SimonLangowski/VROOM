@@ -120,18 +120,18 @@ VROOM vs BLST is automated in `scripts/reproduce_cpu_bench.sh`. For arkworks, gn
 
 **Compiler:** GCC and older clang versions are significantly slower than **clang 21.x** on this codebase — especially on the AVX-512 IFMA path (`-mavx512ifma`), where LLVM’s backend has improved IFMA instruction selection and scheduling across recent releases. Paper timings use **clang 21.1.0** (`scripts/setup_toolchain.sh`); do not expect to match published ns/op with the Amazon Linux default compiler.
 
-- **`./bench_bls12_381`** — paper CPU suite (`BM_*_Matrix` and `BM_*_MatrixNoK` variants). Parsed tables include both by default; pass `--exclude-nok` to `parse_bench_json.py` for Matrix only.
+- **`./bench_bls12_381`** — paper CPU suite. **MatrixNoK** is the production BLS12-381 configuration (QR “no k” change-base); **Matrix** (IntRNS2 baseline) rows are also emitted. Parsed tables include both by default; pass `--exclude-nok` to `parse_bench_json.py` for Matrix only.
 
-Sample output on `c7i.metal-24xl` with **clang 21.1.0** (Matrix rows; abbreviated):
+Sample output on `c7i.metal-24xl` with **clang 21.1.0** (MatrixNoK rows; abbreviated):
 
 ```
 Running ./bench_bls12_381
 ...
-BM_ModMul_Matrix                         28.4 ns         28.4 ns     ... ModMul_Matrix
-BM_BatchModMul_Matrix_1                  28.3 ns         28.3 ns     ... BatchModMul_Matrix_1
+BM_ModMul_MatrixNoK                        21.8 ns         21.8 ns     ... ModMul_MatrixNoK
+BM_BatchModMul_MatrixNoK_1                 21.7 ns         21.7 ns     ... BatchModMul_MatrixNoK_1
 ...
-BM_MillerLoop_Matrix                  58985 ns        58985 ns        ... MillerLoop_Matrix
-BM_Pairing_RNS_BLST_Inverter_Matrix  151537 ns       151534 ns        ... Pairing_RNS_BLST_Inverter_Matrix
+BM_MillerLoop_MatrixNoK                49888 ns        49888 ns        ... MillerLoop_MatrixNoK
+BM_Pairing_RNS_BLST_Inverter_MatrixNoK 128146 ns       128146 ns       ... Pairing_RNS_BLST_Inverter_MatrixNoK
 ```
 
 - **BM_BatchModMul_N** — batch Montgomery multiplication, `a*b mod p`.
