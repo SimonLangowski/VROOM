@@ -29,5 +29,7 @@ echo "== run examples =="
 ./examples/01_parameter_setup | head -20
 ./examples/02_singular_modmul
 ./examples/03_sum_of_products
+./examples/04_difference_of_products
+./examples/05_product_of_sums
 
 echo "== smoke test OK =="

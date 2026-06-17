@@ -23,7 +23,7 @@ endif
 
 LIBS = -lgmp -lgmpxx
 
-EXAMPLES = 01_parameter_setup 02_singular_modmul 03_sum_of_products
+EXAMPLES = 01_parameter_setup 02_singular_modmul 03_sum_of_products 04_difference_of_products 05_product_of_sums
 
 .PHONY: all clean $(EXAMPLES)
 
@@ -36,6 +36,12 @@ all: $(EXAMPLES)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $< -o $@ $(LIBS)
 
 03_sum_of_products: 03_sum_of_products.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $< -o $@ $(LIBS)
+
+04_difference_of_products: 04_difference_of_products.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $< -o $@ $(LIBS)
+
+05_product_of_sums: 05_product_of_sums.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $< -o $@ $(LIBS)
 
 clean:

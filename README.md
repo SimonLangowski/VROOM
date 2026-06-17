@@ -81,6 +81,8 @@ make -C examples
 ./examples/01_parameter_setup
 ./examples/02_singular_modmul
 ./examples/03_sum_of_products
+./examples/04_difference_of_products
+./examples/05_product_of_sums
 ```
 
 See `examples/README.md` for details. Use `make -C examples FALLBACK=1` without IFMA.

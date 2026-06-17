@@ -6,7 +6,9 @@ Minimal programs demonstrating core VROOM APIs. These are the artifact “minima
 |---------|----------------|
 | `01_parameter_setup` | BLS12-381 and BN254 ring configurations: limb counts, residue bit widths, moduli m1/m2 |
 | `02_singular_modmul` | One field multiply: `from_bigint` → RNS, `modmul`, `to_bigint` |
-| `03_sum_of_products` | Delayed multiply (`operator*`), accumulate, single `reduce_auto` pass |
+| `03_sum_of_products` | Delayed multiply (`operator*`), accumulate, `batch_reduce_expand` |
+| `04_difference_of_products` | `(a*b) - (c*d)` via `ring.negate` on a multiplicand (no delayed subtract) |
+| `05_product_of_sums` | `(a+b)*(c+d)` via `ring.prep` / `ring.prep_left` before delayed multiply |
 
 ## Build & run
 
@@ -17,6 +19,8 @@ make -C examples
 ./examples/01_parameter_setup
 ./examples/02_singular_modmul
 ./examples/03_sum_of_products
+./examples/04_difference_of_products
+./examples/05_product_of_sums
 ```
 
 Requires **AVX-512 IFMA** (same as the main `src/` build). On a machine without IFMA, use the integer fallback:
