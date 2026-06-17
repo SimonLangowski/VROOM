@@ -24,8 +24,9 @@ BATCH_REDUCE_RE = re.compile(r"^BM_BatchReduceExpand_(\d+)$")
 BENCH_BATCH_MODMUL_RE = re.compile(r"^BM_BatchModMul_(?:Matrix|MatrixNoK)_(\d+)$")
 BENCH_BATCH_REDUCE_RE = re.compile(r"^BM_BatchReduceExpand_(?:Matrix|MatrixNoK)_(\d+)$")
 
-# RNS (bench_bls12_381 Matrix rows) name -> BLST (bench_blst_complete) name
-# bench_bls12_381 registers BM_<Op>_Matrix; canonical keys omit the suffix.
+# RNS (bench_bls12_381) name -> BLST (bench_blst_complete) name
+# bench_bls12_381 registers BM_<Op>_Matrix and BM_<Op>_MatrixNoK; canonical keys omit the suffix.
+RING_SUFFIXES: tuple[str, ...] = ("_Matrix", "_MatrixNoK")
 RNS_BLST_MAP: dict[str, str] = {
     "BM_ModMul": "BM_Fp_Mul",
     "BM_FP2_Mul": "BM_Fp2_Mul",
@@ -144,17 +145,28 @@ def cpu_time_ns(entry: dict) -> float:
 
 
 def canonical_rns_name(name: str) -> str:
-    """bench_bls12_381 uses BM_<Op>_Matrix; map keys omit the suffix."""
+    """Strip bench_bls12_381 ring suffix for RNS_BLST_MAP lookup."""
+    if name.endswith("_MatrixNoK"):
+        return name[: -len("_MatrixNoK")]
     if name.endswith("_Matrix"):
         return name[: -len("_Matrix")]
     return name
 
 
-def row_lookup(by_name: dict[str, Row], canonical: str) -> Row | None:
+def row_lookup(
+    by_name: dict[str, Row],
+    canonical: str,
+    suffix: str | None = None,
+) -> Row | None:
+    if suffix is not None:
+        return by_name.get(f"{canonical}{suffix}")
     if canonical in by_name:
         return by_name[canonical]
-    matrix = f"{canonical}_Matrix"
-    return by_name.get(matrix)
+    for sfx in RING_SUFFIXES:
+        row = by_name.get(f"{canonical}{sfx}")
+        if row is not None:
+            return row
+    return None
 
 
 def excluded_name(name: str, excluded: frozenset[str]) -> bool:
@@ -258,27 +270,29 @@ def apply_display_labels(rows: list[Row]) -> list[Row]:
 
 def compute_miller_line_rows(by_name: dict[str, Row]) -> list[Row]:
     """RNS Miller steps include sparse multiply; subtract for BLST line alignment."""
-    sparse = row_lookup(by_name, "BM_FP12_MulByXy0z00")
-    if sparse is None:
-        return []
-    sparse_ns = sparse.comparable_ns()
     computed: list[Row] = []
-    for computed_name, step_name, sparse_name in MILLER_LINE_COMPUTED:
-        step = row_lookup(by_name, step_name)
-        if step is None or row_lookup(by_name, sparse_name) is None:
+    for suffix in RING_SUFFIXES:
+        sparse = row_lookup(by_name, "BM_FP12_MulByXy0z00", suffix)
+        if sparse is None:
             continue
-        line_ns = step.comparable_ns() - sparse_ns
-        computed.append(
-            Row(
-                category="miller_step",
-                name=computed_name,
-                label=f"{computed_name} ({step_name} - fp12 sparse mult)",
-                cpu_ns=line_ns,
-                batch_size=None,
-                amortized_ns=None,
-                iterations=step.iterations,
+        sparse_ns = sparse.comparable_ns()
+        for computed_name, step_name, sparse_name in MILLER_LINE_COMPUTED:
+            step = row_lookup(by_name, step_name, suffix)
+            if step is None:
+                continue
+            line_ns = step.comparable_ns() - sparse_ns
+            out_name = f"{computed_name}{suffix}"
+            computed.append(
+                Row(
+                    category="miller_step",
+                    name=out_name,
+                    label=f"{out_name} ({step_name}{suffix} - fp12 sparse mult)",
+                    cpu_ns=line_ns,
+                    batch_size=None,
+                    amortized_ns=None,
+                    iterations=step.iterations,
+                )
             )
-        )
     return computed
 
 
@@ -291,30 +305,37 @@ def pairing_verify_formula(terms: tuple[tuple[str, int], ...]) -> str:
 def compute_pairing_verify_ns(
     by_name: dict[str, Row],
     terms: tuple[tuple[str, int], ...],
+    suffix: str | None = None,
 ) -> float | None:
     total_ns = 0.0
     for name, count in terms:
-        row = row_lookup(by_name, name)
+        row = row_lookup(by_name, name, suffix) if suffix else row_lookup(by_name, name)
         if row is None:
             return None
         total_ns += count * row.comparable_ns()
     return total_ns
 
 
-def compute_pairing_verify_row(by_name: dict[str, Row]) -> Row | None:
+def compute_pairing_verify_row(by_name: dict[str, Row]) -> list[Row]:
     """Pairing verify e()=e(): 2×MillerLoop + FP12_Mul + FinalExp (not measured in RNS)."""
-    total_ns = compute_pairing_verify_ns(by_name, PAIRING_VERIFY_TERMS)
-    if total_ns is None:
-        return None
-    return Row(
-        category="pairing",
-        name=PAIRING_VERIFY_COMPUTED,
-        label=f"pairing verify e()=e(): {pairing_verify_formula(PAIRING_VERIFY_TERMS)}",
-        cpu_ns=total_ns,
-        batch_size=None,
-        amortized_ns=None,
-        iterations=0,
-    )
+    rows: list[Row] = []
+    for suffix in RING_SUFFIXES:
+        total_ns = compute_pairing_verify_ns(by_name, PAIRING_VERIFY_TERMS, suffix)
+        if total_ns is None:
+            continue
+        out_name = f"{PAIRING_VERIFY_COMPUTED}{suffix}"
+        rows.append(
+            Row(
+                category="pairing",
+                name=out_name,
+                label=f"pairing verify e()=e(): {pairing_verify_formula(PAIRING_VERIFY_TERMS)}",
+                cpu_ns=total_ns,
+                batch_size=None,
+                amortized_ns=None,
+                iterations=0,
+            )
+        )
+    return rows
 
 
 def enrich_rns_rows(rows: list[Row]) -> list[Row]:
@@ -322,9 +343,7 @@ def enrich_rns_rows(rows: list[Row]) -> list[Row]:
     rows = apply_display_labels(rows)
     by_name = rows_by_name(rows)
     rows.extend(compute_miller_line_rows(by_name))
-    verify = compute_pairing_verify_row(by_name)
-    if verify is not None:
-        rows.append(verify)
+    rows.extend(compute_pairing_verify_row(by_name))
     return rows
 
 
@@ -381,31 +400,35 @@ def format_pairing_verify(
     blst_rows: list[Row] | None = None,
 ) -> str:
     by_name = rows_by_name(rns_rows)
-    computed = by_name.get(PAIRING_VERIFY_COMPUTED)
-    if computed is None:
-        return ""
-
-    computed_ns = computed.comparable_ns()
-    lines = [
-        "## Pairing verify e()=e() (not measured in RNS; summed from components)",
-        "Two Miller loops, one FP12 multiply to combine, one final exponentiation.",
-        f"{'row':<42} {'cpu_ns':>12}",
-        "-" * 56,
-        f"{PAIRING_VERIFY_COMPUTED:<42} {computed_ns:12.1f}",
-        f"  formula: {pairing_verify_formula(PAIRING_VERIFY_TERMS)}",
-    ]
-
-    if blst_rows is not None:
-        blst_ns = compute_pairing_verify_ns(rows_by_name(blst_rows), PAIRING_VERIFY_BLST_TERMS)
-        if blst_ns is not None:
-            ratio = blst_ns / computed_ns if computed_ns else float("nan")
-            lines.extend([
-                f"{'BLST (same formula)':<42} {blst_ns:12.1f}",
-                f"{'ratio blst/rns':<42} {ratio:12.3f}  (>1 means RNS is faster)",
-                f"  blst formula: {pairing_verify_formula(PAIRING_VERIFY_BLST_TERMS)}",
-            ])
-
-    return "\n".join(lines) + "\n"
+    lines: list[str] = []
+    for suffix in RING_SUFFIXES:
+        computed = by_name.get(f"{PAIRING_VERIFY_COMPUTED}{suffix}")
+        if computed is None:
+            continue
+        computed_ns = computed.comparable_ns()
+        tag = suffix.removeprefix("_")
+        block = [
+            f"## Pairing verify e()=e() ({tag}; not measured in RNS; summed from components)",
+            "Two Miller loops, one FP12 multiply to combine, one final exponentiation.",
+            f"{'row':<42} {'cpu_ns':>12}",
+            "-" * 56,
+            f"{computed.name:<42} {computed_ns:12.1f}",
+            f"  formula: {pairing_verify_formula(PAIRING_VERIFY_TERMS)}",
+        ]
+        if blst_rows is not None:
+            blst_ns = compute_pairing_verify_ns(
+                rows_by_name(blst_rows), PAIRING_VERIFY_BLST_TERMS
+            )
+            if blst_ns is not None:
+                ratio = blst_ns / computed_ns if computed_ns else float("nan")
+                block.extend([
+                    f"{'BLST (same formula)':<42} {blst_ns:12.1f}",
+                    f"{'ratio blst/rns':<42} {ratio:12.3f}  (>1 means RNS is faster)",
+                    f"  blst formula: {pairing_verify_formula(PAIRING_VERIFY_BLST_TERMS)}",
+                ])
+        lines.extend(block)
+        lines.append("")
+    return "\n".join(lines).rstrip() + "\n" if lines else ""
 
 
 @dataclass
@@ -440,7 +463,7 @@ def build_comparisons(rns_rows: list[Row], blst_rows: list[Row]) -> tuple[list[C
         note = ""
         if rns.amortized_ns is not None:
             note = f"rns amortized (batch={rns.batch_size})"
-        if rns_name in ("BM_MillerLoop_LineDbl", "BM_MillerLoop_LineAdd"):
+        if canonical_rns_name(rns_name) in ("BM_MillerLoop_LineDbl", "BM_MillerLoop_LineAdd"):
             note = "computed (merged step - fp12 sparse mult)"
         compared.append(
             CompareRow(

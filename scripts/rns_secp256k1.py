@@ -1351,9 +1351,19 @@ def test_mulreduction(method, params, target, power=1, io=None, seeded=None, num
     assert(c % target == correct)
     print(f"pass {target.bit_length()} {method.__name__} {power}")
 
+INT64_MAX = (1 << 63) - 1
+
+
+def format_uint64_literal(x):
+    """Format a uint64_t C++ literal, with ULL when needed to silence -Wimplicitly-unsigned-literal."""
+    if x > INT64_MAX:
+        return f"{x}ULL"
+    return str(x)
+
+
 def format_array(arr):
     """Format a Python list as a C++ std::array initializer."""
-    return "{" + ", ".join(str(x) for x in arr) + "}"
+    return "{" + ", ".join(format_uint64_literal(x) for x in arr) + "}"
 
 
 def format_matrix_rows(rows):
