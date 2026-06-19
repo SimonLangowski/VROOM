@@ -13,6 +13,17 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
+# Paper toolchain (clang + source-built benchmark). Auto-load if not already exported.
+if [[ -z "${BENCHMARK_INC:-}" || -z "${BENCHMARK_LIBS:-}" ]]; then
+  eval "$(bash "$ROOT/scripts/setup_toolchain.sh" --print)"
+fi
+bench_inc_dir="${BENCHMARK_INC#-I}"
+if [[ ! -f "$bench_inc_dir/benchmark/benchmark.h" ]]; then
+  echo "Google Benchmark not found at $bench_inc_dir" >&2
+  echo "Run: ./scripts/setup_toolchain.sh" >&2
+  exit 1
+fi
+
 FALLBACK="${FALLBACK:-0}"
 EXCLUDE_NOK=0
 BENCH_BASE="${BENCH_BASE:-bench_bls12_381}"
