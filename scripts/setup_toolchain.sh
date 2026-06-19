@@ -72,10 +72,15 @@ fi
 
 echo "== System packages (Amazon Linux 2023) =="
 if command -v dnf >/dev/null 2>&1; then
-  sudo dnf install -y gcc gcc-c++ make gmp-devel cmake git curl
+  # AL2023 often ships curl-minimal; installing full curl conflicts with it.
+  pkgs=(gcc gcc-c++ make gmp-devel cmake git)
+  command -v curl >/dev/null 2>&1 || pkgs+=(curl)
+  sudo dnf install -y "${pkgs[@]}"
 elif command -v apt-get >/dev/null 2>&1; then
   sudo apt-get update
-  sudo apt-get install -y build-essential libgmp-dev cmake git curl
+  pkgs=(build-essential libgmp-dev cmake git)
+  command -v curl >/dev/null 2>&1 || pkgs+=(curl)
+  sudo apt-get install -y "${pkgs[@]}"
 else
   echo "    (no dnf/apt — install gcc, g++, make, gmp-devel, cmake, git, curl manually)"
 fi
@@ -107,7 +112,7 @@ echo "    checked out $(git -C "$BENCHMARK_DIR" rev-parse --short HEAD) \
 ($(git -C "$BENCHMARK_DIR" describe --tags --always))"
 
 echo "== Build libbenchmark.a with clang++ =="
-cmake -B "$BENCHMARK_BUILD" -DCMAKE_BUILD_TYPE=Release \
+cmake -S "$BENCHMARK_DIR" -B "$BENCHMARK_BUILD" -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_CXX_COMPILER="$CXX" \
   -DBENCHMARK_ENABLE_GTEST_TESTS=OFF
 cmake --build "$BENCHMARK_BUILD"
